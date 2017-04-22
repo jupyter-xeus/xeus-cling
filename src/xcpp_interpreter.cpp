@@ -92,11 +92,6 @@ namespace xeus
         return xjson();
     }
 
-    xjson xcpp_interpreter::comm_info_request_impl(const std::string& target_name)
-    {
-        return xjson();
-    }
-
     xjson xcpp_interpreter::kernel_info_request_impl()
     {
         xjson result;

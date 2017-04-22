@@ -44,8 +44,6 @@ namespace xeus
 
         xjson is_complete_request_impl(const std::string& code) override;
 
-        xjson comm_info_request_impl(const std::string& target_name) override;
-
         xjson kernel_info_request_impl() override;
 
         void input_reply_impl(const std::string& value) override;

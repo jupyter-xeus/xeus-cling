@@ -9,8 +9,9 @@
 cmake_minimum_required(VERSION 3.4.3)
 project(xeus-cling)
 
-# Rely on llvm-config
-#####################
+#######################
+# Rely on llvm-config #
+#######################
 
 set(CONFIG_OUTPUT)
 find_program(LLVM_CONFIG "llvm-config")
@@ -59,17 +60,39 @@ set(LLVM_MAIN_SRC_DIR ${MAIN_SRC_DIR} CACHE PATH "Path to LLVM source tree")
 
 link_directories(${LLVM_LIBRARY_DIR})
 
+################
+# Dependencies #
+################
+
 find_package(xeus REQUIRED)
 include_directories(${xeus_INCLUDE_DIR})
 
-find_package(cling REQUIRED)
+find_package(Clang REQUIRED)
+find_package(Cling REQUIRED)
 
-# flags
-#######
+#########
+# flags #
+#########
+
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
 if(MSVC)
     add_definitions(/DNOMINMAX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4141")
 endif()
 
-add_subdirectory(src)
+###################
+# Target and link #
+###################
+
+set(XEUSCLING_SRC
+    src/main.cpp
+    src/xcpp_interpreter.cpp
+    src/xcpp_interpreter.hpp
+)
+
+set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils)
+set(XEUSCLING_TARGET xeus-cling)
+add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
+target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
+
