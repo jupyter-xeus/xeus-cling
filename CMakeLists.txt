@@ -85,6 +85,16 @@ endif()
 # Target and link #
 ###################
 
+
+SET(CMAKE_SKIP_BUILD_RPATH FALSE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+IF("${isSystemDir}" STREQUAL "-1")
+   SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+ENDIF("${isSystemDir}" STREQUAL "-1")
+
 set(XEUSCLING_SRC
     src/main.cpp
     src/xcpp_interpreter.cpp
@@ -95,4 +105,13 @@ set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
+
+################
+# Installation #
+################
+
+include(GNUInstallDirs)
+
+install(TARGETS ${XEUSCLING_TARGET}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
