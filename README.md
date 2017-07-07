@@ -11,7 +11,6 @@ This project is in development phase and is highly instable!
 It is highly recommended to install ``cling`` and ``xeus`` with conda:
 
 ```bash
-conda install gcc-6 cling -c SylvainCorlay
-conda install xeus -c conda-forge
+conda install gcc-6 cling xeus -c SylvainCorlay
 ```
 
