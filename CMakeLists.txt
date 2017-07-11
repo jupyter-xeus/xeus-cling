@@ -54,7 +54,7 @@ endif()
 
 set(LLVM_TOOLS_BINARY_DIR ${TOOLS_BINARY_DIR} CACHE PATH "Path to llvm/bin")
 set(LLVM_LIBRARY_DIR ${LIBRARY_DIR} CACHE PATH "Path to llvm/lib")
-Set(LLVM_MAIN_INCLUDE_DIR ${INCLUDE_DIR} CACHE PATH "Path to llvm/include")
+set(LLVM_MAIN_INCLUDE_DIR ${INCLUDE_DIR} CACHE PATH "Path to llvm/include")
 set(LLVM_BINARY_DIR ${LLVM_OBJ_ROOT} CACHE PATH "Path to LLVM build tree")
 set(LLVM_MAIN_SRC_DIR ${MAIN_SRC_DIR} CACHE PATH "Path to LLVM source tree")
 
@@ -65,7 +65,7 @@ link_directories(${LLVM_LIBRARY_DIR})
 ################
 
 find_package(xeus REQUIRED)
-include_directories(${xeus_INCLUDE_DIR})
+include_directories(${xeus_INCLUDE_DIRS})
 
 find_package(Clang REQUIRED)
 find_package(Cling REQUIRED)
@@ -114,4 +114,10 @@ include(GNUInstallDirs)
 
 install(TARGETS ${XEUSCLING_TARGET}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install pat for kernel specs")
+
+install(DIRECTORY ${KERNELSPEC_DIR}
+        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
 
