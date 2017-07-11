@@ -11,6 +11,6 @@ This project is in development phase and is highly instable!
 It is highly recommended to install ``cling`` and ``xeus`` with conda:
 
 ```bash
-conda install gcc-6 cling xeus -c SylvainCorlay
+conda install cling xeus -c QuantStack -c conda-forge
 ```
 
