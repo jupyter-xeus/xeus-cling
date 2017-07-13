@@ -10,9 +10,6 @@
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
-// TODO: configure this via makefile
-#define LLVM_DIR ""
-
 namespace xeus
 {
 
