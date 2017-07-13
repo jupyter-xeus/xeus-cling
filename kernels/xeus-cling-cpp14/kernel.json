@@ -4,6 +4,6 @@
       "xeus-cling",
       "-f",
       "{connection_file}",
-      "--std=c++14"
+      "-std=c++14"
   ]
 }
