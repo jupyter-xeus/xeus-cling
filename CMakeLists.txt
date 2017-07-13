@@ -101,7 +101,7 @@ set(XEUSCLING_SRC
     src/xcpp_interpreter.hpp
 )
 
-set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils)
+set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
