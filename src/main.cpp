@@ -35,7 +35,7 @@ std::string get_stdopt(int argc, char** argv)
         std::string tmp(argv[i]);
         if(tmp.find("-std=c++") != std::string::npos)
         {
-            res = argv[i];
+            res = tmp;
             break;
         }
     }
@@ -48,7 +48,8 @@ interpreter_ptr build_interpreter(int argc, char** argv)
     constexpr int interpreter_argc = 5;
     const char* interpreter_argv[interpreter_argc];
     interpreter_argv[0] = "clingJupyter";
-    interpreter_argv[1] = get_stdopt(argc, argv).c_str();
+    std::string stdopt = get_stdopt(argc, argv);
+    interpreter_argv[1] = stdopt.c_str();
     std::string include_dir = std::string(LLVM_DIR) + std::string("/include");
     interpreter_argv[2] = include_dir.c_str();
     interpreter_argv[3] = "";
