@@ -59,6 +59,7 @@ set(LLVM_BINARY_DIR ${LLVM_OBJ_ROOT} CACHE PATH "Path to LLVM build tree")
 set(LLVM_MAIN_SRC_DIR ${MAIN_SRC_DIR} CACHE PATH "Path to LLVM source tree")
 
 link_directories(${LLVM_LIBRARY_DIR})
+add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 
 ################
 # Dependencies #
