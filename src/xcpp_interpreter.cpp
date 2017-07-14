@@ -41,26 +41,24 @@ namespace xeus
         {
             m_processor.cancelContinuation();
             //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
-            publish_execution_error("ename", "evalue", {});
+            publish_execution_error("ename", "evalue", {"incomplete input"});
             kernel_res = get_error_reply("ename", "evalue", {});
         }
         else if (compilation_result != cling::Interpreter::kSuccess)
         {
-            publish_execution_error("ename", "evalue", {});
-            kernel_res = get_error_reply("ename", "evalue", {});
-        }
-        else if (!result.isValid())
-        {
-            publish_execution_error("ename", "evalue", {});
+            publish_execution_error("ename", "evalue", {"failure"});
             kernel_res = get_error_reply("ename", "evalue", {});
         }
         else
         {
-            xjson pub_data;
-            std::string res_value = value_to_string(result);
-            pub_data.add_member("text/plain", res_value);
+            if (result.hasValue())
+            {
+                xjson pub_data{};
+                std::string res_value = value_to_string(result);
+                pub_data.add_member("text/plain", res_value);
+                publish_execution_result(execution_counter, std::move(pub_data), xjson());
+            }
             kernel_res.set_value("/status", "ok");
-            publish_execution_result(execution_counter, std::move(pub_data), xjson());
         }
 
         return kernel_res;
