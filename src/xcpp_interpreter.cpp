@@ -92,8 +92,21 @@ namespace xeus
         auto text = split_line(code, delims);
 
         compilation_result = m_cling.codeComplete(code.c_str(), cursor_pos, result);
+
+        // remove definition type at the beginning of each result
+        std::regex remove_type("\\[\\#.+\\#\\](.+)");
+        for(auto& r: result)
+        {
+            std::smatch match;
+            std::regex_search(r, match, remove_type);
+            if(match[1].str().length()>0)
+            {
+                r = match[1].str();
+            }
+        }        
+
         kernel_res.set_value("/matches", result);
-        kernel_res.set_value("/cursor_start", cursor_pos - text.back().size());
+        kernel_res.set_value("/cursor_start", cursor_pos - text.back().length());
         kernel_res.set_value("/cursor_stop", cursor_pos);
         //kernel_res.set_value("/metadata", xjson();
         kernel_res.set_value("/status", "ok");
