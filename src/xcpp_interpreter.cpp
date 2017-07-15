@@ -5,6 +5,8 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+#include <sstream>
+#include <regex>
 
 #include "xcpp_interpreter.hpp"
 #include "cling/Interpreter/Value.h"
@@ -12,6 +14,22 @@
 
 namespace xeus
 {
+    std::vector<std::string> split_line(const std::string& input, const std::string& delims) 
+    {
+        // passing -1 as the submatch index parameter performs splitting
+        std::vector<std::string> result;
+        std::stringstream ss;
+        ss << "[";
+        for(auto c: delims){
+            ss << "\\" << c;
+        }
+        ss << "]";
+        std::regex re(ss.str());
+        std::copy(std::sregex_token_iterator(input.begin(), input.end(), re, -1),
+                std::sregex_token_iterator(),
+                std::back_inserter(result));
+        return result;
+    }
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs())
@@ -65,9 +83,21 @@ namespace xeus
     }
 
     xjson xcpp_interpreter::complete_request_impl(const std::string& code,
-                                                  int cursor_pos)
+                                                  std::size_t cursor_pos)
     {
-        return xjson();
+        std::vector<std::string> result;
+        cling::Interpreter::CompilationResult compilation_result;
+        xjson kernel_res;
+        std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?";
+        auto text = split_line(code, delims);
+
+        compilation_result = m_cling.codeComplete(code.c_str(), cursor_pos, result);
+        kernel_res.set_value("/matches", result);
+        kernel_res.set_value("/cursor_start", cursor_pos - text.back().size());
+        kernel_res.set_value("/cursor_stop", cursor_pos);
+        //kernel_res.set_value("/metadata", xjson();
+        kernel_res.set_value("/status", "ok");
+        return kernel_res;
     }
 
     xjson xcpp_interpreter::inspect_request_impl(const std::string& code,
