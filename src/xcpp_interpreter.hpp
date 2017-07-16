@@ -13,6 +13,9 @@
 #include "cling/MetaProcessor/MetaProcessor.h"
 #include "xeus/xinterpreter.hpp"
 
+#include <iostream>
+#include <sstream>
+
 namespace xeus
 {
 
@@ -22,7 +25,7 @@ namespace xeus
     public:
 
         xcpp_interpreter(int argc, const char* const* argv);
-        virtual ~xcpp_interpreter() = default;
+        virtual ~xcpp_interpreter();
 
     private:
 
@@ -55,6 +58,12 @@ namespace xeus
         cling::Interpreter m_cling;
         cling::MetaProcessor m_processor;
         std::string m_version;
+
+        std::streambuf* p_cout_strbuf;
+        std::streambuf* p_cerr_strbuf;
+
+        std::ostringstream m_cout_stream;
+        std::ostringstream m_cerr_stream;
     };
 }
 

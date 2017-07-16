@@ -14,16 +14,20 @@ namespace xeus
 {
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
-        : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs())
+        : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
+          p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
     {
+        p_cout_strbuf = std::cout.rdbuf();
+        p_cerr_strbuf = std::cerr.rdbuf();
+
+        std::cout.rdbuf(m_cout_stream.rdbuf());
+        std::cerr.rdbuf(m_cerr_stream.rdbuf());
     }
 
-    std::string value_to_string(const cling::Value& value)
+    xcpp_interpreter::~xcpp_interpreter()
     {
-        std::string value_string;
-        llvm::raw_string_ostream os(value_string);
-        value.print(os);
-        return value_string;
+        std::cout.rdbuf(p_cout_strbuf);
+        std::cerr.rdbuf(p_cerr_strbuf);
     }
 
     xjson xcpp_interpreter::execute_request_impl(int execution_counter,
@@ -37,24 +41,28 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
+        m_cout_stream.str("");
+        m_cerr_stream.str("");
+
         if (m_processor.process(code.c_str(), compilation_result, &result))
         {
             m_processor.cancelContinuation();
             //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
-            publish_execution_error("ename", "evalue", {"incomplete input"});
+            publish_execution_error("ename", "evalue", {"Incomplete input"});
             kernel_res = get_error_reply("ename", "evalue", {});
         }
         else if (compilation_result != cling::Interpreter::kSuccess)
         {
-            publish_execution_error("ename", "evalue", {"failure"});
+            std::string res_value = m_cerr_stream.str();
+            publish_execution_error("ename", "evalue", { res_value });
             kernel_res = get_error_reply("ename", "evalue", {});
         }
         else
         {
-            if (result.hasValue())
+            std::string res_value = m_cout_stream.str();
+            if (!res_value.empty())
             {
                 xjson pub_data{};
-                std::string res_value = value_to_string(result);
                 pub_data.add_member("text/plain", res_value);
                 publish_execution_result(execution_counter, std::move(pub_data), xjson());
             }
@@ -96,7 +104,7 @@ namespace xeus
         result.set_value("/language_info/name", "c++");
         result.set_value("/language_info/version", m_version);
         result.set_value("/language_info/mimetype", "text/x-c++src");
-        result.set_value("/codemirror_mode", "text/x-c++src");
+        result.set_value("/language_info/codemirror_mode", "text/x-c++src");
         result.set_value("/language_info/file_extension", ".cpp");
         return result;
     }
