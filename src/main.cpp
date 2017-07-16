@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     xeus::xconfiguration config = xeus::load_configuration(file_name);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
-    xeus::xkernel kernel(config, "jmabille", std::move(interpreter));
+    xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
     std::cout << "starting kernel" << std::endl;
     kernel.start();
 
