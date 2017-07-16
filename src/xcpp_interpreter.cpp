@@ -5,6 +5,10 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <regex>
 
 #include "xcpp_interpreter.hpp"
 #include "cling/Interpreter/Value.h"
@@ -12,7 +16,36 @@
 
 namespace xeus
 {
+    std::vector<std::string> split_line(const std::string& input, const std::string& delims, std::size_t cursor_pos) 
+    {
+        // passing -1 as the submatch index parameter performs splitting
+        std::vector<std::string> result;
+        std::stringstream ss;
 
+        ss << "[";
+        for(auto c: delims){
+            ss << "\\" << c;
+        }
+        ss << "]";
+
+        std::regex re(ss.str());
+
+        std::copy(std::sregex_token_iterator(input.begin(), input.begin()+cursor_pos+1, re, -1),
+                std::sregex_token_iterator(),
+                std::back_inserter(result));
+
+        // remove null character
+        //for(auto& r: result)
+        //    r.erase(std::find(r.begin(), r.end(), '\0'));
+
+        return result;
+    }
+
+    auto complete(const std::string& input, std::size_t cursor_pos)
+    {
+        std::pair<std::string, std::vector<std::string>> result;
+
+    }
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
@@ -75,7 +108,53 @@ namespace xeus
     xjson xcpp_interpreter::complete_request_impl(const std::string& code,
                                                   int cursor_pos)
     {
-        return xjson();
+        std::vector<std::string> result;
+        cling::Interpreter::CompilationResult compilation_result;
+        xjson kernel_res;
+        xjson empty_json{};
+
+        // split the input to have only the word in the back of the cursor
+        std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?";
+        std::size_t _cursor_pos = cursor_pos;
+        auto text = split_line(code, delims, _cursor_pos);
+        std::string to_complete = text.back().c_str();
+
+        if (to_complete.length() != 0)
+        {
+            std::vector<std::string> cling_result;
+            compilation_result = m_cling.codeComplete(code.c_str(), _cursor_pos, cling_result);
+
+            // keep only the part with the beginning of the word
+            std::string ss;
+            ss += "\\.*(";
+            ss += to_complete.c_str();
+            ss += "\\w*)\\.*"; 
+            std::regex keep(ss);
+
+            for(auto& r: cling_result)
+            {
+                std::smatch match;
+                if (std::regex_search(r, match, keep))
+                {
+                    if(match[1].str().length()>0)
+                    {
+                        result.push_back(match[1].str());
+                    }
+                }
+            }        
+
+            // get unique value
+            std::sort(result.begin(), result.end());
+            auto last = std::unique(result.begin(), result.end());
+            result.erase(last, result.end()); 
+        }
+
+        kernel_res.set_value("/matches", result);
+        kernel_res.set_value("/cursor_start", cursor_pos - to_complete.length());
+        kernel_res.set_value("/cursor_end", cursor_pos);
+        kernel_res.add_subtree("metadata", empty_json);
+        kernel_res.set_value("/status", "ok");
+        return kernel_res;
     }
 
     xjson xcpp_interpreter::inspect_request_impl(const std::string& code,
