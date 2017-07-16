@@ -34,7 +34,7 @@ namespace xeus
                                    bool allow_stdin) override;
 
         xjson complete_request_impl(const std::string& code,
-                                    std::size_t cursor_pos) override;
+                                    int cursor_pos) override;
 
         xjson inspect_request_impl(const std::string& code,
                                    int cursor_pos,
