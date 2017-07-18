@@ -34,18 +34,9 @@ namespace xeus
                 std::sregex_token_iterator(),
                 std::back_inserter(result));
 
-        // remove null character
-        //for(auto& r: result)
-        //    r.erase(std::find(r.begin(), r.end(), '\0'));
-
         return result;
     }
 
-    auto complete(const std::string& input, std::size_t cursor_pos)
-    {
-        std::pair<std::string, std::vector<std::string>> result;
-
-    }
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
@@ -119,34 +110,19 @@ namespace xeus
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_complete = text.back().c_str();
 
-        if (to_complete.length() != 0)
+        compilation_result = m_cling.codeComplete(code.c_str(), _cursor_pos, result);
+
+        // change the print result
+        for(auto& r: result)
         {
-            std::vector<std::string> cling_result;
-            compilation_result = m_cling.codeComplete(code.c_str(), _cursor_pos, cling_result);
-
-            // keep only the part with the beginning of the word
-            std::string ss;
-            ss += "\\.*(";
-            ss += to_complete.c_str();
-            ss += "\\w*)\\.*"; 
-            std::regex keep(ss);
-
-            for(auto& r: cling_result)
-            {
-                std::smatch match;
-                if (std::regex_search(r, match, keep))
-                {
-                    if(match[1].str().length()>0)
-                    {
-                        result.push_back(match[1].str());
-                    }
-                }
-            }        
-
-            // get unique value
-            std::sort(result.begin(), result.end());
-            auto last = std::unique(result.begin(), result.end());
-            result.erase(last, result.end()); 
+            // remove the definition at the beginning (for example [#int#])
+            r = std::regex_replace(r, std::regex("\\[\\#.*\\#\\]"), "");
+            // remove the variable name in <#type name#> 
+            r = std::regex_replace(r, std::regex("(\\ |\\*)+(\\w+)(\\#\\>)"), "$1$3");
+            // remove unnecessary space at the end of <#type   #> 
+            r = std::regex_replace(r, std::regex("\\ *(\\#\\>)"), "$1");
+            // remove <# #> to keep only the type
+            r = std::regex_replace(r, std::regex("\\<\\#([^#>]*)\\#\\>"), "$1");
         }
 
         kernel_res.set_value("/matches", result);
