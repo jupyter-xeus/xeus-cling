@@ -37,6 +37,60 @@ namespace xeus
         return result;
     }
 
+    std::vector<std::string> split_from_includes(const std::string& input) 
+    {
+        // this function split the input into part where we have only #include.
+
+        // split input into lines
+        std::vector<std::string> lines;
+        std::regex re("\\n");
+
+        std::copy(std::sregex_token_iterator(input.begin(), input.end(), re, -1),
+                std::sregex_token_iterator(),
+                std::back_inserter(lines));
+
+        // check if each line contains #include and concatenate the result in the good part of the result
+        std::regex incl_re("\\#include.*");
+        std::vector<std::string> result;
+        result.push_back("");
+        std::size_t current = 0; //0 include, 1 other 
+        std::size_t rindex = 0; // current index of result vector
+        for(std::size_t i=0; i<lines.size(); ++i)
+        {
+            if (!lines[i].empty())
+            {
+                if (std::regex_match(lines[i], incl_re))
+                {
+                    // if we have #include in this line 
+                    // but the current item of result vector contains
+                    // other things
+                    if (current != 0)
+                    {
+                        current = 0;
+                        result.push_back("");
+                        rindex++;
+                    }
+                }
+                else
+                {
+                    // if we don't have #include in this line 
+                    // but the current item of result vector contains
+                    // the include parts
+                    if (current != 1)
+                    {
+                        current = 1;
+                        result.push_back("");
+                        rindex++;
+                    }
+                }
+                // if we have multiple lines, we add a semicolon at the end of the lines that not conatin 
+                // #include keyword (except for the last line)
+                result[rindex] += lines[i] + (((current == 1)&&(i!=lines.size()-1))?";":"") + "\n";
+            }
+        }
+        return result;
+    }
+
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
@@ -65,34 +119,39 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
-        m_cout_stream.str("");
-        m_cerr_stream.str("");
+        auto blocks = split_from_includes(code.c_str());
+        std::string res_value;
 
-        if (m_processor.process(code.c_str(), compilation_result, &result))
+        for (auto block: blocks)
         {
-            m_processor.cancelContinuation();
-            //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
-            publish_execution_error("ename", "evalue", {"Incomplete input"});
-            kernel_res = get_error_reply("ename", "evalue", {});
-        }
-        else if (compilation_result != cling::Interpreter::kSuccess)
-        {
-            std::string res_value = m_cerr_stream.str();
-            publish_execution_error("ename", "evalue", { res_value });
-            kernel_res = get_error_reply("ename", "evalue", {});
-        }
-        else
-        {
-            std::string res_value = m_cout_stream.str();
-            if (!res_value.empty())
+            m_cout_stream.str("");
+            m_cerr_stream.str("");
+            if (m_processor.process(block.c_str(), compilation_result, &result))
             {
-                xjson pub_data{};
-                pub_data.add_member("text/plain", res_value);
-                publish_execution_result(execution_counter, std::move(pub_data), xjson());
+                m_processor.cancelContinuation();
+                //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
+                publish_execution_error("ename", "evalue", {"Incomplete input"});
+                kernel_res = get_error_reply("ename", "evalue", {});
+                return kernel_res;
             }
-            kernel_res.set_value("/status", "ok");
+            else if (compilation_result != cling::Interpreter::kSuccess)
+            {
+                std::string res_value = m_cerr_stream.str();
+                publish_execution_error("ename", "evalue", { res_value });
+                kernel_res = get_error_reply("ename", "evalue", {});
+                return kernel_res;
+            }
+            else
+                res_value += m_cout_stream.str();
         }
 
+        if (!res_value.empty())
+        {
+            xjson pub_data{};
+            pub_data.add_member("text/plain", res_value);
+            publish_execution_result(execution_counter, std::move(pub_data), xjson());
+        }
+        kernel_res.set_value("/status", "ok");
         return kernel_res;
     }
 
