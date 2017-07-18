@@ -85,7 +85,7 @@ namespace xeus
                 }
                 // if we have multiple lines, we add a semicolon at the end of the lines that not conatin 
                 // #include keyword (except for the last line)
-                result[rindex] += lines[i] + (((current == 1)&&(i!=lines.size()-1))?";":"") + "\n";
+                result[rindex] += lines[i] + "\n";
             }
         }
         return result;
