@@ -29,6 +29,8 @@ namespace xeus
 
     private:
 
+        void configure_impl() override;
+
         xjson execute_request_impl(int execution_counter,
                                    const std::string& code,
                                    bool silent,
