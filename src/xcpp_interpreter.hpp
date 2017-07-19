@@ -55,6 +55,9 @@ namespace xeus
                               const std::string& evalue,
                               const std::vector<std::string>& trace_back);
 
+        void redirect_output();
+        void restore_output();
+
         cling::Interpreter m_cling;
         cling::MetaProcessor m_processor;
         std::string m_version;

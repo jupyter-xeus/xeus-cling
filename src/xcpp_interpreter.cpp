@@ -95,17 +95,12 @@ namespace xeus
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
     {
-        p_cout_strbuf = std::cout.rdbuf();
-        p_cerr_strbuf = std::cerr.rdbuf();
-
-        std::cout.rdbuf(m_cout_stream.rdbuf());
-        std::cerr.rdbuf(m_cerr_stream.rdbuf());
+        redirect_output();
     }
 
     xcpp_interpreter::~xcpp_interpreter()
     {
-        std::cout.rdbuf(p_cout_strbuf);
-        std::cerr.rdbuf(p_cerr_strbuf);
+        restore_output();
     }
 
     xjson xcpp_interpreter::execute_request_impl(int execution_counter,
@@ -152,6 +147,8 @@ namespace xeus
             publish_execution_result(execution_counter, std::move(pub_data), xjson());
         }
         kernel_res.set_value("/status", "ok");
+        xjson test{};
+        kernel_res.add_subtree("test", test);
         return kernel_res;
     }
 
@@ -238,4 +235,20 @@ namespace xeus
         result.set_value("/traceback", trace_back);
         return result;
     }
+
+    void xcpp_interpreter::redirect_output()
+    {
+        p_cout_strbuf = std::cout.rdbuf();
+        p_cerr_strbuf = std::cerr.rdbuf();
+
+        std::cout.rdbuf(m_cout_stream.rdbuf());
+        std::cerr.rdbuf(m_cerr_stream.rdbuf());
+    }
+
+    void xcpp_interpreter::restore_output()
+    {
+        std::cout.rdbuf(p_cout_strbuf);
+        std::cerr.rdbuf(p_cerr_strbuf);
+    }
+
 }
