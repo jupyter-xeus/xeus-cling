@@ -140,7 +140,7 @@ namespace xeus
             std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?)))*)\\?\\?");
             std::smatch to_inspect;
             std::regex_search(code, to_inspect, re_expression);
-            std::cout << "to_inspect " << to_inspect[1] << "\n";
+
             while(search >> url >> tagfile)
             {
                 std::string filename = tagfile_dir + "/" + tagfile;

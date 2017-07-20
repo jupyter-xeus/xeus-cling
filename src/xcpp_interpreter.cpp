@@ -59,7 +59,9 @@ namespace xeus
             if (is_to_inspect)
             {
                 auto inspect_result = inspect(block, m_processor);
-                std::cout << "inspect_result " << inspect_result << "\n";
+
+                std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + inspect_result + "\"></iframe></pre>"; 
+                kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
 
                 std::vector<std::string> lines = get_lines(block);
 
