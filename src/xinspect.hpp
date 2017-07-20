@@ -10,6 +10,7 @@
 
 #include <pugixml.hpp>
 #include <string>
+#include <fstream>
 
 #include "xparser.hpp"
 
@@ -61,27 +62,36 @@ namespace xeus
 
     std::string inspect(const std::string& code, int cursor_pos)
     {
+        // find the word to inspect
         std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;\'\",<>?";
         std::size_t _cursor_pos = cursor_pos;
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_inspect = text.back().c_str();
-        std::string url = "http://en.cppreference.com/w/";
-        std::string tagfile_path = TAGFILE_DIR;
+
+        std::string tagfile_dir = TAGFILE_DIR;
 
         std::vector<std::string> check{"class", "struct", "function"};
-        for(auto c: check)
+
+        std::string search_file = tagfile_dir + "/search_list.txt";
+        std::ifstream search(search_file);
+        
+        std::string url, tagfile;
+        while(search >> url >> tagfile)
         {
-            node_predicate predicate{c, to_inspect};
+            std::string filename = tagfile_dir + "/" + tagfile;
             pugi::xml_document doc;
-            std::string filename = tagfile_path + "/cppreference-doxygen-web.tag.xml";
             pugi::xml_parse_result result = doc.load_file(filename.c_str());
-            std::string node;
-            if (c == "class" || c == "struct")
-                node = doc.find_node(predicate).child("filename").child_value();
-            else
-                node = doc.find_node(predicate).child("anchorfile").child_value();
-            if (!node.empty())
-                return url + node;
+            for(auto c: check)
+            {
+                node_predicate predicate{c, to_inspect};
+                std::string node;
+                if (c == "class" || c == "struct")
+                    node = doc.find_node(predicate).child("filename").child_value();
+                else
+                    node = doc.find_node(predicate).child("anchorfile").child_value();
+                if (!node.empty())
+                    return url + node;
+            }
         }
         return "";
     }

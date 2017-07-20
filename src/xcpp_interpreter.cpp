@@ -132,7 +132,6 @@ namespace xeus
         else
         {
             std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + result + "\"></iframe></pre>"; 
-        // std::string text_content = "http://en.cppreference.com/w/cpp/container/vector"; 
             kernel_res.set_value("/found", true);
             data.add_member("text/html", html_content);
             data.add_member("text/plain", result);
