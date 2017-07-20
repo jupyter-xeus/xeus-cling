@@ -164,7 +164,6 @@ namespace xeus
         std::vector<std::string> result;
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
-        xjson empty_json{};
 
         // split the input to have only the word in the back of the cursor
         std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?";
@@ -190,7 +189,7 @@ namespace xeus
         kernel_res.set_value("/matches", result);
         kernel_res.set_value("/cursor_start", cursor_pos - to_complete.length());
         kernel_res.set_value("/cursor_end", cursor_pos);
-        kernel_res.add_subtree("metadata", empty_json);
+        kernel_res.add_subtree("metadata", xjson{});
         kernel_res.set_value("/status", "ok");
         return kernel_res;
     }
