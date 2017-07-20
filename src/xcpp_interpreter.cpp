@@ -58,7 +58,7 @@ namespace xeus
             bool is_to_inspect = std::regex_search(block, re);
             if (is_to_inspect)
             {
-                auto inspect_result = inspect(block);
+                auto inspect_result = inspect(block, m_processor);
                 std::cout << "inspect_result " << inspect_result << "\n";
 
                 std::vector<std::string> lines = get_lines(block);
@@ -148,7 +148,7 @@ namespace xeus
      
         std::string code_copy = code;
         code_copy.replace(cursor_pos, 2, "??");
-        auto result = inspect(code_copy);
+        auto result = inspect(code_copy, m_processor);
         
         if (result.empty())
             kernel_res.set_value("/found", false);

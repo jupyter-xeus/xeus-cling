@@ -11,8 +11,12 @@
 #include <pugixml.hpp>
 #include <string>
 #include <fstream>
+#include <cxxabi.h>
 
 #include "xparser.hpp"
+#include "cling/Interpreter/Interpreter.h"
+#include "cling/Interpreter/Value.h"
+#include "cling/Utils/Output.h"
 
 namespace xeus
 {
@@ -60,7 +64,7 @@ namespace xeus
         }
     };
 
-    std::string inspect(const std::string& code)
+    std::string inspect(const std::string& code, cling::MetaProcessor& m_processor)
     {
 
         std::string tagfile_dir = TAGFILE_DIR;
@@ -72,13 +76,64 @@ namespace xeus
 
         std::string url, tagfile;
 
-        // method found
+        // method or variable of class found found (xxxx.yyyy)
         if (std::regex_search(code, std::regex{"\\.\\w*\\?\\?"}))
         {
             std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?))\\.?)*)\\?\\?");
-            std::smatch to_inspect;
-            std::regex_search(code, to_inspect, re_expression);
-            std::cout << "to_inspect " << to_inspect[1] << "\n";
+            std::smatch expression;
+            std::regex_search(code, expression, re_expression);
+            std::regex re_method("(.*)\\.(\\w*)");
+            std::smatch method;
+            std::string tmp = expression[1]; 
+
+            // method[1]: xxxx method[2]: yyyy
+            std::regex_search(tmp, method, re_method);
+
+            cling::Interpreter::CompilationResult compilation_result;
+            cling::Value result;
+
+            // add typeinfo in include files in order to use typeid
+            std::string code = "#include<typeinfo>";
+            m_processor.process(code.c_str(), compilation_result, &result);
+
+            // try to find the typename of the class
+            code = "typeid("+ method.str(1) + ").name();";
+
+            if (m_processor.process(code.c_str(), compilation_result, &result))
+            {
+                m_processor.cancelContinuation();
+            }
+            else if (compilation_result == cling::Interpreter::kSuccess)
+            {
+                // we found the typeid
+                std::string valueString;
+                {
+                    llvm::raw_string_ostream os(valueString);
+                    result.print(os);
+                }
+                // search the typename in the output between ""
+                std::regex re_typename("\\\"(.*)\\\"");
+                std::smatch typename_;
+                std::regex_search(valueString, typename_, re_typename);
+                int status;
+                // set in valueString the typename given by typeid
+                valueString = typename_.str(1);
+                // we need demangling in order to have its string representation
+                valueString = abi::__cxa_demangle(valueString.c_str(), 0, 0, &status);
+                
+                re_typename = "(\\w*(?:\\:{2}?\\w*)*)";
+                std::regex_search(valueString, typename_, re_typename);
+
+                while(search >> url >> tagfile)
+                {
+                    std::string filename = tagfile_dir + "/" + tagfile;
+                    pugi::xml_document doc;
+                    pugi::xml_parse_result result = doc.load_file(filename.c_str());
+                    class_member_predicate predicate{typename_[1], "function", method[2]};
+                    auto node = doc.find_node(predicate);
+                    return url + predicate.get_filename(node);
+                }
+            }
         }
         else
         {
