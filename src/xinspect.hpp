@@ -60,13 +60,8 @@ namespace xeus
         }
     };
 
-    std::string inspect(const std::string& code, int cursor_pos)
+    std::string inspect(const std::string& code)
     {
-        // find the word to inspect
-        std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;\'\",<>?";
-        std::size_t _cursor_pos = cursor_pos;
-        auto text = split_line(code, delims, _cursor_pos);
-        std::string to_inspect = text.back().c_str();
 
         std::string tagfile_dir = TAGFILE_DIR;
 
@@ -74,23 +69,39 @@ namespace xeus
 
         std::string search_file = tagfile_dir + "/search_list.txt";
         std::ifstream search(search_file);
-        
+
         std::string url, tagfile;
-        while(search >> url >> tagfile)
+
+        // method found
+        if (std::regex_search(code, std::regex{"\\.\\w*\\?\\?"}))
         {
-            std::string filename = tagfile_dir + "/" + tagfile;
-            pugi::xml_document doc;
-            pugi::xml_parse_result result = doc.load_file(filename.c_str());
-            for(auto c: check)
+            std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?))\\.?)*)\\?\\?");
+            std::smatch to_inspect;
+            std::regex_search(code, to_inspect, re_expression);
+            std::cout << "to_inspect " << to_inspect[1] << "\n";
+        }
+        else
+        {
+            std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?)))*)\\?\\?");
+            std::smatch to_inspect;
+            std::regex_search(code, to_inspect, re_expression);
+            std::cout << "to_inspect " << to_inspect[1] << "\n";
+            while(search >> url >> tagfile)
             {
-                node_predicate predicate{c, to_inspect};
-                std::string node;
-                if (c == "class" || c == "struct")
-                    node = doc.find_node(predicate).child("filename").child_value();
-                else
-                    node = doc.find_node(predicate).child("anchorfile").child_value();
-                if (!node.empty())
-                    return url + node;
+                std::string filename = tagfile_dir + "/" + tagfile;
+                pugi::xml_document doc;
+                pugi::xml_parse_result result = doc.load_file(filename.c_str());
+                for(auto c: check)
+                {
+                    node_predicate predicate{c, to_inspect[1]};
+                    std::string node;
+                    if (c == "class" || c == "struct")
+                        node = doc.find_node(predicate).child("filename").child_value();
+                    else
+                        node = doc.find_node(predicate).child("anchorfile").child_value();
+                    if (!node.empty())
+                        return url + node;
+                }
             }
         }
         return "";
