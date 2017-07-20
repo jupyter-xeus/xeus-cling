@@ -1,9 +1,17 @@
+/***************************************************************************
+* Copyright (c) 2016, Johan Mabille and Sylvain Corlay                     *
+*                                                                          *
+* Distributed under the terms of the BSD 3-Clause License.                 *
+*                                                                          *
+* The full license is in the file LICENSE, distributed with this software. *
+****************************************************************************/
+#ifndef XINSPECT_HPP
+#define XINSPECT_HPP
+
 #include <pugixml.hpp>
 #include <string>
 
 #include "xparser.hpp"
-
-#pragma once
 
 namespace xeus
 {
@@ -65,7 +73,7 @@ namespace xeus
         {
             node_predicate predicate{c, to_inspect};
             pugi::xml_document doc;
-            pugi::xml_parse_result result = doc.load_file("/home/loic/tagfile/cppreference-doxygen-web.tag.xml");
+            pugi::xml_parse_result result = doc.load_file(TAGFILE_DIR + "/cppreference-doxygen-web.tag.xml");
             std::string node;
             if (c == "class" || c == "struct")
                 node = doc.find_node(predicate).child("filename").child_value();
@@ -77,3 +85,4 @@ namespace xeus
         return "";
     }
 }
+#endif

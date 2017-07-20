@@ -1,9 +1,17 @@
+/***************************************************************************
+* Copyright (c) 2016, Johan Mabille and Sylvain Corlay                     *
+*                                                                          *
+* Distributed under the terms of the BSD 3-Clause License.                 *
+*                                                                          *
+* The full license is in the file LICENSE, distributed with this software. *
+****************************************************************************/
+#ifndef XPARSER_HPP
+#define XPARSER_HPP
+
 #include <regex>
 #include <string>
 #include <vector>
 #include <algorithm>
-
-#pragma once
 
 namespace xeus
 {
@@ -82,3 +90,4 @@ namespace xeus
         return result;
     }
 }
+#endif
