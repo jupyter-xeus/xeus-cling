@@ -66,14 +66,15 @@ namespace xeus
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_inspect = text.back().c_str();
         std::string url = "http://en.cppreference.com/w/";
+        std::string tagfile_path = TAGFILE_DIR;
 
-        std::cout << "to_inspect " << to_inspect << "\n";
         std::vector<std::string> check{"class", "struct", "function"};
         for(auto c: check)
         {
             node_predicate predicate{c, to_inspect};
             pugi::xml_document doc;
-            pugi::xml_parse_result result = doc.load_file(TAGFILE_DIR + "/cppreference-doxygen-web.tag.xml");
+            std::string filename = tagfile_path + "/cppreference-doxygen-web.tag.xml";
+            pugi::xml_parse_result result = doc.load_file(filename.c_str());
             std::string node;
             if (c == "class" || c == "struct")
                 node = doc.find_node(predicate).child("filename").child_value();

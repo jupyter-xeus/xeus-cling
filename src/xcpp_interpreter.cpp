@@ -19,6 +19,10 @@
 
 namespace xeus
 {
+    void xcpp_interpreter::configure_impl()
+    {
+    }
+
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
