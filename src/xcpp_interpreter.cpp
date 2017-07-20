@@ -144,24 +144,24 @@ namespace xeus
                                                  int detail_level)
     {
         xjson kernel_res;
-        xjson data(kernel_res.get_allocator());
+        xjson data;
      
         std::string code_copy = code;
         code_copy.replace(cursor_pos, 2, "??");
         auto result = inspect(code_copy, m_processor);
         
         if (result.empty())
-            kernel_res.set_value("/found", false);
+            kernel_res["found"] = false;
         else
         {
             std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + result + "\"></iframe></pre>"; 
-            kernel_res.set_value("/found", true);
-            data.add_member("text/html", html_content);
-            data.add_member("text/plain", result);
-            kernel_res.add_subtree("data", data);
+            kernel_res["found"] = true;
+            data["text/html"] = html_content;
+            data["text/plain"] = result;
+            kernel_res["data"] = data;
         }
-        kernel_res.add_subtree("metadata", xjson{});
-        kernel_res.set_value("/status", "ok");
+        kernel_res["metadata"] = xjson();
+        kernel_res["status"] = "ok";
         return kernel_res;
     }
 
