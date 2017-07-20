@@ -12,87 +12,13 @@
 #include <vector>
 
 #include "xcpp_interpreter.hpp"
-
+#include "xinspect.hpp"
+#include "xparser.hpp"
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
 namespace xeus
 {
-    std::vector<std::string> split_line(const std::string& input, const std::string& delims, std::size_t cursor_pos) 
-    {
-        // passing -1 as the submatch index parameter performs splitting
-        std::vector<std::string> result;
-        std::stringstream ss;
-
-        ss << "[";
-        for(auto c: delims){
-            ss << "\\" << c;
-        }
-        ss << "]";
-
-        std::regex re(ss.str());
-
-        std::copy(std::sregex_token_iterator(input.begin(), input.begin()+cursor_pos+1, re, -1),
-                std::sregex_token_iterator(),
-                std::back_inserter(result));
-
-        return result;
-    }
-
-    std::vector<std::string> split_from_includes(const std::string& input) 
-    {
-        // this function split the input into part where we have only #include.
-
-        // split input into lines
-        std::vector<std::string> lines;
-        std::regex re("\\n");
-
-        std::copy(std::sregex_token_iterator(input.begin(), input.end(), re, -1),
-                std::sregex_token_iterator(),
-                std::back_inserter(lines));
-
-        // check if each line contains #include and concatenate the result in the good part of the result
-        std::regex incl_re("\\#include.*");
-        std::vector<std::string> result;
-        result.push_back("");
-        std::size_t current = 0; //0 include, 1 other 
-        std::size_t rindex = 0; // current index of result vector
-        for(std::size_t i=0; i<lines.size(); ++i)
-        {
-            if (!lines[i].empty())
-            {
-                if (std::regex_match(lines[i], incl_re))
-                {
-                    // if we have #include in this line 
-                    // but the current item of result vector contains
-                    // other things
-                    if (current != 0)
-                    {
-                        current = 0;
-                        result.push_back("");
-                        rindex++;
-                    }
-                }
-                else
-                {
-                    // if we don't have #include in this line 
-                    // but the current item of result vector contains
-                    // the include parts
-                    if (current != 1)
-                    {
-                        current = 1;
-                        result.push_back("");
-                        rindex++;
-                    }
-                }
-                // if we have multiple lines, we add a semicolon at the end of the lines that not conatin 
-                // #include keyword (except for the last line)
-                result[rindex] += lines[i] + "\n";
-            }
-        }
-        return result;
-    }
-
     void xcpp_interpreter::configure_impl()
     {
     }
@@ -127,6 +53,27 @@ namespace xeus
         {
             m_cout_stream.str("");
             m_cerr_stream.str("");
+
+            std::regex re("\\?{2}");
+            bool is_to_inspect = std::regex_search(block, re);
+            if (is_to_inspect)
+            {
+                auto inspect_result = inspect(block, m_processor);
+
+                std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + inspect_result + "\"></iframe></pre>"; 
+                kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
+
+                std::vector<std::string> lines = get_lines(block);
+
+                // get the line before the introspection demand (given by ??)
+                block = "";
+                for(auto line: lines)
+                    if (!std::regex_search(line, re))
+                        block += line + "\n";
+                    else
+                        break;
+            }
+
             if (m_processor.process(block.c_str(), compilation_result, &result))
             {
                 m_processor.cancelContinuation();
@@ -144,6 +91,8 @@ namespace xeus
             }
             else
                 res_value += m_cout_stream.str();
+                if (is_to_inspect)
+                    break;
         }
 
         if (!res_value.empty())
@@ -196,7 +145,26 @@ namespace xeus
                                                  int cursor_pos,
                                                  int detail_level)
     {
-        return xjson();
+        xjson kernel_res;
+        xjson data;
+     
+        std::string code_copy = code;
+        code_copy.replace(cursor_pos, 2, "??");
+        auto result = inspect(code_copy, m_processor);
+        
+        if (result.empty())
+            kernel_res["found"] = false;
+        else
+        {
+            std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + result + "\"></iframe></pre>"; 
+            kernel_res["found"] = true;
+            data["text/html"] = html_content;
+            data["text/plain"] = result;
+            kernel_res["data"] = data;
+        }
+        kernel_res["metadata"] = xjson();
+        kernel_res["status"] = "ok";
+        return kernel_res;
     }
 
     xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& args)

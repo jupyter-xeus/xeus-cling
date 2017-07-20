@@ -102,7 +102,7 @@ set(XEUSCLING_SRC
     src/xcpp_interpreter.hpp
 )
 
-set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter)
+set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
@@ -117,8 +117,14 @@ install(TARGETS ${XEUSCLING_TARGET}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
-set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install pat for kernel specs")
+set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
 
 install(DIRECTORY ${KERNELSPEC_DIR}
         DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
 
+set(TAGFILESPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tagfile)
+set(XEUS_TAGFILESPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
+
+install(DIRECTORY ${TAGFILESPEC_DIR}
+        DESTINATION ${XEUS_TAGFILESPEC_INSTALL_DIR})
+add_definitions(-DTAGFILE_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_TAGFILESPEC_INSTALL_DIR}/tagfile")
