@@ -53,6 +53,25 @@ namespace xeus
         {
             m_cout_stream.str("");
             m_cerr_stream.str("");
+
+            std::regex re("([\\w\\:\\.\\(\\)\\_]*)\\?{2}");
+            std::smatch to_inspect;
+            bool is_to_inspect = std::regex_search(block, to_inspect, re);
+            if (is_to_inspect)
+            {
+                std::cout << "to_inspect " << to_inspect[1] << "\n";
+                auto inspect_result = inspect(to_inspect[1], to_inspect[1].length());
+
+                std::vector<std::string> lines = get_lines(block);
+
+                block = "";
+                for(auto line: lines)
+                    if (!std::regex_search(line, re))
+                        block += line + "\n";
+                    else
+                        break;
+            }
+
             if (m_processor.process(block.c_str(), compilation_result, &result))
             {
                 m_processor.cancelContinuation();
@@ -70,6 +89,8 @@ namespace xeus
             }
             else
                 res_value += m_cout_stream.str();
+                if (is_to_inspect)
+                    break;
         }
 
         if (!res_value.empty())
