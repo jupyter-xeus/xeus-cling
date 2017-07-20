@@ -118,7 +118,25 @@ namespace xeus
                                                  int cursor_pos,
                                                  int detail_level)
     {
-        return xjson();
+        xjson kernel_res;
+        xjson data(kernel_res.get_allocator());
+     
+        auto result = inspect(code, cursor_pos);
+        
+        if (result.empty())
+            kernel_res.set_value("/found", false);
+        else
+        {
+            std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + result + "\"></iframe></pre>"; 
+        // std::string text_content = "http://en.cppreference.com/w/cpp/container/vector"; 
+            kernel_res.set_value("/found", true);
+            data.add_member("text/html", html_content);
+            data.add_member("text/plain", result);
+            kernel_res.add_subtree("data", data);
+        }
+        kernel_res.add_subtree("metadata", xjson{});
+        kernel_res.set_value("/status", "ok");
+        return kernel_res;
     }
 
     xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& args)
