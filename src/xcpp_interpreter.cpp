@@ -97,9 +97,9 @@ namespace xeus
 
         if (!res_value.empty())
         {
-            xjson pub_data{};
-            pub_data["text/plain"] =res_value;
-            publish_execution_result(execution_counter, std::move(pub_data), xjson());
+            xjson pub_data;
+            pub_data["text/plain"] = res_value;
+            publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
         }
         kernel_res["status"] = "ok";
         return kernel_res;
@@ -136,7 +136,7 @@ namespace xeus
         kernel_res["matches"] = result;
         kernel_res["cursor_start"] = cursor_pos - to_complete.length();
         kernel_res["cursor_end"] = cursor_pos;
-        kernel_res["metadata"] = xjson();
+        kernel_res["metadata"] = xjson::object();
         kernel_res["status"] = "ok";
         return kernel_res;
     }
@@ -162,19 +162,19 @@ namespace xeus
             data["text/plain"] = result;
             kernel_res["data"] = data;
         }
-        kernel_res["metadata"] = xjson();
+        kernel_res["metadata"] = xjson::object();
         kernel_res["status"] = "ok";
         return kernel_res;
     }
 
     xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& args)
     {
-        return xjson();
+        return xjson::object();
     }
 
     xjson xcpp_interpreter::is_complete_request_impl(const std::string& code)
     {
-        return xjson();
+        return xjson::object();
     }
 
     xjson xcpp_interpreter::kernel_info_request_impl()
