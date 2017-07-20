@@ -113,7 +113,7 @@ namespace xeus
                                                  const std::string& code,
                                                  bool silent,
                                                  bool store_history,
-                                                 const xjson::node_type* user_expressions,
+                                                 const xjson_node* user_expressions,
                                                  bool allow_stdin)
     {
         cling::Value result;
@@ -149,12 +149,10 @@ namespace xeus
         if (!res_value.empty())
         {
             xjson pub_data{};
-            pub_data.add_member("text/plain", res_value);
+            pub_data["text/plain"] =res_value;
             publish_execution_result(execution_counter, std::move(pub_data), xjson());
         }
-        kernel_res.set_value("/status", "ok");
-        xjson test{};
-        kernel_res.add_subtree("test", test);
+        kernel_res["status"] = "ok";
         return kernel_res;
     }
 
@@ -186,11 +184,11 @@ namespace xeus
             r = std::regex_replace(r, std::regex("\\<\\#([^#>]*)\\#\\>"), "$1");
         }
 
-        kernel_res.set_value("/matches", result);
-        kernel_res.set_value("/cursor_start", cursor_pos - to_complete.length());
-        kernel_res.set_value("/cursor_end", cursor_pos);
-        kernel_res.add_subtree("metadata", xjson{});
-        kernel_res.set_value("/status", "ok");
+        kernel_res["matches"] = result;
+        kernel_res["cursor_start"] = cursor_pos - to_complete.length();
+        kernel_res["cursor_end"] = cursor_pos;
+        kernel_res["metadata"] = xjson();
+        kernel_res["status"] = "ok";
         return kernel_res;
     }
 
@@ -214,14 +212,14 @@ namespace xeus
     xjson xcpp_interpreter::kernel_info_request_impl()
     {
         xjson result;
-        result.set_value("/protocol_version", "5.0.0");
-        result.set_value("/implementation", "xeus-cling");
-        result.set_value("/implementation_version", "0.0.1");
-        result.set_value("/language_info/name", "c++");
-        result.set_value("/language_info/version", m_version);
-        result.set_value("/language_info/mimetype", "text/x-c++src");
-        result.set_value("/language_info/codemirror_mode", "text/x-c++src");
-        result.set_value("/language_info/file_extension", ".cpp");
+        result["protocol_version"] = "5.0.0";
+        result["implementation"] = "xeus-cling";
+        result["implementation_version"] = "0.0.1";
+        result["language_info"]["name"] = "c++";
+        result["language_info"]["version"] = m_version;
+        result["language_info"]["mimetype"] = "text/x-c++src";
+        result["language_info"]["codemirror_mode"] = "text/x-c++src";
+        result["language_info"]["file_extension"] = ".cpp";
         return result;
     }
 
@@ -234,10 +232,10 @@ namespace xeus
                                             const std::vector<std::string>& trace_back)
     {
         xjson result;
-        result.set_value("/status", "error");
-        result.set_value("/ename", ename);
-        result.set_value("/evalue", evalue);
-        result.set_value("/traceback", trace_back);
+        result["status"] = "error";
+        result["ename"] = ename;
+        result["evalue"] = evalue;
+        result["traceback"] = trace_back;
         return result;
     }
 

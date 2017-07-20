@@ -35,7 +35,7 @@ namespace xeus
                                    const std::string& code,
                                    bool silent,
                                    bool store_history,
-                                   const xjson::node_type* user_expressions,
+                                   const xjson_node* user_expressions,
                                    bool allow_stdin) override;
 
         xjson complete_request_impl(const std::string& code,
