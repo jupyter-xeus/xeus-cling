@@ -64,6 +64,7 @@ namespace xeus
 
                 std::vector<std::string> lines = get_lines(block);
 
+                // get the line before the introspection demand (given by ??)
                 block = "";
                 for(auto line: lines)
                     if (!std::regex_search(line, re))
