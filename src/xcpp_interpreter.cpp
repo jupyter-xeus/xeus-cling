@@ -5,12 +5,14 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#include <sstream>
-#include <vector>
+
 #include <algorithm>
 #include <regex>
+#include <sstream>
+#include <vector>
 
 #include "xcpp_interpreter.hpp"
+
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
@@ -89,6 +91,10 @@ namespace xeus
             }
         }
         return result;
+    }
+
+    void xcpp_interpreter::configure_impl()
+    {
     }
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
