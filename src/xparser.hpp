@@ -36,17 +36,23 @@ namespace xeus
         return result;
     }
 
-    std::vector<std::string> split_from_includes(const std::string& input) 
+    std::vector<std::string> get_lines(const std::string& input) 
     {
-        // this function split the input into part where we have only #include.
-
-        // split input into lines
         std::vector<std::string> lines;
         std::regex re("\\n");
 
         std::copy(std::sregex_token_iterator(input.begin(), input.end(), re, -1),
                 std::sregex_token_iterator(),
                 std::back_inserter(lines));
+        return lines;
+    }
+
+    std::vector<std::string> split_from_includes(const std::string& input) 
+    {
+        // this function split the input into part where we have only #include.
+
+        // split input into lines
+        std::vector<std::string> lines = get_lines(input);
 
         // check if each line contains #include and concatenate the result in the good part of the result
         std::regex incl_re("\\#include.*");
