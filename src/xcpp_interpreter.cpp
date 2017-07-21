@@ -130,7 +130,7 @@ namespace xeus
         xjson kernel_res;
 
         // split the input to have only the word in the back of the cursor
-        std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?";
+        std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?.";
         std::size_t _cursor_pos = cursor_pos;
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_complete = text.back().c_str();
