@@ -8,15 +8,16 @@
 #ifndef XINSPECT_HPP
 #define XINSPECT_HPP
 
+#include <cxxabi.h>
+#include <fstream>
 #include <pugixml.hpp>
 #include <string>
-#include <fstream>
-#include <cxxabi.h>
 
-#include "xparser.hpp"
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
+
+#include "xparser.hpp"
 
 namespace xeus
 {
@@ -40,7 +41,7 @@ namespace xeus
 
         std::string get_filename(pugi::xml_node node)
         {
-            for (pugi::xml_node child: node.children())
+            for (pugi::xml_node child : node.children())
             {
                 if (static_cast<std::string>(child.attribute("kind").value()) == kind && static_cast<std::string>(child.child("name").child_value()) == child_value)
                     return child.child("anchorfile").child_value();
@@ -52,7 +53,7 @@ namespace xeus
             auto parent = (static_cast<std::string>(node.attribute("kind").value()) == "class" || static_cast<std::string>(node.attribute("kind").value()) == "struct") && static_cast<std::string>(node.child("name").child_value()) == class_name;
             auto found = false;
             if (parent)
-                for (pugi::xml_node child: node.children())
+                for (pugi::xml_node child : node.children())
                 {
                     if (static_cast<std::string>(child.attribute("kind").value()) == kind && static_cast<std::string>(child.child("name").child_value()) == child_value)
                     {
@@ -84,7 +85,7 @@ namespace xeus
             std::regex_search(code, expression, re_expression);
             std::regex re_method("(.*)\\.(\\w*)");
             std::smatch method;
-            std::string tmp = expression[1]; 
+            std::string tmp = expression[1];
 
             // method[1]: xxxx method[2]: yyyy
             std::regex_search(tmp, method, re_method);
@@ -97,7 +98,7 @@ namespace xeus
             m_processor.process(code.c_str(), compilation_result, &result);
 
             // try to find the typename of the class
-            code = "typeid("+ method.str(1) + ").name();";
+            code = "typeid(" + method.str(1) + ").name();";
 
             if (m_processor.process(code.c_str(), compilation_result, &result))
             {
@@ -120,11 +121,11 @@ namespace xeus
                 valueString = typename_.str(1);
                 // we need demangling in order to have its string representation
                 valueString = abi::__cxa_demangle(valueString.c_str(), 0, 0, &status);
-                
+
                 re_typename = "(\\w*(?:\\:{2}?\\w*)*)";
                 std::regex_search(valueString, typename_, re_typename);
 
-                while(search >> url >> tagfile)
+                while (search >> url >> tagfile)
                 {
                     std::string filename = tagfile_dir + "/" + tagfile;
                     pugi::xml_document doc;
@@ -141,12 +142,12 @@ namespace xeus
             std::smatch to_inspect;
             std::regex_search(code, to_inspect, re_expression);
 
-            while(search >> url >> tagfile)
+            while (search >> url >> tagfile)
             {
                 std::string filename = tagfile_dir + "/" + tagfile;
                 pugi::xml_document doc;
                 pugi::xml_parse_result result = doc.load_file(filename.c_str());
-                for(auto c: check)
+                for (auto c : check)
                 {
                     node_predicate predicate{c, to_inspect[1]};
                     std::string node;

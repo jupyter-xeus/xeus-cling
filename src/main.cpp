@@ -6,19 +6,19 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <memory>
-#include <iostream>
-#include <string>
-#include "xeus/xkernel_configuration.hpp"
-#include "xeus/xkernel.hpp"
 #include "xcpp_interpreter.hpp"
+#include "xeus/xkernel.hpp"
+#include "xeus/xkernel_configuration.hpp"
+#include <iostream>
+#include <memory>
+#include <string>
 
 std::string get_filename(int argc, char* argv[])
 {
     std::string res = "";
-    for(int i = 0; i < argc; ++i)
+    for (int i = 0; i < argc; ++i)
     {
-        if((std::string(argv[i]) == "-f") && (i+1 < argc))
+        if ((std::string(argv[i]) == "-f") && (i + 1 < argc))
         {
             res = argv[i + 1];
             break;
@@ -30,10 +30,10 @@ std::string get_filename(int argc, char* argv[])
 std::string get_stdopt(int argc, char** argv)
 {
     std::string res = "-std=c++11";
-    for(int i = 0; i < argc; ++i)
+    for (int i = 0; i < argc; ++i)
     {
         std::string tmp(argv[i]);
-        if(tmp.find("-std=c++") != std::string::npos)
+        if (tmp.find("-std=c++") != std::string::npos)
         {
             res = tmp;
             break;
