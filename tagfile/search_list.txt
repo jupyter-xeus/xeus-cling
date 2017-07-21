@@ -1,1 +1,2 @@
 http://en.cppreference.com/w/ cppreference-doxygen-web.tag.xml
+https://xtensor.readthedocs.io/en/latest/ xtensor.tag
