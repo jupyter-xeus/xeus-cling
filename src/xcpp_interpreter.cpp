@@ -53,6 +53,7 @@ namespace xeus
 
         auto blocks = split_from_includes(code.c_str());
         std::string res_value;
+        std::string block_to_inspect;
 
         for (auto block : blocks)
         {
@@ -63,10 +64,7 @@ namespace xeus
             bool is_to_inspect = std::regex_search(block, re);
             if (is_to_inspect)
             {
-                auto inspect_result = inspect(block, m_processor);
-
-                std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + inspect_result + "\"></iframe></pre>";
-                kernel_res["payload"] = {xjson::object({{"data", {{"text/plain", inspect_result}, {"text/html", html_content}}}, {"source", "page"}, {"start", 0}})};
+                block_to_inspect = block;
 
                 std::vector<std::string> lines = get_lines(block);
 
@@ -105,9 +103,12 @@ namespace xeus
                 res_value += m_cout_stream.str();
                 if (is_to_inspect)
                 {
+                    auto inspect_result = inspect(block_to_inspect, m_processor);
+
+                    std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + inspect_result + "\"></iframe></pre>"; 
+                    kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
                     break;
                 }
-            }
         }
 
         if (!res_value.empty())
