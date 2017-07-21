@@ -1321,4 +1321,16 @@
 		<name>xt::zeros</name>
 		<anchorfile>api/xbuilder.html#_CPPv2N2xt5zerosERAL_K1I</anchorfile>
 	</member>
+	<member kind="function">
+		<name>xt::layout_type</name>
+		<anchorfile>api/xcontainer.html#_CPPv2N2xt11layout_typeE</anchorfile>
+	</member>
+	<member kind="function">
+		<name>xt::xarray</name>
+		<anchorfile>api/xarray.html#_CPPv2N2xt6xarrayE</anchorfile>
+	</member>
+	<member kind="function">
+		<name>xt::xtensor</name>
+		<anchorfile>api/xtensor.html#_CPPv2N2xt7xtensorE</anchorfile>
+	</member>
 </tagfile>
