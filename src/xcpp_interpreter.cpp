@@ -109,6 +109,7 @@ namespace xeus
                     kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
                     break;
                 }
+            }
         }
 
         if (!res_value.empty())
