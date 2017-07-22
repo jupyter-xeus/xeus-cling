@@ -12,7 +12,9 @@
 #include <vector>
 
 #include "cling/Interpreter/Value.h"
+#include "cling/Interpreter/Exception.h"
 #include "cling/Utils/Output.h"
+
 #include "xcpp_interpreter.hpp"
 #include "xinspect.hpp"
 #include "xparser.hpp"
@@ -22,10 +24,22 @@ namespace xeus
 
     void xcpp_interpreter::configure_impl()
     {
+        // Process #include "xeus/xinterpreter.hpp" in a separate block.
         cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
         m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, &result);
-        expose("xeus::xinterpreter", this, "interpreter");
+
+        // Expose interpreter instance to cling
+        std::string
+        block  = "namespace xeus                                                                                                ";
+        block += "{                                                                                                             ";
+        block += "    xinterpreter& get_interpreter()                                                                           ";
+        block += "    {                                                                                                         ";
+        block += "        static auto& interpreter = *static_cast<xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + ");";
+        block += "        return interpreter;                                                                                   ";
+        block += "    }                                                                                                         ";
+        block += "}                                                                                                             ";
+        m_processor.process(block.c_str(), compilation_result, &result);
     }
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
@@ -51,8 +65,10 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
+        std::ostringstream errors;
+        std::ostringstream results;
+
         auto blocks = split_from_includes(code.c_str());
-        std::string res_value;
         std::string block_to_inspect;
 
         for (auto block : blocks)
@@ -60,6 +76,7 @@ namespace xeus
             m_cout_stream.str("");
             m_cerr_stream.str("");
 
+            // Check for inspection requests
             std::regex re("\\?{2}");
             bool is_to_inspect = std::regex_search(block, re);
             if (is_to_inspect)
@@ -83,7 +100,33 @@ namespace xeus
                 }
             }
 
-            if (m_processor.process(block.c_str(), compilation_result, &result))
+            auto errorlevel = 0;
+            try
+            {
+                errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
+            }
+            catch (cling::InterpreterException& e)
+            {
+                if (!e.diagnose())
+                {
+                    errors << "Caught an interpreter exception!\n"
+                           << e.what() << '\n';
+                }
+            }
+            catch (std::exception& e)
+            {
+                errors << "Caught a std::exception!\n"
+                       << e.what() << '\n';
+            }
+            catch (...)
+            {
+                errors << "Exception occurred. Recovering...\n";
+            }
+
+            results << m_cout_stream.str();
+            errors << m_cerr_stream.str();
+
+            if (errorlevel)
             {
                 m_processor.cancelContinuation();
                 //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
@@ -93,31 +136,29 @@ namespace xeus
             }
             else if (compilation_result != cling::Interpreter::kSuccess)
             {
-                std::string res_value = m_cerr_stream.str();
-                publish_execution_error("ename", "evalue", {res_value});
+                publish_execution_error("ename", "evalue", {errors.str()});
                 kernel_res = get_error_reply("ename", "evalue", {});
                 return kernel_res;
             }
             else
             {
-                res_value += m_cout_stream.str();
                 if (is_to_inspect)
                 {
                     auto inspect_result = inspect(block_to_inspect, m_processor);
-
-                    std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + inspect_result + "\"></iframe></pre>"; 
+                    std::string html_content = "<iframe style=\"width:100%; height: 100%\" src=\"" + inspect_result + "\"></iframe>";
                     kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
                     break;
                 }
             }
         }
 
-        if (!res_value.empty())
+        if (!results.str().empty() || !errors.str().empty())
         {
             xjson pub_data;
-            pub_data["text/plain"] = res_value;
+            pub_data["text/plain"] = results.str() + errors.str();
             publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
         }
+
         kernel_res["status"] = "ok";
         return kernel_res;
     }
@@ -212,17 +253,6 @@ namespace xeus
 
     void xcpp_interpreter::input_reply_impl(const std::string& value)
     {
-    }
-
-    void xcpp_interpreter::expose(const std::string& type, void* ptr, const std::string& name)
-    {
-        // Compose block
-        std::string block = "namespace xeus {" + type + "& " + name + " = " + "*static_cast<" + type + "*>((void*)" + std::to_string(intptr_t(ptr)) + "); }";
-
-        // Run block in cling
-        cling::Value result;
-        cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process(block.c_str(), compilation_result, &result);
     }
 
     xjson xcpp_interpreter::get_error_reply(const std::string& ename,
