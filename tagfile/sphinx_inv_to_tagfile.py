@@ -16,11 +16,6 @@ from xml.dom import minidom
 
 from sphinx.ext.intersphinx import read_inventory_v1, read_inventory_v2
 
-
-PACKAGES = {
-    'xtensor': 'https://xtensor.readthedocs.io/en/latest/'
-}
-
 def get_sphinx_inventory(url):
     """
     get the sphinx inventory from a url.
