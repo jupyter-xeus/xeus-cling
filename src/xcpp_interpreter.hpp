@@ -52,8 +52,6 @@ namespace xeus
 
         void input_reply_impl(const std::string& value) override;
 
-        void expose(const std::string& type, void* obj, const std::string& name);
-
         xjson get_error_reply(const std::string& ename,
                               const std::string& evalue,
                               const std::vector<std::string>& trace_back);
