@@ -8,9 +8,11 @@
 #ifndef XMAGICS_HPP
 #define XMAGICS_HPP
 
-#include "xparser.hpp"
+#include <fstream>
 #include <memory>
 #include <regex>
+
+#include "xparser.hpp"
 
 namespace xeus
 {
@@ -100,17 +102,37 @@ namespace xeus
             std::string cline = line;
             auto opts = parse_opts(cline, "a");
             auto it = opts.find("a");
-            if (it != opts.end())
-                std::cout << "option a\n";
-            std::cout << cline << "\n";
-            std::cout << cell << "\n";
+            auto filename = trim(cline);
+            std::ofstream file;
+
+            // TODO: check permission rights
+            if (is_file_exist(filename.c_str()))
+            {
+                if (it != opts.end())
+                {
+                    file.open(filename, std::ios::app);
+                    std::cout << "Appending to " << filename << "\n"; 
+                }
+                else 
+                {
+                    file.open(filename);
+                    std::cout << "Overwriting " << filename << "\n"; 
+                }
+            }
+            else
+            {
+                file.open(filename);
+                std::cout << "Writing " << filename << "\n"; 
+            }
+            file << cell << "\n";
+            file.close();        
+        }
+
+        static bool is_file_exist(const char* fileName)
+        {
+            std::ifstream infile(fileName);
+            return infile.good();
         }
     };
-    // static inline void writefile(const std::string& line, const std::string& cell)
-    // {
-
-    //     std::cout << line << "\n";
-    //     std::cout << cell << "\n";
-    // }
 }
 #endif

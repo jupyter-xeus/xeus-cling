@@ -21,5 +21,7 @@ namespace xeus
     bool short_has_arg(const std::string& opt, const std::string& short_opts);
 
     std::map<std::string, std::string> getopt(std::string& input, const std::string& short_opts);
+
+    std::string trim(std::string const& str);
 }
 #endif
