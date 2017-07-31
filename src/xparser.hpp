@@ -23,5 +23,8 @@ namespace xeus
     std::map<std::string, std::string> getopt(std::string& input, const std::string& short_opts);
 
     std::string trim(std::string const& str);
+
+    std::map<std::string, std::string> parse_opts(std::string& line, const std::string& opts);
+
 }
 #endif

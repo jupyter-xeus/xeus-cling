@@ -58,6 +58,7 @@ namespace xeus
 
         // check if each line contains #include and concatenate the result in the good part of the result
         std::regex incl_re("\\#include.*");
+        std::regex magic_re("^\\%\\w+");
         std::vector<std::string> result;
         result.push_back("");
         std::size_t current = 0;  //0 include, 1 other
@@ -66,33 +67,42 @@ namespace xeus
         {
             if (!lines[i].empty())
             {
-                if (std::regex_match(lines[i], incl_re))
+                if (std::regex_search(lines[i], magic_re))
                 {
-                    // if we have #include in this line
-                    // but the current item of result vector contains
-                    // other things
-                    if (current != 0)
-                    {
-                        current = 0;
-                        result.push_back("");
-                        rindex++;
-                    }
+                    result.push_back(lines[i] + "\n");
+                    result.push_back("");
+                    rindex +=2;
                 }
-                else
+                else 
                 {
-                    // if we don't have #include in this line
-                    // but the current item of result vector contains
-                    // the include parts
-                    if (current != 1)
+                    if (std::regex_match(lines[i], incl_re))
                     {
-                        current = 1;
-                        result.push_back("");
-                        rindex++;
+                        // if we have #include in this line
+                        // but the current item of result vector contains
+                        // other things
+                        if (current != 0)
+                        {
+                            current = 0;
+                            result.push_back("");
+                            rindex++;
+                        }
                     }
+                    else
+                    {
+                        // if we don't have #include in this line
+                        // but the current item of result vector contains
+                        // the include parts
+                        if (current != 1)
+                        {
+                            current = 1;
+                            result.push_back("");
+                            rindex++;
+                        }
+                    }
+                    // if we have multiple lines, we add a semicolon at the end of the lines that not conatin
+                    // #include keyword (except for the last line)
+                    result[rindex] += lines[i] + "\n";
                 }
-                // if we have multiple lines, we add a semicolon at the end of the lines that not conatin
-                // #include keyword (except for the last line)
-                result[rindex] += lines[i] + "\n";
             }
         }
         return result;
@@ -142,4 +152,20 @@ namespace xeus
         std::size_t last      = str.find_last_not_of(' ');
         return str.substr(first, last-first+1);
     }
+
+    std::map<std::string, std::string> parse_opts(std::string& line, const std::string& opts)
+    {
+        auto map_opts = getopt(line, opts);
+        // remove opts found in line
+        for (auto o: map_opts)
+        {
+            std::string tmp = "\\-" + o.first + "\\s*";
+            if (!o.second.empty())
+                tmp += o.second;
+            line = std::regex_replace(line, std::regex(tmp), "");
+        }
+        return map_opts;
+    }
+
+
 }

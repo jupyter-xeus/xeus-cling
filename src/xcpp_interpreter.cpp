@@ -70,7 +70,7 @@ namespace xeus
         std::smatch magic_name;
         if (std::regex_search(code, magic_name, re_magic_cell))
         {
-            if (xmagics.exist(magic_name.str(1)))
+            if (xmagics.find(magic_name.str(1)))
             {
                 std::regex re_magic_cell("^\%{2}\\w+\\s(.*)\\n((?:.*\\n?)*)");
                 std::smatch split_code;
@@ -97,6 +97,17 @@ namespace xeus
 
         for (auto block : blocks)
         {
+            std::regex re_magic_line("^\%(\\w+)(?:\\s(.*))?");
+            std::smatch magic;
+            if (std::regex_search(block, magic, re_magic_line))
+            {
+                if (xmagics.find(magic.str(1)))
+                {
+                    xmagics.apply(magic[1], magic[2]);
+                }
+                continue;
+            }
+
             // Check for inspection requests
             std::regex re("\\?{2}");
             if (std::regex_search(block, re))
@@ -307,7 +318,7 @@ namespace xeus
 
     void xcpp_interpreter::init_magic()
     {
-        //auto test = writefile();
         xmagics.register_magic("file", std::make_shared<writefile>());
+        xmagics.register_magic("timeit", std::make_shared<timeit>(&m_processor));
     }
 }
