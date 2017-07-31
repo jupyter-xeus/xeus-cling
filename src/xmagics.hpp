@@ -142,8 +142,8 @@ namespace xeus
         {
             std::string cline = line;
             execute(cline, cline);
-            // std::cout << "line\n";
         }
+        
         virtual void operator()(const std::string& line, const std::string& cell) const override
         {
             std::string cline = line;
