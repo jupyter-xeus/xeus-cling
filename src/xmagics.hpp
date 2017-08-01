@@ -59,12 +59,9 @@ namespace xeus
             m_magic_line.erase(magic_name);
         }
 
-        bool find(const std::string& magic_name)
+        bool contains(const std::string& magic_name)
         {
-            auto it = m_magic_cell.find(magic_name);
-            if (it != m_magic_cell.end())
-                return true;
-            return false;
+            return m_magic_cell.find(magic_name) != m_magic_cell.end();
         }
 
         void apply(const std::string& magic_name, const std::string& line, const std::string& cell)
