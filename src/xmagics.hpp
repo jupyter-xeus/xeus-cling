@@ -26,12 +26,12 @@ namespace xeus
     struct XEUS_API xmagic_line
     {
         using type = xmagic_line;
-        virtual void operator()(const std::string& line) const{};
+        virtual void operator()(const std::string& line) const = 0;
     };
     
     struct XEUS_API xmagic_cell
     {
-        virtual void operator()(const std::string& line, const std::string& cell) const{};
+        virtual void operator()(const std::string& line, const std::string& cell) const = 0;
     };
 
     struct XEUS_API xmagic_line_cell: public xmagic_line, xmagic_cell
@@ -143,7 +143,7 @@ namespace xeus
             std::string cline = line;
             execute(cline, cline);
         }
-        
+
         virtual void operator()(const std::string& line, const std::string& cell) const override
         {
             std::string cline = line;
