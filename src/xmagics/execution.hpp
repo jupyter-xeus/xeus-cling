@@ -13,10 +13,9 @@
 
 namespace xeus
 {
-    struct timeit: public xmagic_line_cell
+    class timeit: public xmagic_line_cell
     {
-        cling::MetaProcessor *m_processor;
-
+    public:
         timeit(cling::MetaProcessor* p);
         virtual void operator()(const std::string& line) const override
         {
@@ -30,6 +29,8 @@ namespace xeus
             std::string ccell = cell;
             execute(cline, ccell);
         }
+    private:
+        cling::MetaProcessor *m_processor;
 
         std::string inner(std::size_t number, std::string const & code) const;
         std::string _format_time(double timespan, std::size_t precision) const;

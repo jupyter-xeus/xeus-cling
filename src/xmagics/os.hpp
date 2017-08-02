@@ -11,9 +11,11 @@
 
 namespace xeus
 {
-    struct writefile: public xmagic_cell
+    class writefile: public xmagic_cell
     {
+    public:
         virtual void operator()(const std::string& line, const std::string& cell) const override;
+    private:
         static bool is_file_exist(const char* fileName);
     };
 }
