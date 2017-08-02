@@ -21,6 +21,8 @@
 #include "xparser.hpp"
 #include "xbuffer.hpp"
 #include "xmagics.hpp"
+#include "xmagics/os.hpp"
+#include "xmagics/execution.hpp"
 
 using namespace std::placeholders;
 

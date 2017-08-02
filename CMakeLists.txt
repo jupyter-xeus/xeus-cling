@@ -103,6 +103,11 @@ set(XEUSCLING_SRC
     src/xcpp_interpreter.hpp
     src/xparser.cpp
     src/xparser.hpp
+    src/xmagics.hpp
+    src/xmagics/execution.cpp
+    src/xmagics/execution.hpp
+    src/xmagics/os.cpp
+    src/xmagics/os.hpp
 )
 
 set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter pugixml)
