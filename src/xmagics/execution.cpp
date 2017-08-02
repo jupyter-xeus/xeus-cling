@@ -103,7 +103,7 @@ namespace xeus
             for(std::size_t r=0; r<repeat; ++r)
                 stdev += (all_runs[r] - mean)*(all_runs[r] - mean);
             stdev = std::sqrt(stdev/repeat);
-            auto minmax = std::minmax_element(all_runs.begin(), all_runs.end());
+
             std::cout << _format_time(mean, precision) << " +- " << _format_time(stdev, precision);
             std::cout << " per loop (mean +- std. dev. of " << repeat << " run" << ((repeat==1)? ", ":"s ");
             std::cout << number << " loop" << ((number==1)? "":"s") << " each)\n";             
