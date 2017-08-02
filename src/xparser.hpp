@@ -8,7 +8,9 @@
 #ifndef XPARSER_HPP
 #define XPARSER_HPP
 
-
+#include <map>
+#include <string>
+#include <vector>
 
 namespace xeus
 {
