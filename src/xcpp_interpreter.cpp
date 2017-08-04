@@ -27,18 +27,16 @@ namespace xeus
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
         cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, &result);
+        m_processor.process("#include \"xwidgets/xwidgets_interpreter.hpp\"", compilation_result, &result);
 
         // Expose interpreter instance to cling
         std::string
-        block  = "namespace xeus                                                                                                ";
-        block += "{                                                                                                             ";
-        block += "    xinterpreter& get_interpreter()                                                                           ";
-        block += "    {                                                                                                         ";
-        block += "        static auto& interpreter = *static_cast<xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + ");";
-        block += "        return interpreter;                                                                                   ";
-        block += "    }                                                                                                         ";
-        block += "}                                                                                                             ";
+        block  = "namespace"                                                                       ;
+        block += "{"                                                                               ;
+        block += "    bool registered = ::xeus::register_interpreter("                             ;
+        block += "      static_cast<xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + ");";
+        block += "    );"                                                                          ;
+        block += "}"                                                                               ;
         m_processor.process(block.c_str(), compilation_result, &result);
     }
 
