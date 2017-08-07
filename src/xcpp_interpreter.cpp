@@ -30,15 +30,7 @@ namespace xeus
         m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, &result);
 
         // Expose interpreter instance to cling
-        std::string
-        block  = "namespace xeus                                                                                                ";
-        block += "{                                                                                                             ";
-        block += "    xinterpreter& get_interpreter()                                                                           ";
-        block += "    {                                                                                                         ";
-        block += "        static auto& interpreter = *static_cast<xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + ");";
-        block += "        return interpreter;                                                                                   ";
-        block += "    }                                                                                                         ";
-        block += "}                                                                                                             ";
+        std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
         m_processor.process(block.c_str(), compilation_result, &result);
     }
 
