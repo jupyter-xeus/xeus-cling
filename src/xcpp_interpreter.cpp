@@ -137,8 +137,30 @@ namespace xeus
                 if (is_to_inspect)
                 {
                     auto inspect_result = inspect(block_to_inspect, m_processor);
-                    std::string html_content = "<iframe style=\"width:100%; height: 100%\" src=\"" + inspect_result + "\"></iframe>";
-                    kernel_res["payload"] = { xjson::object({{"data", {{"text/plain", inspect_result},{"text/html", html_content}}}, {"source", "page"}, {"start", 0}}) };
+                    std::string html_content = R"(<style>
+                    #pager-container {
+                        padding: 0;
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                    }
+                    .xeus-iframe-pager {
+                        padding: 0;
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                    }
+                    </style>
+                    <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
+                    kernel_res["payload"] = { 
+                        xjson::object({
+                            {"data", {
+                                {"text/plain", inspect_result}, 
+                                {"text/html", html_content}}}, 
+                            {"source", "page"}, 
+                            {"start", 0}})
+                    };
                     break;
                 }
             }
