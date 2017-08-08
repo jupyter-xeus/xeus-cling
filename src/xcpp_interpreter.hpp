@@ -11,10 +11,16 @@
 
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/MetaProcessor/MetaProcessor.h"
+
 #include "xeus/xinterpreter.hpp"
+
+#include "xbuffer.hpp"
 
 #include <iostream>
 #include <sstream>
+#include <streambuf>
+#include <string>
+#include <vector>
 
 namespace xeus
 {
@@ -25,6 +31,9 @@ namespace xeus
 
         xcpp_interpreter(int argc, const char* const* argv);
         virtual ~xcpp_interpreter();
+
+        void publish_stdout(const std::string&);
+        void publish_stderr(const std::string&);
 
     private:
 
@@ -66,8 +75,8 @@ namespace xeus
         std::streambuf* p_cout_strbuf;
         std::streambuf* p_cerr_strbuf;
 
-        std::ostringstream m_cout_stream;
-        std::ostringstream m_cerr_stream;
+        xbuffer m_cout_buffer;
+        xbuffer m_cerr_buffer;
     };
 }
 

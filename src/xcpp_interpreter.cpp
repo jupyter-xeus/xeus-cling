@@ -18,6 +18,9 @@
 #include "xcpp_interpreter.hpp"
 #include "xinspect.hpp"
 #include "xparser.hpp"
+#include "xbuffer.hpp"
+
+using namespace std::placeholders;
 
 namespace xeus
 {
@@ -36,7 +39,9 @@ namespace xeus
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
-          p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr), m_cout_stream(), m_cerr_stream()
+          p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
+          m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)), 
+          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1))
     {
         redirect_output();
     }
@@ -57,17 +62,11 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
-        std::ostringstream errors;
-        std::ostringstream results;
-
         auto blocks = split_from_includes(code.c_str());
         std::string block_to_inspect;
 
         for (auto block : blocks)
         {
-            m_cout_stream.str("");
-            m_cerr_stream.str("");
-
             // Check for inspection requests
             std::regex re("\\?{2}");
             bool is_to_inspect = std::regex_search(block, re);
@@ -77,7 +76,7 @@ namespace xeus
 
                 std::vector<std::string> lines = get_lines(block);
 
-                // get the line before the introspection demand (given by ??)
+                // Get the line before the introspection demand (given by ??)
                 block = "";
                 for (auto line : lines)
                 {
@@ -101,34 +100,31 @@ namespace xeus
             {
                 if (!e.diagnose())
                 {
-                    errors << "Caught an interpreter exception!\n"
-                           << e.what() << '\n';
+                    std::cerr << "Caught an interpreter exception!\n"
+                              << e.what() << '\n';
                 }
             }
             catch (std::exception& e)
             {
-                errors << "Caught a std::exception!\n"
-                       << e.what() << '\n';
+                std::cerr << "Caught a std::exception!\n"
+                          << e.what() << '\n';
             }
             catch (...)
             {
-                errors << "Exception occurred. Recovering...\n";
+                std::cerr << "Exception occurred. Recovering...\n";
             }
-
-            results << m_cout_stream.str();
-            errors << m_cerr_stream.str();
 
             if (errorlevel)
             {
                 m_processor.cancelContinuation();
                 //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
-                publish_execution_error("ename", "evalue", {"Incomplete input"});
+                // publish_execution_error("ename", "evalue", {"Incomplete input"});
                 kernel_res = get_error_reply("ename", "evalue", {});
                 return kernel_res;
             }
             else if (compilation_result != cling::Interpreter::kSuccess)
             {
-                publish_execution_error("ename", "evalue", {errors.str()});
+                // publish_execution_error("ename", "evalue", {errors.str()});
                 kernel_res = get_error_reply("ename", "evalue", {});
                 return kernel_res;
             }
@@ -166,13 +162,7 @@ namespace xeus
             }
         }
 
-        if (!results.str().empty() || !errors.str().empty())
-        {
-            xjson pub_data;
-            pub_data["text/plain"] = results.str() + errors.str();
-            publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
-        }
-
+        std::cout << std::flush;
         kernel_res["status"] = "ok";
         return kernel_res;
     }
@@ -283,16 +273,28 @@ namespace xeus
 
     void xcpp_interpreter::redirect_output()
     {
+        std::cout << std::flush;
+        std::cerr << std::flush;
         p_cout_strbuf = std::cout.rdbuf();
         p_cerr_strbuf = std::cerr.rdbuf();
 
-        std::cout.rdbuf(m_cout_stream.rdbuf());
-        std::cerr.rdbuf(m_cerr_stream.rdbuf());
+        std::cout.rdbuf(&m_cout_buffer);
+        std::cerr.rdbuf(&m_cerr_buffer);
     }
 
     void xcpp_interpreter::restore_output()
     {
         std::cout.rdbuf(p_cout_strbuf);
         std::cerr.rdbuf(p_cerr_strbuf);
+    }
+
+    void xcpp_interpreter::publish_stdout(const std::string& s)
+    {
+        publish_stream("stdout", s);
+    }
+
+    void xcpp_interpreter::publish_stderr(const std::string& s)
+    {
+        publish_stream("stderr", s);
     }
 }
