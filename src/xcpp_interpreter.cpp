@@ -63,101 +63,80 @@ namespace xeus
         xjson kernel_res;
 
         auto blocks = split_from_includes(code.c_str());
-        std::string block_to_inspect;
 
         for (auto block : blocks)
         {
             // Check for inspection requests
             std::regex re("\\?{2}");
-            bool is_to_inspect = std::regex_search(block, re);
-            if (is_to_inspect)
+            if (std::regex_search(block, re))
             {
-                block_to_inspect = block;
+                // Perform inspection.
+                auto inspect_result = inspect(block, m_processor);
 
-                std::vector<std::string> lines = get_lines(block);
-
-                // Get the line before the introspection demand (given by ??)
-                block = "";
-                for (auto line : lines)
-                {
-                    if (!std::regex_search(line, re))
-                    {
-                        block += line + "\n";
-                    }
-                    else
-                    {
-                        break;
-                    }
+                // Format html content.
+                std::string html_content = R"(<style>
+                #pager-container {
+                    padding: 0;
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
                 }
-            }
-
-            auto errorlevel = 0;
-            try
-            {
-                errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
-            }
-            catch (cling::InterpreterException& e)
-            {
-                if (!e.diagnose())
-                {
-                    std::cerr << "Caught an interpreter exception!\n"
-                              << e.what() << '\n';
+                .xeus-iframe-pager {
+                    padding: 0;
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
                 }
-            }
-            catch (std::exception& e)
-            {
-                std::cerr << "Caught a std::exception!\n"
-                          << e.what() << '\n';
-            }
-            catch (...)
-            {
-                std::cerr << "Exception occurred. Recovering...\n";
-            }
+                </style>
+                <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
 
-            if (errorlevel)
-            {
-                m_processor.cancelContinuation();
-                //TODO: pub_data.add_member("text/plain", "Incomplete input! Ignored.");
-                // publish_execution_error("ename", "evalue", {"Incomplete input"});
-                kernel_res = get_error_reply("ename", "evalue", {});
-                return kernel_res;
-            }
-            else if (compilation_result != cling::Interpreter::kSuccess)
-            {
-                // publish_execution_error("ename", "evalue", {errors.str()});
-                kernel_res = get_error_reply("ename", "evalue", {});
-                return kernel_res;
+                kernel_res["payload"] = { 
+                    xjson::object({
+                        {"data", {
+                            {"text/plain", inspect_result}, 
+                            {"text/html", html_content}}}, 
+                        {"source", "page"}, 
+                        {"start", 0}})
+                };
+                break;
             }
             else
             {
-                if (is_to_inspect)
+                // Perform normal evaluation
+                auto errorlevel = 0;
+                try
                 {
-                    auto inspect_result = inspect(block_to_inspect, m_processor);
-                    std::string html_content = R"(<style>
-                    #pager-container {
-                        padding: 0;
-                        margin: 0;
-                        width: 100%;
-                        height: 100%;
+                    errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
+                }
+                catch (cling::InterpreterException& e)
+                {
+                    if (!e.diagnose())
+                    {
+                        std::cerr << "Caught an interpreter exception!\n"
+                              << e.what() << '\n';
                     }
-                    .xeus-iframe-pager {
-                        padding: 0;
-                        margin: 0;
-                        width: 100%;
-                        height: 100%;
-                        border: none;
-                    }
-                    </style>
-                    <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
-                    kernel_res["payload"] = { 
-                        xjson::object({
-                            {"data", {
-                                {"text/plain", inspect_result}, 
-                                {"text/html", html_content}}}, 
-                            {"source", "page"}, 
-                            {"start", 0}})
-                    };
-                    break;
+                }
+                catch (std::exception& e)
+                {
+                    std::cerr << "Caught a std::exception!\n"
+                              << e.what() << '\n';
+                }
+                catch (...)
+                {
+                    std::cerr << "Exception occurred. Recovering...\n";
+                }
+
+                if (errorlevel)
+                {
+                    m_processor.cancelContinuation();
+                    kernel_res = get_error_reply("ename", "evalue", {});
+                    return kernel_res;
+                }
+                else if (compilation_result != cling::Interpreter::kSuccess)
+                {
+                    kernel_res = get_error_reply("ename", "evalue", {});
+                    return kernel_res;
                 }
             }
         }
@@ -273,8 +252,6 @@ namespace xeus
 
     void xcpp_interpreter::redirect_output()
     {
-        std::cout << std::flush;
-        std::cerr << std::flush;
         p_cout_strbuf = std::cout.rdbuf();
         p_cerr_strbuf = std::cerr.rdbuf();
 

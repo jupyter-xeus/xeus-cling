@@ -72,13 +72,28 @@ namespace xeus
         std::string typeString;
 
         // add typeinfo in include files in order to use typeid
-        std::string code = "#include<typeinfo>";
+        std::string code = "#include <typeinfo>";
         m_processor.process(code.c_str(), compilation_result, &result);
 
         // try to find the typename of the class
         code = "typeid("+ expression + ").name();";
 
-        if (m_processor.process(code.c_str(), compilation_result, &result))
+        // Temporarily dismissing all std::cerr and std::cout resulting from `m_processor.process`
+        auto errorlevel = 0;
+        {
+            auto cout_strbuf = std::cout.rdbuf();
+            auto cerr_strbuf = std::cerr.rdbuf();
+            auto null = xnull();
+            std::cout.rdbuf(&null);
+            std::cerr.rdbuf(&null);
+
+            errorlevel = m_processor.process(code.c_str(), compilation_result, &result);
+
+            std::cout.rdbuf(cout_strbuf);
+            std::cerr.rdbuf(cerr_strbuf);
+        }
+
+        if (errorlevel)
         {
             m_processor.cancelContinuation();
         }
@@ -104,7 +119,9 @@ namespace xeus
             re_typename = "(\\w*(?:\\:{2}?\\w*)*)";
             std::regex_search(valueString, typename_, re_typename);
             if (!typename_.str(1).empty())
+            {
                 typeString = typename_[1];
+            }
         }
 
         return typeString;
@@ -146,7 +163,9 @@ namespace xeus
                     class_member_predicate predicate{typename_, "function", method[2]};
                     auto node = doc.find_node(predicate);
                     if (!node.empty())
+                    {
                         return url + predicate.get_filename(node);
+                    }
                 }
             }
         }
@@ -170,12 +189,18 @@ namespace xeus
                     std::string node;
 
                     if (c == "class" || c == "struct")
+                    {
                         node = doc.find_node(predicate).child("filename").child_value();
+                    }
                     else
+                    {
                         node = doc.find_node(predicate).child("anchorfile").child_value();
+                    }
 
                     if (!node.empty())
+                    {
                        return url + node;
+                    }
                 }
             }
         }
