@@ -47,6 +47,13 @@ namespace xeus
         char m_buffer[1024];
     };
 
+    class xnull : public std::streambuf
+    {
+        int overflow(int c) override
+        {
+            return c;
+        }
+    };
 }
 
 #endif
