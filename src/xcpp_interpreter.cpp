@@ -80,7 +80,7 @@ namespace xeus
             if (xmagics.contains(magic_name.str(1)))
 >>>>>>> change name method find to contains in xmagics_manager and improve impllementation
             {
-                std::regex re_magic_cell("^\%{2}\\w+\\s(.*)\\n((?:.*\\n?)*)");
+                std::regex re_magic_cell("^\%{2}\\w+(?:\\s(.*))?\\n((?:.*\\n?)*)");
                 std::smatch split_code;
                 std::regex_search(code, split_code, re_magic_cell);
                 xmagics.apply(magic_name[1], split_code[1], split_code[2]);
