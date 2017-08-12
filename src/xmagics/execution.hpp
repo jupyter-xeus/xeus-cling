@@ -5,11 +5,15 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+#ifndef XMAGICS_EXECUTION_HPP
+#define XMAGICS_EXECUTION_HPP
+
 #include <string>
 
 #include "cling/MetaProcessor/MetaProcessor.h"
 
 #include "../xmagics.hpp"
+#include "../xoptions.hpp"
 
 namespace xeus
 {
@@ -17,13 +21,14 @@ namespace xeus
     {
     public:
         timeit(cling::MetaProcessor* p);
-        virtual void operator()(const std::string& line) const override
+        virtual void operator()(const std::string& line) override
         {
             std::string cline = line;
-            execute(cline, cline);
+            std::string cell = "";
+            execute(cline, cell);
         }
 
-        virtual void operator()(const std::string& line, const std::string& cell) const override
+        virtual void operator()(const std::string& line, const std::string& cell) override
         {
             std::string cline = line;
             std::string ccell = cell;
@@ -32,8 +37,10 @@ namespace xeus
     private:
         cling::MetaProcessor *m_processor;
 
+        xoptions get_options();
         std::string inner(std::size_t number, std::string const & code) const;
         std::string _format_time(double timespan, std::size_t precision) const;
-        void execute(std::string & options, std::string & code) const;
+        void execute(std::string & line, std::string & cell);
     };
 }
+#endif

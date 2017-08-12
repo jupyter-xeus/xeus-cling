@@ -8,24 +8,40 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "os.hpp"
 #include "../xparser.hpp"
+#include "../xoptions.hpp"
 
 namespace xeus
 {
-    void writefile::operator()(const std::string& line, const std::string& cell) const
+    xoptions writefile::get_options()
     {
-        std::string cline = line;
-        auto opts = parse_opts(cline, "a");
-        auto it = opts.find("a");
-        auto filename = trim(cline);
+        xoptions options{"file", "write file"};
+        options.add_options()
+            ("a,append", "append")
+            ("i,input", "Input", cxxopts::value<std::string>());
+        options.parse_positional("input");
+        return options;
+    }
+    
+    void writefile::operator()(const std::string& line, const std::string& cell)
+    {
+        std::istringstream iss(line);
+        std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+                                 std::istream_iterator<std::string>());
+        auto options = get_options();
+        options.parse(results);
+
+        auto append = options.count("a");
+        auto filename = options["input"].as<std::string>();
         std::ofstream file;
 
         // TODO: check permission rights
         if (is_file_exist(filename.c_str()))
         {
-            if (it != opts.end())
+            if (append)
             {
                 file.open(filename, std::ios::app);
                 std::cout << "Appending to " << filename << "\n"; 

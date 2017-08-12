@@ -110,6 +110,8 @@ set(XEUSCLING_SRC
     src/xmagics/os.hpp
 )
 
+include_directories(include)
+
 set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})

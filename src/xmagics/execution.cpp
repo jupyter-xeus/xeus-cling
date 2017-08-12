@@ -16,10 +16,12 @@
 #include "cling/Utils/Output.h"
 
 #include "execution.hpp"
+#include "../xparser.hpp"
 
 namespace xeus
 {
-    timeit::timeit(cling::MetaProcessor* p):m_processor(p){
+    timeit::timeit(cling::MetaProcessor* p):m_processor(p)
+    {
         cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
 
@@ -29,6 +31,21 @@ namespace xeus
         init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";           
         m_processor->process(init_timeit.c_str(), compilation_result, &result);
 
+    }
+
+    xoptions timeit::get_options()
+    {
+        xoptions options{"timeit", "Time execution of a C++ statement or expression"};
+        options.add_options()
+            ("n,number", "execute the given statement n times in a loop. If this value is not given, a fitting value is chosen", cxxopts::value<std::size_t>())
+            ("r,repeat", "repeat the loop iteration r times and take the best result", cxxopts::value<std::size_t>()->default_value("7"))
+            ("p,precision", "use a precision of p digits to display the timing result.", cxxopts::value<std::size_t>()->default_value("3"))
+            ("positional",
+             "Positional arguments: these are the arguments that are entered "
+             "without an option", cxxopts::value<std::vector<std::string>>());
+        options.parse_positional("positional");
+        return options;
+        
     }
 
     std::string timeit::inner(std::size_t number, std::string const & code) const
@@ -59,27 +76,40 @@ namespace xeus
         return output.str();
     }
 
-    void timeit::execute(std::string & options, std::string & code) const
+    void timeit::execute(std::string & line, std::string & cell)
     {
-        auto opts = parse_opts(options, "n:r:p:qo");
+        std::istringstream iss(line);
+        std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+                                 std::istream_iterator<std::string>());
 
-        std::size_t number = (opts.find("n") != opts.end())? std::atoi(opts["n"].c_str()): 0ul;
-        std::size_t default_repeat = 7;
-        std::size_t repeat = (opts.find("r") != opts.end())? std::atoi(opts["r"].c_str()): default_repeat;
-        std::size_t precision = (opts.find("p") != opts.end())? std::atoi(opts["p"].c_str()): 3;
-        bool quiet = (opts.find("q") != opts.end());
-        bool return_result = (opts.find("o") != opts.end());
+        auto options = get_options();
+        options.parse(results);
 
+        std::size_t number = (options.count("n"))?options["n"].as<std::size_t>(): 0ul;
+        std::size_t repeat = options["r"].as<std::size_t>();
+        std::size_t precision = options["p"].as<std::size_t>();
+        
+        std::string code;
+        if (options.count("positional"))
+        {
+            auto& v = options["positional"].as<std::vector<std::string>>();
+            for (const auto& s : v) 
+            {
+                code += " " + s;
+            }
+        }
+
+        code += cell;
         if (trim(code).empty())
             return;
-
+        
         cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
 
         auto errorlevel = 0;
         try
         {
-            if (number == 0)
+            if (number == 0ul)
                 for(std::size_t n=0; n<10; ++n)
                 {
                     number = std::pow(10, n);
