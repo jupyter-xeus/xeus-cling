@@ -16,12 +16,12 @@ namespace xeus
 {
     struct xmagic_line
     {
-        virtual void operator()(const std::string& line) const = 0;
+        virtual void operator()(const std::string& line) = 0;
     };
     
     struct xmagic_cell
     {
-        virtual void operator()(const std::string& line, const std::string& cell) const = 0;
+        virtual void operator()(const std::string& line, const std::string& cell) = 0;
     };
 
     struct xmagic_line_cell: public xmagic_line, xmagic_cell
