@@ -14,6 +14,8 @@
 
 namespace xeus
 {
+    enum struct xmagic_type{cell, line};
+
     struct xmagic_line
     {
         virtual void operator()(const std::string& line) = 0;
@@ -49,9 +51,12 @@ namespace xeus
             m_magic_line.erase(magic_name);
         }
 
-        bool contains(const std::string& magic_name)
+        bool contains(const std::string& magic_name, const xmagic_type type = xmagic_type::cell)
         {
-            return m_magic_cell.find(magic_name) != m_magic_cell.end();
+            if (type == xmagic_type::cell) 
+                return m_magic_cell.find(magic_name) != m_magic_cell.end();
+            if (type == xmagic_type::line) 
+                return m_magic_line.find(magic_name) != m_magic_line.end();
         }
 
         void apply(const std::string& magic_name, const std::string& line, const std::string& cell)
