@@ -72,13 +72,7 @@ namespace xeus
         std::smatch magic_name;
         if (std::regex_search(code, magic_name, re_magic_cell))
         {
-<<<<<<< HEAD
-            if (xmagics.find(magic_name.str(1)))
-=======
-            m_cout_stream.str("");
-            m_cerr_stream.str("");
             if (xmagics.contains(magic_name.str(1)))
->>>>>>> change name method find to contains in xmagics_manager and improve impllementation
             {
                 std::regex re_magic_cell("^\%{2}\\w+(?:\\s(.*))?\\n((?:.*\\n?)*)");
                 std::smatch split_code;
@@ -109,7 +103,8 @@ namespace xeus
             std::smatch magic;
             if (std::regex_search(block, magic, re_magic_line))
             {
-                if (xmagics.contains(magic.str(1)))
+                if (xmagics.contains(magic.str(1), xmagic_type::line))
+                {
                     xmagics.apply(magic[1], magic[2]);
                 }
                 continue;
