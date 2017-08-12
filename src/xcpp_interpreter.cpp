@@ -317,6 +317,7 @@ namespace xeus
     void xcpp_interpreter::publish_stderr(const std::string& s)
     {
         publish_stream("stderr", s);
+    }
 
     void xcpp_interpreter::init_magic()
     {
