@@ -85,6 +85,7 @@ namespace xeus
 
                 // pub_data["text/plain"] = results.str() + errors.str();
                 // publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
+                std::cout << std::flush;
                 kernel_res["status"] = "ok";
             }
             else
