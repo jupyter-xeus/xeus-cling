@@ -8,9 +8,10 @@
 #ifndef XMAGICS_HPP
 #define XMAGICS_HPP
 
+#include <map>
 #include <memory>
 
-#include "xparser.hpp"
+#include "xoptions.hpp"
 
 namespace xeus
 {
@@ -61,12 +62,42 @@ namespace xeus
 
         void apply(const std::string& magic_name, const std::string& line, const std::string& cell)
         {
-            (*m_magic_cell[magic_name])(line, cell); 
+            if (cell.empty())
+            {
+                std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty.";
+                if (contains(magic_name, xmagic_type::line))
+                    std::cerr << " Did you mean the line magic %" << magic_name << " (single %)?";
+                std::cerr << "\n";
+                return;
+            }
+            try
+            {
+                (*m_magic_cell[magic_name])(line, cell); 
+            }
+            catch (const cxxopts::OptionException& e)
+            {
+                std::cerr << "UsageError: " << e.what() << "\n";
+            }
+            catch (...)
+            {
+                std::cerr << "Exception occurred. Recovering...\n";
+            }
         }
 
         void apply(const std::string& magic_name, const std::string& line)
         {
-            (*m_magic_line[magic_name])(line); 
+            try
+            {
+                (*m_magic_line[magic_name])(line); 
+            }
+            catch (const cxxopts::OptionException& e)
+            {
+                std::cerr << "UsageError: " << e.what() << "\n";
+            }
+            catch (...)
+            {
+                std::cerr << "Exception occurred. Recovering...\n";
+            }
         }        
 
     private:
