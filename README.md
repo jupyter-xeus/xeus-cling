@@ -7,35 +7,34 @@ This project is in development phase and is highly instable!
 
 ## Installation
 
-### Dependencies
+xeus-cling has been packaged for the conda package manager on the linux platform. From a new miniconda install:
 
-``xeus-cling`` depends on [xeus](https://github.com/QuantStack/xeusa) and [cling](https://github.com/root-project/cling).
-
-It is highly recommended to install ``cling`` and ``xeus`` with conda, on a new installation or new environment:
-
-```bash
-conda install cling xeus -c QuantStack -c conda-forge
 ```
-
-You can then install the Jupyter notebook:
-
-```bash
+conda install cling -c QuantStack -c conda-forge
+conda install xeus-cling -c QuantStack -c conda-forge
 conda install notebook -c conda-forge
 ```
 
-The installation should be done in this order. Indeed, `xeus-cling` requires its dependencies to be built with the same
-compiler and same C library as the one used to build `cling`. The `QuantStack` channel provides a `xeus`, `cling` and
-their dependencies built with gcc-6. These dependencies include `zeromq`, which is also a dependency of the notebook.
-So if you have already installed the notebook, or any package depending on `zeromq`, the `zeromq` package from the `QuantStack`
-channel will not be installed, resulting in errors when starting a xeus-cling kernel in the notebook. This is why we recommmend
-to install `xeus` and `cling` on a new conda installation or environment.
-
-### Build xeus-cling
-
-Once the dependencies are installed, you can build xeus-cling from sources and install it:
+Or you can install it directly from the sources, if all the dependencies are already installed.
 
 ```bash
 cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_path/lib
 make && make install
 ```
 
+## Usage
+
+Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **xeus C++14** kernel in the *new* dropdown.
+
+## Dependencies
+
+``xeus-cling`` depends on
+
+ - [xeus](https://github.com/QuantStack/xeus)
+ - [cling](https://github.com/root-project/cling)
+ - [pugixml](https://github.com/zeux/pugixml)
+
+`xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`. 
+
+The `QuantStack` channel provides a `xeus`, `cling` and their dependencies built with gcc-6. We highly recommend installing
+these dependencies from QuantStack in a clean conda installation or environment.
