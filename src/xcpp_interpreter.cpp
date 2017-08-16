@@ -10,6 +10,7 @@
 #include <regex>
 #include <sstream>
 #include <vector>
+#include <memory>
 
 #include "cling/Interpreter/Value.h"
 #include "cling/Interpreter/Exception.h"
@@ -19,6 +20,9 @@
 #include "xinspect.hpp"
 #include "xparser.hpp"
 #include "xbuffer.hpp"
+#include "xmagics.hpp"
+#include "xmagics/os.hpp"
+#include "xmagics/execution.hpp"
 
 using namespace std::placeholders;
 
@@ -41,9 +45,11 @@ namespace xeus
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
           m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)), 
-          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1))
+          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1)),
+          xmagics()
     {
         redirect_output();
+        init_magic();
     }
 
     xcpp_interpreter::~xcpp_interpreter()
@@ -62,10 +68,49 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
+        std::regex re_magic_cell("^\%{2}(\\w+)");
+        std::smatch magic_name;
+        if (std::regex_search(code, magic_name, re_magic_cell))
+        {
+            if (xmagics.contains(magic_name.str(1)))
+            {
+                std::regex re_magic_cell("^\%{2}\\w+(?:\\s(.*))?\\n((?:.*\\n?)*)");
+                std::smatch split_code;
+                std::regex_search(code, split_code, re_magic_cell);
+                xmagics.apply(magic_name[1], split_code[1], split_code[2]);
+                xjson pub_data;
+    
+                // std::cout << m_cout_stream.str();
+                // std::cerr << m_cerr_stream.str();
+
+                // pub_data["text/plain"] = results.str() + errors.str();
+                // publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
+                std::cout << std::flush;
+                kernel_res["status"] = "ok";
+            }
+            else
+            {
+                // publish_execution_error("ename", "evalue", {"Unknown magic function"});
+                kernel_res = get_error_reply("ename", "evalue", {});
+            }
+            return kernel_res;
+        }
+
         auto blocks = split_from_includes(code.c_str());
 
         for (auto block : blocks)
         {
+            std::regex re_magic_line("^\%(\\w+)(?:\\s(.*))?");
+            std::smatch magic;
+            if (std::regex_search(block, magic, re_magic_line))
+            {
+                if (xmagics.contains(magic.str(1), xmagic_type::line))
+                {
+                    xmagics.apply(magic[1], magic[2]);
+                }
+                continue;
+            }
+
             // Check for inspection requests
             std::regex re("\\?{2}");
             if (std::regex_search(block, re))
@@ -273,5 +318,11 @@ namespace xeus
     void xcpp_interpreter::publish_stderr(const std::string& s)
     {
         publish_stream("stderr", s);
+    }
+
+    void xcpp_interpreter::init_magic()
+    {
+        xmagics.register_magic("file", std::make_shared<writefile>());
+        xmagics.register_magic("timeit", std::make_shared<timeit>(&m_processor));
     }
 }

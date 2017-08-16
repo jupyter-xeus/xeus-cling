@@ -13,6 +13,7 @@
 #include "cling/MetaProcessor/MetaProcessor.h"
 
 #include "xeus/xinterpreter.hpp"
+#include "xmagics.hpp"
 
 #include "xbuffer.hpp"
 
@@ -67,10 +68,13 @@ namespace xeus
 
         void redirect_output();
         void restore_output();
+        void init_magic();
 
         cling::Interpreter m_cling;
         cling::MetaProcessor m_processor;
         std::string m_version;
+
+        xmagics_manager xmagics;
 
         std::streambuf* p_cout_strbuf;
         std::streambuf* p_cerr_strbuf;
