@@ -70,6 +70,7 @@ include_directories(${xeus_INCLUDE_DIRS})
 
 find_package(Clang REQUIRED)
 find_package(Cling REQUIRED)
+find_package(cxxopts REQUIRED)
 
 #########
 # flags #
@@ -101,6 +102,8 @@ set(XEUSCLING_SRC
     src/xbuffer.hpp
     src/xcpp_interpreter.cpp
     src/xcpp_interpreter.hpp
+    src/xoptions.cpp
+    src/xoptions.hpp
     src/xparser.cpp
     src/xparser.hpp
     src/xmagics.hpp
@@ -109,8 +112,6 @@ set(XEUSCLING_SRC
     src/xmagics/os.cpp
     src/xmagics/os.hpp
 )
-
-include_directories(include)
 
 set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter pugixml)
 set(XEUSCLING_TARGET xeus-cling)

@@ -21,21 +21,24 @@ namespace xeus
         xoptions options{"file", "write file"};
         options.add_options()
             ("a,append", "append")
-            ("i,input", "Input", cxxopts::value<std::string>());
-        options.parse_positional("input");
+            ("f,filename", "filename", cxxopts::value<std::string>());
+        options.parse_positional("filename");
         return options;
     }
     
     void writefile::operator()(const std::string& line, const std::string& cell)
     {
-        std::istringstream iss(line);
-        std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
-                                 std::istream_iterator<std::string>());
         auto options = get_options();
-        options.parse(results);
+        options.parse(line);
 
         auto append = options.count("a");
-        auto filename = options["input"].as<std::string>();
+        auto filename = options["filename"].as<std::string>();
+        if (filename.empty())
+        {
+            std::cerr << "UsageError: the following arguments are required: filename\n";
+            return;
+        }
+
         std::ofstream file;
 
         // TODO: check permission rights
