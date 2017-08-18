@@ -78,12 +78,12 @@ namespace xeus
 
     void timeit::execute(std::string & line, std::string & cell)
     {
-        std::istringstream iss(line);
-        std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
-                                 std::istream_iterator<std::string>());
+        // std::istringstream iss(line);
+        // std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
+        //                          std::istream_iterator<std::string>());
 
         auto options = get_options();
-        options.parse(results);
+        options.parse(line);
 
         std::size_t number = (options.count("n"))?options["n"].as<std::size_t>(): 0ul;
         std::size_t repeat = options["r"].as<std::size_t>();

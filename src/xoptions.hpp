@@ -12,6 +12,11 @@
 
 namespace xeus
 {
-    using xoptions = cxxopts::Options;
+    struct xoptions: public cxxopts::Options
+    {
+        using parent = cxxopts::Options;
+        using parent::Options;
+        void parse(const std::string& line);
+    };
 }
 #endif
