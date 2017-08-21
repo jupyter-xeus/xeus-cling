@@ -17,6 +17,7 @@
 
 #include "xdemangle.hpp"
 #include "xparser.hpp"
+#include "xpreamble.hpp"
 
 namespace xeus
 {
@@ -204,5 +205,27 @@ namespace xeus
         }
         return "";
     }
+
+    struct xintrospection: xpreamble
+    {
+        const std::string spattern = R"(^\?)";
+
+        xintrospection(cling::MetaProcessor& p):m_processor{p}
+        {
+            xpreamble::set_pattern(spattern);
+        }
+
+        void apply(const std::string& code, xjson& kernel_res) override
+        {
+            std::regex re(spattern + R"((.*))");
+            std::smatch to_inspect;
+            std::regex_search(code, to_inspect, re);
+            inspect(to_inspect[1], kernel_res, m_processor);
+        }
+
+        private:
+            cling::MetaProcessor& m_processor;
+    };
+
 }
 #endif

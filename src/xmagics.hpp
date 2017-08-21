@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "xoptions.hpp"
+#include "xpreamble.hpp"
 
 namespace xeus
 {
@@ -31,19 +32,23 @@ namespace xeus
     {
     };
 
-    class xmagics_manager 
+    class xmagics_manager: public xpreamble
     {
     public:
 
-        xmagics_manager(){};
+        xmagics_manager()
+        {
+            xpreamble::set_pattern(R"(^(?:\%{2}|\%)(\w+))");
+        }
 
         template<typename xmagic_type>
-        void register_magic(const std::string& magic_name, std::shared_ptr<xmagic_type> magic)
+        void register_magic(const std::string& magic_name, xmagic_type magic)
         {
+            auto shared = std::make_shared<xmagic_type>(magic);
             if (std::is_base_of<xmagic_line, xmagic_type>::value)
-                m_magic_line[magic_name] = std::dynamic_pointer_cast<xmagic_line>(magic);
+                m_magic_line[magic_name] = std::dynamic_pointer_cast<xmagic_line>(shared);
             if (std::is_base_of<xmagic_cell, xmagic_type>::value)
-                m_magic_cell[magic_name] = std::dynamic_pointer_cast<xmagic_cell>(magic);
+                m_magic_cell[magic_name] = std::dynamic_pointer_cast<xmagic_cell>(shared);
         }
 
         void unregister_magic(const std::string& magic_name)
@@ -99,6 +104,52 @@ namespace xeus
                 std::cerr << "Exception occurred. Recovering...\n";
             }
         }        
+
+        void apply(const std::string& code, xjson& kernel_res) override
+        {
+            std::regex re_magic_cell(R"(^\%{2}(\w+))");
+            std::smatch magic_name;
+            if (std::regex_search(code, magic_name, re_magic_cell))
+            {
+                if (!contains(magic_name.str(1)))
+                {
+                    std::cerr << "Unknown magic cell function %%" << magic_name[1] << "\n";
+                    std::cout << std::flush;
+                    kernel_res["status"] = "error";
+                    kernel_res["ename"] = "ename";
+                    kernel_res["evalue"] = "evalue";
+                    kernel_res["traceback"] = {};
+                    return;
+                }
+                std::regex re_magic_cell(R"(^\%{2}(\w+(?:\s.*)?)\n((?:.*\n?)*))");
+                std::smatch split_code;
+                std::regex_search(code, split_code, re_magic_cell);
+                apply(magic_name[1], split_code[1], split_code[2]);
+                std::cout << std::flush;
+                kernel_res["status"] = "ok";
+            }
+
+            std::regex re_magic_line(R"(^\%(\w+))");
+            if (std::regex_search(code, magic_name, re_magic_line))
+            {
+                if (!contains(magic_name.str(1), xmagic_type::line))
+                {
+                    std::cerr << "Unknown magic line function %" << magic_name[1] << "\n";
+                    std::cout << std::flush;
+                    kernel_res["status"] = "error";
+                    kernel_res["ename"] = "ename";
+                    kernel_res["evalue"] = "evalue";
+                    kernel_res["traceback"] = {};
+                    return;
+                }
+                std::regex re_magic_line(R"(^\%(\w+(?:\s.*)?))");
+                std::smatch split_code;
+                std::regex_search(code, split_code, re_magic_line);
+                apply(magic_name[1], split_code[1]);
+                std::cout << std::flush;
+                kernel_res["status"] = "ok";
+            }
+        }
 
     private:
         std::map<std::string, std::shared_ptr<xmagic_cell>> m_magic_cell;

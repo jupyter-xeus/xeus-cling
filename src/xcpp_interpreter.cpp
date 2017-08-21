@@ -23,6 +23,7 @@
 #include "xmagics.hpp"
 #include "xmagics/os.hpp"
 #include "xmagics/execution.hpp"
+#include "xsystem.hpp"
 
 using namespace std::placeholders;
 
@@ -50,6 +51,7 @@ namespace xeus
     {
         redirect_output();
         init_magic();
+        init_preamble();
     }
 
     xcpp_interpreter::~xcpp_interpreter()
@@ -68,122 +70,53 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
-        std::regex re_magic_cell("^\%{2}(\\w+)");
-        std::smatch magic_name;
-        if (std::regex_search(code, magic_name, re_magic_cell))
+        for(auto& pre: preamble_manager.preamble)
         {
-            if (xmagics.contains(magic_name.str(1)))
+            if (pre.second->is_match(code))
             {
-                //std::regex re_magic_cell("^\%{2}\\w+(?:\\s(.*))?\\n((?:.*\\n?)*)");
-                std::regex re_magic_cell("^\%{2}(\\w+(?:\\s.*)?)\\n((?:.*\\n?)*)");
-                std::smatch split_code;
-                std::regex_search(code, split_code, re_magic_cell);
-                xmagics.apply(magic_name[1], split_code[1], split_code[2]);
-                xjson pub_data;
-    
-                // std::cout << m_cout_stream.str();
-                // std::cerr << m_cerr_stream.str();
-
-                // pub_data["text/plain"] = results.str() + errors.str();
-                // publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
-                std::cout << std::flush;
-                kernel_res["status"] = "ok";
+                pre.second->apply(code, kernel_res);
+                return kernel_res;
             }
-            else
-            {
-                // publish_execution_error("ename", "evalue", {"Unknown magic function"});
-                kernel_res = get_error_reply("ename", "evalue", {});
-            }
-            return kernel_res;
         }
 
         auto blocks = split_from_includes(code.c_str());
 
         for (auto block : blocks)
         {
-            std::regex re_magic_line("^\%(\\w+)(?:\\s(.*))?");
-            std::smatch magic;
-            if (std::regex_search(block, magic, re_magic_line))
+            // Perform normal evaluation
+            auto errorlevel = 0;
+            try
             {
-                if (xmagics.contains(magic.str(1), xmagic_type::line))
+                errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
+            }
+            catch (cling::InterpreterException& e)
+            {
+                if (!e.diagnose())
                 {
-                    xmagics.apply(magic[1], magic[2]);
+                    std::cerr << "Caught an interpreter exception!\n"
+                            << e.what() << '\n';
                 }
-                continue;
+            }
+            catch (std::exception& e)
+            {
+                std::cerr << "Caught a std::exception!\n"
+                            << e.what() << '\n';
+            }
+            catch (...)
+            {
+                std::cerr << "Exception occurred. Recovering...\n";
             }
 
-            // Check for inspection requests
-            std::regex re("\\?{2}");
-            if (std::regex_search(block, re))
+            if (errorlevel)
             {
-                // Perform inspection.
-                auto inspect_result = inspect(block, m_processor);
-
-                // Format html content.
-                std::string html_content = R"(<style>
-                #pager-container {
-                    padding: 0;
-                    margin: 0;
-                    width: 100%;
-                    height: 100%;
-                }
-                .xeus-iframe-pager {
-                    padding: 0;
-                    margin: 0;
-                    width: 100%;
-                    height: 100%;
-                    border: none;
-                }
-                </style>
-                <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
-
-                kernel_res["payload"] = { 
-                    xjson::object({
-                        {"data", {
-                            {"text/plain", inspect_result}, 
-                            {"text/html", html_content}}}, 
-                        {"source", "page"}, 
-                        {"start", 0}})
-                };
-                break;
+                m_processor.cancelContinuation();
+                kernel_res = get_error_reply("ename", "evalue", {});
+                return kernel_res;
             }
-            else
+            else if (compilation_result != cling::Interpreter::kSuccess)
             {
-                // Perform normal evaluation
-                auto errorlevel = 0;
-                try
-                {
-                    errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
-                }
-                catch (cling::InterpreterException& e)
-                {
-                    if (!e.diagnose())
-                    {
-                        std::cerr << "Caught an interpreter exception!\n"
-                              << e.what() << '\n';
-                    }
-                }
-                catch (std::exception& e)
-                {
-                    std::cerr << "Caught a std::exception!\n"
-                              << e.what() << '\n';
-                }
-                catch (...)
-                {
-                    std::cerr << "Exception occurred. Recovering...\n";
-                }
-
-                if (errorlevel)
-                {
-                    m_processor.cancelContinuation();
-                    kernel_res = get_error_reply("ename", "evalue", {});
-                    return kernel_res;
-                }
-                else if (compilation_result != cling::Interpreter::kSuccess)
-                {
-                    kernel_res = get_error_reply("ename", "evalue", {});
-                    return kernel_res;
-                }
+                kernel_res = get_error_reply("ename", "evalue", {});
+                return kernel_res;
             }
         }
 
@@ -321,9 +254,18 @@ namespace xeus
         publish_stream("stderr", s);
     }
 
+    void xcpp_interpreter::init_preamble()
+    {
+        xintrospection introspection(m_processor);
+        xsystem shell;
+        preamble_manager.register_preamble("introspection", introspection);
+        preamble_manager.register_preamble("magics", xmagics);
+        preamble_manager.register_preamble("shell", shell);
+    }
+
     void xcpp_interpreter::init_magic()
     {
-        xmagics.register_magic("file", std::make_shared<writefile>());
-        xmagics.register_magic("timeit", std::make_shared<timeit>(&m_processor));
+        xmagics.register_magic("file", writefile());
+        xmagics.register_magic("timeit", timeit(&m_processor));
     }
 }
