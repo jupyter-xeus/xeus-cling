@@ -11,6 +11,8 @@
 #include <fstream>
 #include <pugixml.hpp>
 #include <string>
+
+#include "cling/MetaProcessor/MetaProcessor.h"
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
@@ -126,7 +128,7 @@ namespace xeus
         return typeString;
     }
 
-    std::string inspect(const std::string& code, cling::MetaProcessor& m_processor)
+    void inspect(const std::string& code, xjson& kernel_res, cling::MetaProcessor& m_processor)
     {
 
         std::string tagfile_dir = TAGFILE_DIR;
@@ -138,18 +140,17 @@ namespace xeus
 
         std::string url, tagfile;
 
-        // method or variable of class found found (xxxx.yyyy)
-        if (std::regex_search(code, std::regex{"\\.\\w*\\?\\?"}))
-        {
-            std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?))\\.?)*)\\?\\?");
-            std::smatch expression;
-            std::regex_search(code, expression, re_expression);
-            std::regex re_method("(.*)\\.(\\w*)");
-            std::smatch method;
-            std::string tmp = expression[1];
+        std::regex re_expression(R"((((?:\w*(?:\:{2}|\<.*\>|\(.*\)|\[.*\])?)\.?)*))");
+        std::smatch inspect;
+        std::regex_search(code, inspect, re_expression);
 
-            // method[1]: xxxx method[2]: yyyy
-            std::regex_search(tmp, method, re_method);
+        std::string inspect_result;
+
+        std::smatch method;
+        std::string to_inspect = inspect[1];
+        // method or variable of class found found (xxxx.yyyy)
+        if (std::regex_search(to_inspect, method, std::regex(R"((.*)\.(\w*)$)")))
+        {
             std::string typename_ = find_type(method[1], m_processor);
 
             if (!typename_.empty())
@@ -163,19 +164,15 @@ namespace xeus
                     auto node = doc.find_node(predicate);
                     if (!node.empty())
                     {
-                        return url + predicate.get_filename(node);
+                        inspect_result = url + predicate.get_filename(node);
                     }
                 }
             }
         }
         else
         {
-            std::regex re_expression("((((?:\\w*(?:(?:\\:{2})|(?:\\<(?:.*)\\>)|(?:\\(.*\\))|(?:\\[.*\\]))?)))*)\\?\\?");
-            std::smatch to_inspect;
-            std::regex_search(code, to_inspect, re_expression);
-
-            std::string typename_ = find_type(to_inspect[1], m_processor);
-            std::string findString = (typename_.empty())? to_inspect[1]: typename_;
+            std::string typename_ = find_type(to_inspect, m_processor);
+            std::string findString = (typename_.empty())? to_inspect: typename_;
              
             while(search >> url >> tagfile)
             {
@@ -198,12 +195,61 @@ namespace xeus
 
                     if (!node.empty())
                     {
-                       return url + node;
+                       inspect_result = url + node;
                     }
                 }
             }
         }
-        return "";
+
+        if (inspect_result.empty())
+        {
+            std::cerr << "No documentation found for " << code << "\n";
+            std::cout << std::flush;
+            kernel_res["found"] = false;
+            kernel_res["status"] = "error";
+            kernel_res["ename"] = "ename";
+            kernel_res["evalue"] = "evalue";
+            kernel_res["traceback"] = {};
+        }
+        else
+        {
+            // Format html content.
+            std::string html_content = R"(<style>
+            #pager-container {
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .xeus-iframe-pager {
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+            </style>
+            <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
+
+            kernel_res["payload"] = {
+                xjson::object({
+                    {"data", {
+                        {"text/plain", inspect_result},
+                        {"text/html", html_content}}},
+                    {"source", "page"},
+                    {"start", 0}})
+            };
+
+            kernel_res["data"] =
+                xjson::object({{"text/plain", inspect_result},
+                               {"text/html", html_content}})
+            ;
+
+            std::cout << std::flush;
+            kernel_res["found"] = true;
+            kernel_res["status"] = "ok";
+        }
+
     }
 
     struct xintrospection: xpreamble

@@ -166,26 +166,16 @@ namespace xeus
                                                  int detail_level)
     {
         xjson kernel_res;
-        xjson data;
 
-        std::string code_copy = code;
-        code_copy.replace(cursor_pos, 2, "??");
-        auto result = inspect(code_copy, m_processor);
-
-        if (result.empty())
+        auto dummy = code.substr(0, cursor_pos);
+        // FIX: same pattern as in inspect function (keep only one)
+        std::string exp = R"(\w*(?:\:{2}|\<.*\>|\(.*\)|\[.*\])?)" ;
+        std::regex re_method{"(" + exp + R"(\.?)*$)"};
+        std::smatch magic;
+        if (std::regex_search(dummy, magic, re_method))
         {
-            kernel_res["found"] = false;
+            inspect(magic[0], kernel_res, m_processor);
         }
-        else
-        {
-            std::string html_content = "<pre><iframe style=\"width:100%; height:300px\" src=\"" + result + "\"></iframe></pre>";
-            kernel_res["found"] = true;
-            data["text/html"] = html_content;
-            data["text/plain"] = result;
-            kernel_res["data"] = data;
-        }
-        kernel_res["metadata"] = xjson::object();
-        kernel_res["status"] = "ok";
         return kernel_res;
     }
 
