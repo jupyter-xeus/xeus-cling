@@ -7,7 +7,7 @@ This project is in development phase and is highly instable!
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the linux platform. From a new miniconda install:
+xeus-cling has been packaged for the conda package manager on the linux platform. From a new miniconda3 install:
 
 ```
 conda install cling -c QuantStack -c conda-forge
