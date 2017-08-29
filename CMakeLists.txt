@@ -113,9 +113,10 @@ set(XEUSCLING_SRC
     src/xmagics/os.hpp
 )
 
-set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils clingJupyter pugixml)
+set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
+set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
 target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
 
 ################
