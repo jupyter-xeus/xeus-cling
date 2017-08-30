@@ -10,23 +10,24 @@
 
 #include "xeus/xjson.hpp"
 
-namespace xeus{
+namespace xeus
+{
     struct xpreamble
     {
-    std::regex pattern;
+        std::regex pattern;
 
-    bool is_match(const std::string& s) const
-    {
-        std::smatch match;
-        return std::regex_search(s, match, pattern);
-    }
+        bool is_match(const std::string& s) const
+        {
+            std::smatch match;
+            return std::regex_search(s, match, pattern);
+        }
 
-    void set_pattern(const std::string r)
-    {
-        pattern = r;
-    }
+        void set_pattern(const std::string r)
+        {
+            pattern = r;
+        }
 
-    virtual void apply(const std::string& s, xjson& kernel_res) = 0;
+        virtual void apply(const std::string& s, xjson& kernel_res) = 0;
 
     };
 
