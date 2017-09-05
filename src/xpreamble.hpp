@@ -10,6 +10,8 @@
 
 #include "xeus/xjson.hpp"
 
+#include <regex>
+
 namespace xeus
 {
     struct xpreamble
@@ -22,32 +24,8 @@ namespace xeus
             return std::regex_search(s, match, pattern);
         }
 
-        void set_pattern(const std::string r)
-        {
-            pattern = r;
-        }
-
         virtual void apply(const std::string& s, xjson& kernel_res) = 0;
-
-    };
-
-    struct xpreamble_manager
-    {
-        std::map<std::string, std::unique_ptr<xpreamble>> preamble;
-
-        template<typename preamble_type>
-        void register_preamble(const std::string& name, const preamble_type& pre)
-        {
-            auto ptr = std::make_unique<preamble_type>(pre);
-            preamble[name] = std::move(ptr);
-        }
-
-        template<typename preamble_type>
-        void unregister_preamble(const std::string& name)
-        {
-            preamble.erase(name);
-        }
-
+        virtual xpreamble* clone() const = 0;
     };
 }
 #endif

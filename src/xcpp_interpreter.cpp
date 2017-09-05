@@ -50,8 +50,8 @@ namespace xeus
           xmagics()
     {
         redirect_output();
-        init_magic();
         init_preamble();
+        init_magic();
     }
 
     xcpp_interpreter::~xcpp_interpreter()
@@ -72,9 +72,9 @@ namespace xeus
 
         for(auto& pre: preamble_manager.preamble)
         {
-            if (pre.second->is_match(code))
+            if (pre.second.is_match(code))
             {
-                pre.second->apply(code, kernel_res);
+                pre.second.apply(code, kernel_res);
                 return kernel_res;
             }
         }
@@ -246,16 +246,14 @@ namespace xeus
 
     void xcpp_interpreter::init_preamble()
     {
-        xintrospection introspection(m_processor);
-        xsystem shell;
-        preamble_manager.register_preamble("introspection", introspection);
-        preamble_manager.register_preamble("magics", xmagics);
-        preamble_manager.register_preamble("shell", shell);
+        preamble_manager.register_preamble("introspection", new xintrospection(m_processor));
+        preamble_manager.register_preamble("magics", new xmagics_manager());
+        preamble_manager.register_preamble("shell", new xsystem());
     }
 
     void xcpp_interpreter::init_magic()
     {
-        xmagics.register_magic("file", writefile());
-        xmagics.register_magic("timeit", timeit(&m_processor));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_processor));
     }
 }

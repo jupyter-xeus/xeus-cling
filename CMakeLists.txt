@@ -108,6 +108,8 @@ set(XEUSCLING_SRC
     src/xoptions.hpp
     src/xparser.cpp
     src/xparser.hpp
+    src/xholder_cling.cpp
+    src/xholder_cling.hpp
     src/xmagics.hpp
     src/xmagics/execution.cpp
     src/xmagics/execution.hpp

@@ -17,10 +17,11 @@ namespace xeus
     struct xsystem: xpreamble
     {
         const std::string spattern = R"(^\!)";
+        using xpreamble::pattern;
 
         xsystem()
         {
-            xpreamble::set_pattern(spattern);
+            pattern = spattern;
         }
 
         void apply(const std::string& code, xjson& kernel_res) override
@@ -54,6 +55,12 @@ namespace xeus
                 kernel_res["traceback"] = {};            
             }
         }
+
+        virtual xpreamble* clone() const override
+        {
+                return new xsystem(*this);
+        }
+
     };
 }
 #endif

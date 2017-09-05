@@ -18,6 +18,7 @@
 #include "cling/Utils/Output.h"
 
 #include "xdemangle.hpp"
+#include "xbuffer.hpp"
 #include "xparser.hpp"
 #include "xpreamble.hpp"
 
@@ -254,11 +255,12 @@ namespace xeus
 
     struct xintrospection: xpreamble
     {
+        using xpreamble::pattern;
         const std::string spattern = R"(^\?)";
 
         xintrospection(cling::MetaProcessor& p):m_processor{p}
         {
-            xpreamble::set_pattern(spattern);
+            pattern = spattern;
         }
 
         void apply(const std::string& code, xjson& kernel_res) override
@@ -269,6 +271,11 @@ namespace xeus
             inspect(to_inspect[1], kernel_res, m_processor);
         }
 
+        virtual xpreamble* clone() const override
+        {
+            return new xintrospection(*this);
+        }
+        
         private:
             cling::MetaProcessor& m_processor;
     };
