@@ -11,6 +11,7 @@ xeus-cling has been packaged for the conda package manager on the linux platform
 
 ```
 conda install cling -c QuantStack -c conda-forge
+conda install libuuid -c conda-forge
 conda install xeus-cling -c QuantStack -c conda-forge
 conda install notebook -c conda-forge
 ```
