@@ -8,15 +8,14 @@
 #ifndef XINSPECT_HPP
 #define XINSPECT_HPP
 
-#include <cxxabi.h>
 #include <fstream>
 #include <pugixml.hpp>
 #include <string>
-
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
+#include "xdemangle.hpp"
 #include "xparser.hpp"
 
 namespace xeus
@@ -110,11 +109,10 @@ namespace xeus
             std::regex re_typename("\\\"(.*)\\\"");
             std::smatch typename_;
             std::regex_search(valueString, typename_, re_typename);
-            int status;
             // set in valueString the typename given by typeid
             valueString = typename_.str(1);
             // we need demangling in order to have its string representation
-            valueString = abi::__cxa_demangle(valueString.c_str(), 0, 0, &status);
+            valueString = demangle(valueString);
             
             re_typename = "(\\w*(?:\\:{2}?\\w*)*)";
             std::regex_search(valueString, typename_, re_typename);

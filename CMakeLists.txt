@@ -81,13 +81,14 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 if(MSVC)
     add_definitions(/DNOMINMAX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4141")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4018 /wd4267 /wd4715 /wd4146 /wd4129")
 endif()
 
 ###################
 # Target and link #
 ###################
 
-
+include(GNUInstallDirs)
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
@@ -102,6 +103,7 @@ set(XEUSCLING_SRC
     src/xbuffer.hpp
     src/xcpp_interpreter.cpp
     src/xcpp_interpreter.hpp
+    src/xdemangle.hpp
     src/xoptions.cpp
     src/xoptions.hpp
     src/xparser.cpp
@@ -112,18 +114,22 @@ set(XEUSCLING_SRC
     src/xmagics/os.cpp
     src/xmagics/os.hpp
 )
-
+set(LLVM_NO_DEAD_STRIP 1)
+#set(LIBS ${xeus_LIBRARY} LLVMSupport clangFrontendTool clingUserInterface clingInterpreter clingMetaProcessor clingUtils pugixml)
 set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
+
+if(MSVC)
+  set_target_properties(${XEUSCLING_TARGET} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)  # Internal string
+endif(MSVC)
+
 target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
 
 ################
 # Installation #
 ################
-
-include(GNUInstallDirs)
 
 install(TARGETS ${XEUSCLING_TARGET}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
