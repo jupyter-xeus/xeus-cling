@@ -5,31 +5,27 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XMAGICS_HPP
-#define XMAGICS_HPP
+#ifndef XPREAMBLE_HPP
+#define XPREAMBLE_HPP
 
-#include <map>
-#include <memory>
+#include "xeus/xjson.hpp"
 
-#include "xoptions.hpp"
-#include "xpreamble.hpp"
+#include <regex>
 
 namespace xeus
 {
-    enum struct xmagic_type{cell, line};
+    struct xpreamble
+    {
+        std::regex pattern;
 
-    struct xmagic_line
-    {
-        virtual void operator()(const std::string& line) = 0;
-    };
-    
-    struct xmagic_cell
-    {
-        virtual void operator()(const std::string& line, const std::string& cell) = 0;
-    };
+        bool is_match(const std::string& s) const
+        {
+            std::smatch match;
+            return std::regex_search(s, match, pattern);
+        }
 
-    struct xmagic_line_cell: public xmagic_line, xmagic_cell
-    {
+        virtual void apply(const std::string& s, xjson& kernel_res) = 0;
+        virtual xpreamble* clone() const = 0;
     };
 }
 #endif
