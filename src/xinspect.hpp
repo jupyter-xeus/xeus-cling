@@ -149,6 +149,7 @@ namespace xeus
 
         std::smatch method;
         std::string to_inspect = inspect[1];
+
         // method or variable of class found found (xxxx.yyyy)
         if (std::regex_search(to_inspect, method, std::regex(R"((.*)\.(\w*)$)")))
         {
@@ -172,9 +173,22 @@ namespace xeus
         }
         else
         {
-            std::string typename_ = find_type(to_inspect, m_processor);
-            std::string findString = (typename_.empty())? to_inspect: typename_;
-             
+            std::string findString;
+            
+            // check if we try to find the documentation of a namespace
+            // if yes, don't try to find the type using typeid
+            std::regex is_namespace(R"(\w+(\:{2}\w+)+)");
+            std::smatch namespace_match;
+            if (std::regex_match(to_inspect, namespace_match, is_namespace)) 
+            {
+                findString = to_inspect;
+            }
+            else
+            {
+                std::string typename_ = find_type(to_inspect, m_processor);
+                findString = (typename_.empty())? to_inspect: typename_;
+            }
+
             while(search >> url >> tagfile)
             {
                 std::string filename = tagfile_dir + "/" + tagfile;

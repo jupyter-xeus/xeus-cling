@@ -36,14 +36,22 @@ namespace xeus
     const char* demangle(const char* name) noexcept;
     const char* demangle(const std::string& name) noexcept;
 
-#if defined(XEUS_HAS_CXX_ABI_H)
+#if defined(XEUS_HAS_CXXABI_H)
 
     inline const char* demangle(const char* name) noexcept
     {
         std::size_t size = 0;
-        std::size_t status = 0;
-        return abi::____cxa_demangle(name, 0, &size, &status);
+        int status = 0;
+        return abi::__cxa_demangle(name, 0, &size, &status);
     }
+
+    inline const char* demangle(const std::string& name) noexcept
+    {
+        std::size_t size = 0;
+        int status = 0;
+        return abi::__cxa_demangle(name.c_str(), 0, &size, &status);
+    }
+
 #else
 
     inline const char* demangle(const char* name) noexcept
@@ -51,12 +59,12 @@ namespace xeus
         return name;
     }
 
-#endif
-
     inline const char* demangle(const std::string& name) noexcept
     {
         return demangle(name.c_str());
     }
+
+#endif
 
 }
 
