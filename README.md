@@ -1,4 +1,6 @@
-# xeus-cling
+# ![xeus-cling](http://quantstack.net/assets/images/xeus-cling.svg)
+
+[![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
 the native implementation of the Jupyter protocol [xeus](https://github.com/QuantStack/xeus).
@@ -38,3 +40,10 @@ Launch the jupyter notebook with `jupyter notebook` and launch a new C++ noteboo
 
 The `QuantStack` channel provides a `xeus`, `cling` and their dependencies built with gcc-6. We highly recommend installing
 these dependencies from QuantStack in a clean conda installation or environment.
+
+## License
+
+We use a shared copyright model that enables all contributors to maintain the
+copyright on their contributions.
+
+This software is licensed under the BSD-3-Clause license. See the [LICENSE](LICENSE) file for details.

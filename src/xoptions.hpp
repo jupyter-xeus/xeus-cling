@@ -5,14 +5,15 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XOPTIONS_HPP
-#define XOPTIONS_HPP
 
-#include <cxxopts.hpp>
+#ifndef XCPP_OPTIONS_HPP
+#define XCPP_OPTIONS_HPP
+
+#include "cxxopts.hpp"
 
 namespace xeus
 {
-    struct xoptions: public cxxopts::Options
+    struct xoptions : public cxxopts::Options
     {
         using parent = cxxopts::Options;
         using parent::Options;

@@ -5,20 +5,22 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XINSPECT_HPP
-#define XINSPECT_HPP
+
+#ifndef XCPP_INSPECT_HPP
+#define XCPP_INSPECT_HPP
 
 #include <fstream>
-#include <pugixml.hpp>
 #include <string>
 
-#include "cling/MetaProcessor/MetaProcessor.h"
+#include "pugixml.hpp"
+
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
+#include "cling/MetaProcessor/MetaProcessor.h"
 #include "cling/Utils/Output.h"
 
-#include "xdemangle.hpp"
 #include "xbuffer.hpp"
+#include "xdemangle.hpp"
 #include "xparser.hpp"
 #include "xpreamble.hpp"
 
@@ -79,7 +81,7 @@ namespace xeus
         m_processor.process(code.c_str(), compilation_result, &result);
 
         // try to find the typename of the class
-        code = "typeid("+ expression + ").name();";
+        code = "typeid(" + expression + ").name();";
 
         // Temporarily dismissing all std::cerr and std::cout resulting from `m_processor.process`
         auto errorlevel = 0;
@@ -117,7 +119,7 @@ namespace xeus
             valueString = typename_.str(1);
             // we need demangling in order to have its string representation
             valueString = demangle(valueString);
-            
+
             re_typename = "(\\w*(?:\\:{2}?\\w*)*)";
             std::regex_search(valueString, typename_, re_typename);
             if (!typename_.str(1).empty())
@@ -157,7 +159,7 @@ namespace xeus
 
             if (!typename_.empty())
             {
-                while(search >> url >> tagfile)
+                while (search >> url >> tagfile)
                 {
                     std::string filename = tagfile_dir + "/" + tagfile;
                     pugi::xml_document doc;
@@ -174,22 +176,22 @@ namespace xeus
         else
         {
             std::string findString;
-            
+
             // check if we try to find the documentation of a namespace
             // if yes, don't try to find the type using typeid
             std::regex is_namespace(R"(\w+(\:{2}\w+)+)");
             std::smatch namespace_match;
-            if (std::regex_match(to_inspect, namespace_match, is_namespace)) 
+            if (std::regex_match(to_inspect, namespace_match, is_namespace))
             {
                 findString = to_inspect;
             }
             else
             {
                 std::string typename_ = find_type(to_inspect, m_processor);
-                findString = (typename_.empty())? to_inspect: typename_;
+                findString = (typename_.empty()) ? to_inspect : typename_;
             }
 
-            while(search >> url >> tagfile)
+            while (search >> url >> tagfile)
             {
                 std::string filename = tagfile_dir + "/" + tagfile;
                 pugi::xml_document doc;
@@ -210,7 +212,7 @@ namespace xeus
 
                     if (!node.empty())
                     {
-                       inspect_result = url + node;
+                        inspect_result = url + node;
                     }
                 }
             }
@@ -244,35 +246,33 @@ namespace xeus
                 border: none;
             }
             </style>
-            <iframe class="xeus-iframe-pager" src=")" + inspect_result + R"("></iframe>)";
+            <iframe class="xeus-iframe-pager" src=")" +
+                inspect_result + R"("></iframe>)";
 
             kernel_res["payload"] = {
-                xjson::object({
-                    {"data", {
-                        {"text/plain", inspect_result},
-                        {"text/html", html_content}}},
-                    {"source", "page"},
-                    {"start", 0}})
-            };
+                xjson::object({{"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
+                               {"source", "page"},
+                               {"start", 0}})};
 
             kernel_res["data"] =
                 xjson::object({{"text/plain", inspect_result},
-                               {"text/html", html_content}})
-            ;
+                               {"text/html", html_content}});
 
             std::cout << std::flush;
             kernel_res["found"] = true;
             kernel_res["status"] = "ok";
         }
-
     }
 
-    struct xintrospection: xpreamble
+    class xintrospection : xpreamble
     {
+    public:
+
         using xpreamble::pattern;
         const std::string spattern = R"(^\?)";
 
-        xintrospection(cling::MetaProcessor& p):m_processor{p}
+        xintrospection(cling::MetaProcessor& p)
+            : m_processor{p}
         {
             pattern = spattern;
         }
@@ -289,10 +289,10 @@ namespace xeus
         {
             return new xintrospection(*this);
         }
-        
-        private:
-            cling::MetaProcessor& m_processor;
-    };
 
+    private:
+
+        cling::MetaProcessor& m_processor;
+    };
 }
 #endif

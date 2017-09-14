@@ -5,8 +5,9 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XHOLDER_CLING_HPP
-#define XHOLDER_CLING_HPP
+
+#ifndef XCPP_HOLDER_CLING_HPP
+#define XCPP_HOLDER_CLING_HPP
 
 #include "xeus/xjson.hpp"
 #include "xpreamble.hpp"
@@ -44,6 +45,6 @@ namespace xeus
     private:
 
         xpreamble* p_holder;
-    };    
+    };
 }
 #endif
