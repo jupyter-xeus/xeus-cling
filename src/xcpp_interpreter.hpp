@@ -13,8 +13,9 @@
 #include "cling/MetaProcessor/MetaProcessor.h"
 
 #include "xeus/xinterpreter.hpp"
-#include "xmanager.hpp"
+
 #include "xbuffer.hpp"
+#include "xmanager.hpp"
 
 #include <iostream>
 #include <sstream>

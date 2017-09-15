@@ -5,12 +5,13 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XMANAGER_HPP
-#define XMANAGER_HPP
 
-#include "xpreamble.hpp"
-#include "xmagics.hpp"
+#ifndef XCPP_MANAGER_HPP
+#define XCPP_MANAGER_HPP
+
 #include "xholder_cling.hpp"
+#include "xmagics.hpp"
+#include "xpreamble.hpp"
 
 namespace xeus
 {
@@ -18,7 +19,7 @@ namespace xeus
     {
         std::map<std::string, xholder_preamble> preamble;
 
-        template<typename preamble_type>
+        template <typename preamble_type>
         void register_preamble(const std::string& name, preamble_type* pre)
         {
             preamble[name] = xholder_preamble(pre);
@@ -35,9 +36,10 @@ namespace xeus
         }
     };
 
-    class xmagics_manager: public xpreamble
+    class xmagics_manager : public xpreamble
     {
     public:
+
         using xpreamble::pattern;
 
         xmagics_manager()
@@ -45,7 +47,7 @@ namespace xeus
             pattern = R"(^(?:\%{2}|\%)(\w+))";
         }
 
-        template<typename xmagic_type>
+        template <typename xmagic_type>
         void register_magic(const std::string& magic_name, xmagic_type magic)
         {
             auto shared = std::make_shared<xmagic_type>(magic);
@@ -67,9 +69,9 @@ namespace xeus
 
         bool contains(const std::string& magic_name, const xmagic_type type = xmagic_type::cell)
         {
-            if (type == xmagic_type::cell) 
+            if (type == xmagic_type::cell)
                 return m_magic_cell.find(magic_name) != m_magic_cell.end();
-            if (type == xmagic_type::line) 
+            if (type == xmagic_type::line)
                 return m_magic_line.find(magic_name) != m_magic_line.end();
         }
 
@@ -85,7 +87,7 @@ namespace xeus
             }
             try
             {
-                (*m_magic_cell[magic_name])(line, cell); 
+                (*m_magic_cell[magic_name])(line, cell);
             }
             catch (const cxxopts::OptionException& e)
             {
@@ -101,7 +103,7 @@ namespace xeus
         {
             try
             {
-                (*m_magic_line[magic_name])(line); 
+                (*m_magic_line[magic_name])(line);
             }
             catch (const cxxopts::OptionException& e)
             {
@@ -111,7 +113,7 @@ namespace xeus
             {
                 std::cerr << "Exception occurred. Recovering...\n";
             }
-        }        
+        }
 
         void apply(const std::string& code, xjson& kernel_res) override
         {
@@ -163,11 +165,12 @@ namespace xeus
         {
             return new xmagics_manager(*this);
         }
-        
+
     private:
+
         std::map<std::string, std::shared_ptr<xmagic_cell>> m_magic_cell;
         std::map<std::string, std::shared_ptr<xmagic_line>> m_magic_line;
-    };    
+    };
 }
 
 #endif

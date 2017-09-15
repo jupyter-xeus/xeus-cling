@@ -1,10 +1,18 @@
-#ifndef XMESSAGING_BUFFER_HPP
-#define XMESSAGING_BUFFER_HPP
+/***************************************************************************
+* Copyright (c) 2016, Johan Mabille, Loic Gouarin and Sylvain Corlay       *
+*                                                                          *
+* Distributed under the terms of the BSD 3-Clause License.                 *
+*                                                                          *
+* The full license is in the file LICENSE, distributed with this software. *
+****************************************************************************/
 
-#include <streambuf>
+#ifndef XCPP_MESSAGING_BUFFER_HPP
+#define XCPP_MESSAGING_BUFFER_HPP
+
 #include <functional>
-#include <string>
 #include <memory>
+#include <streambuf>
+#include <string>
 
 namespace xeus
 {
@@ -14,8 +22,9 @@ namespace xeus
     public:
 
         using callback_type = std::function<void(std::string)>;
-   
-        xbuffer(callback_type callback) : m_callback(std::move(callback))
+
+        xbuffer(callback_type callback)
+            : m_callback(std::move(callback))
         {
             this->setp(this->m_buffer, this->m_buffer + sizeof(this->m_buffer) - 1);
         }
@@ -30,9 +39,9 @@ namespace xeus
                 *this->pptr() = traits_type::to_char_type(c);
                 this->pbump(1);
             }
-            return this->sync() ? traits_type::not_eof(c): traits_type::eof();
+            return this->sync() ? traits_type::not_eof(c) : traits_type::eof();
         }
-    
+
         int sync() override
         {
             if (this->pbase() != this->pptr())
@@ -42,7 +51,7 @@ namespace xeus
             }
             return 0;
         }
-    
+
         callback_type m_callback;
         char m_buffer[1024];
     };

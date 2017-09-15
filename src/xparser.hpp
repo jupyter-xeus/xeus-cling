@@ -5,8 +5,9 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XPARSER_HPP
-#define XPARSER_HPP
+
+#ifndef XCPP_PARSER_HPP
+#define XCPP_PARSER_HPP
 
 #include <map>
 #include <string>
@@ -27,6 +28,5 @@ namespace xeus
     std::string trim(std::string const& str);
 
     std::map<std::string, std::string> parse_opts(std::string& line, const std::string& opts);
-
 }
 #endif

@@ -5,12 +5,13 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
-#ifndef XPREAMBLE_HPP
-#define XPREAMBLE_HPP
 
-#include "xeus/xjson.hpp"
+#ifndef XCPP_PREAMBLE_HPP
+#define XCPP_PREAMBLE_HPP
 
 #include <regex>
+
+#include "xeus/xjson.hpp"
 
 namespace xeus
 {

@@ -1,9 +1,0 @@
-{
-  "display_name": "xeus C++17",
-  "argv": [
-      "xeus-cling",
-      "-f",
-      "{connection_file}",
-      "-std=c++17"
-  ]
-}

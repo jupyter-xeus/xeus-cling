@@ -72,9 +72,9 @@ namespace xeus
                 {
                     result.push_back(lines[i] + "\n");
                     result.push_back("");
-                    rindex +=2;
+                    rindex += 2;
                 }
-                else 
+                else
                 {
                     if (std::regex_match(lines[i], incl_re))
                     {
@@ -112,8 +112,8 @@ namespace xeus
     bool short_has_arg(const std::string& opt, const std::string& short_opts)
     {
         auto n = short_opts.find(opt);
-        if ( n != std::string::npos )
-            return short_opts[n+1] == ':';
+        if (n != std::string::npos)
+            return short_opts[n + 1] == ':';
         // TODO raise an exception
         return false;
     }
@@ -122,11 +122,12 @@ namespace xeus
     {
         std::regex re_options("(?:\\-(\\w+)\\s*(\\w*)?|(?:\\-{2}(\\w+)\\s(\\w*)?))");
         std::map<std::string, std::string> map_opts;
-        
+
         auto opts_begin = std::sregex_iterator(input.begin(), input.end(), re_options);
         auto opts_end = std::sregex_iterator();
-        
-        for (std::sregex_iterator opt = opts_begin; opt != opts_end; ++opt) {
+
+        for (std::sregex_iterator opt = opts_begin; opt != opts_end; ++opt)
+        {
             std::smatch match = *opt;
             if (!match.str(1).empty())
             {
@@ -145,20 +146,20 @@ namespace xeus
 
     std::string trim(std::string const& str)
     {
-        if(str.empty())
+        if (str.empty())
             return str;
 
         std::size_t firstScan = str.find_first_not_of(' ');
-        std::size_t first     = firstScan == std::string::npos ? str.length() : firstScan;
-        std::size_t last      = str.find_last_not_of(' ');
-        return str.substr(first, last-first+1);
+        std::size_t first = firstScan == std::string::npos ? str.length() : firstScan;
+        std::size_t last = str.find_last_not_of(' ');
+        return str.substr(first, last - first + 1);
     }
 
     std::map<std::string, std::string> parse_opts(std::string& line, const std::string& opts)
     {
         auto map_opts = getopt(line, opts);
         // remove opts found in line
-        for (auto o: map_opts)
+        for (auto o : map_opts)
         {
             std::string tmp = "\\-" + o.first + "\\s*";
             if (!o.second.empty())
@@ -167,6 +168,4 @@ namespace xeus
         }
         return map_opts;
     }
-
-
 }

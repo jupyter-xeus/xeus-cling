@@ -7,22 +7,22 @@
 ****************************************************************************/
 
 #include <algorithm>
+#include <memory>
 #include <regex>
 #include <sstream>
 #include <vector>
-#include <memory>
 
-#include "cling/Interpreter/Value.h"
 #include "cling/Interpreter/Exception.h"
+#include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
+#include "xbuffer.hpp"
 #include "xcpp_interpreter.hpp"
 #include "xinspect.hpp"
-#include "xparser.hpp"
-#include "xbuffer.hpp"
 #include "xmagics.hpp"
-#include "xmagics/os.hpp"
 #include "xmagics/execution.hpp"
+#include "xmagics/os.hpp"
+#include "xparser.hpp"
 #include "xsystem.hpp"
 
 using namespace std::placeholders;
@@ -45,7 +45,7 @@ namespace xeus
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
-          m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)), 
+          m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)),
           m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1)),
           xmagics()
     {
@@ -70,7 +70,7 @@ namespace xeus
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
-        for(auto& pre: preamble_manager.preamble)
+        for (auto& pre : preamble_manager.preamble)
         {
             if (pre.second.is_match(code))
             {
@@ -94,13 +94,13 @@ namespace xeus
                 if (!e.diagnose())
                 {
                     std::cerr << "Caught an interpreter exception!\n"
-                            << e.what() << '\n';
+                              << e.what() << '\n';
                 }
             }
             catch (std::exception& e)
             {
                 std::cerr << "Caught a std::exception!\n"
-                            << e.what() << '\n';
+                          << e.what() << '\n';
             }
             catch (...)
             {
@@ -169,7 +169,7 @@ namespace xeus
 
         auto dummy = code.substr(0, cursor_pos);
         // FIX: same pattern as in inspect function (keep only one)
-        std::string exp = R"(\w*(?:\:{2}|\<.*\>|\(.*\)|\[.*\])?)" ;
+        std::string exp = R"(\w*(?:\:{2}|\<.*\>|\(.*\)|\[.*\])?)";
         std::regex re_method{"(" + exp + R"(\.?)*$)"};
         std::smatch magic;
         if (std::regex_search(dummy, magic, re_method))
