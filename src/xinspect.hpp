@@ -264,7 +264,7 @@ namespace xeus
         }
     }
 
-    class xintrospection : xpreamble
+    class xintrospection : public xpreamble
     {
     public:
 
