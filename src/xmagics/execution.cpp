@@ -22,14 +22,13 @@ namespace xeus
 {
     timeit::timeit(cling::MetaProcessor* p):m_processor(p)
     {
-        cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
 
-        m_processor->process("#include <chrono>", compilation_result, &result);
+        m_processor->process("#include <chrono>", compilation_result);
 
         std::string init_timeit = "auto _t0 = std::chrono::high_resolution_clock::now();\n";
         init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";           
-        m_processor->process(init_timeit.c_str(), compilation_result, &result);
+        m_processor->process(init_timeit.c_str(), compilation_result);
 
     }
 
