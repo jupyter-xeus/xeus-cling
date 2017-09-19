@@ -33,13 +33,12 @@ namespace xeus
     void xcpp_interpreter::configure_impl()
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
-        cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, &result);
+        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result);
 
         // Expose interpreter instance to cling
         std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
-        m_processor.process(block.c_str(), compilation_result, &result);
+        m_processor.process(block.c_str(), compilation_result);
     }
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
@@ -66,7 +65,6 @@ namespace xeus
                                                  const xjson_node* user_expressions,
                                                  bool allow_stdin)
     {
-        cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
 
@@ -87,7 +85,7 @@ namespace xeus
             auto errorlevel = 0;
             try
             {
-                errorlevel = m_processor.process(block.c_str(), compilation_result, &result);
+                errorlevel = m_processor.process(block.c_str(), compilation_result);
             }
             catch (cling::InterpreterException& e)
             {
