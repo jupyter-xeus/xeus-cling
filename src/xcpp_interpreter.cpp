@@ -43,10 +43,10 @@ namespace xeus
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
+          xmagics(),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
           m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)),
-          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1)),
-          xmagics()
+          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1))
     {
         redirect_output();
         init_preamble();
@@ -58,12 +58,12 @@ namespace xeus
         restore_output();
     }
 
-    xjson xcpp_interpreter::execute_request_impl(int execution_counter,
+    xjson xcpp_interpreter::execute_request_impl(int /*execution_counter*/,
                                                  const std::string& code,
-                                                 bool silent,
-                                                 bool store_history,
-                                                 const xjson_node* user_expressions,
-                                                 bool allow_stdin)
+                                                 bool /*silent*/,
+                                                 bool /*store_history*/,
+                                                 const xjson_node* /*user_expressions*/,
+                                                 bool /*allow_stdin*/)
     {
         cling::Interpreter::CompilationResult compilation_result;
         xjson kernel_res;
@@ -161,7 +161,7 @@ namespace xeus
 
     xjson xcpp_interpreter::inspect_request_impl(const std::string& code,
                                                  int cursor_pos,
-                                                 int detail_level)
+                                                 int /*detail_level*/)
     {
         xjson kernel_res;
 
@@ -177,12 +177,12 @@ namespace xeus
         return kernel_res;
     }
 
-    xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& args)
+    xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& /*args*/)
     {
         return xjson::object();
     }
 
-    xjson xcpp_interpreter::is_complete_request_impl(const std::string& code)
+    xjson xcpp_interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
         return xjson::object();
     }
@@ -201,7 +201,7 @@ namespace xeus
         return result;
     }
 
-    void xcpp_interpreter::input_reply_impl(const std::string& value)
+    void xcpp_interpreter::input_reply_impl(const std::string& /*value*/)
     {
     }
 
