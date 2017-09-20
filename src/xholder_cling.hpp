@@ -40,7 +40,10 @@ namespace xeus
         bool is_match(const std::string& s) const;
 
         template <class D>
-        D& get_cast() { return dynamic_cast<D&>(*p_holder); }
+        D& get_cast()
+        {
+            return dynamic_cast<D&>(*p_holder);
+        }
 
     private:
 

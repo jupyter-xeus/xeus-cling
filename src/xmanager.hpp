@@ -70,9 +70,13 @@ namespace xeus
         bool contains(const std::string& magic_name, const xmagic_type type = xmagic_type::cell)
         {
             if (type == xmagic_type::cell)
+            {
                 return m_magic_cell.find(magic_name) != m_magic_cell.end();
+            }
             if (type == xmagic_type::line)
+            {
                 return m_magic_line.find(magic_name) != m_magic_line.end();
+            }
         }
 
         void apply(const std::string& magic_name, const std::string& line, const std::string& cell)
@@ -81,7 +85,9 @@ namespace xeus
             {
                 std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty.";
                 if (contains(magic_name, xmagic_type::line))
+                {
                     std::cerr << " Did you mean the line magic %" << magic_name << " (single %)?";
+                }
                 std::cerr << "\n";
                 return;
             }

@@ -48,24 +48,32 @@ namespace xeus
         {
             for (pugi::xml_node child : node.children())
             {
-                if (static_cast<std::string>(child.attribute("kind").value()) == kind && static_cast<std::string>(child.child("name").child_value()) == child_value)
+                if (static_cast<std::string>(child.attribute("kind").value()) == kind &&
+                    static_cast<std::string>(child.child("name").child_value()) == child_value)
+                {
                     return child.child("anchorfile").child_value();
+                }
             }
         }
 
         bool operator()(pugi::xml_node node)
         {
-            auto parent = (static_cast<std::string>(node.attribute("kind").value()) == "class" || static_cast<std::string>(node.attribute("kind").value()) == "struct") && static_cast<std::string>(node.child("name").child_value()) == class_name;
+            auto parent = (static_cast<std::string>(node.attribute("kind").value()) == "class" ||
+                           static_cast<std::string>(node.attribute("kind").value()) == "struct") &&
+                static_cast<std::string>(node.child("name").child_value()) == class_name;
             auto found = false;
             if (parent)
+            {
                 for (pugi::xml_node child : node.children())
                 {
-                    if (static_cast<std::string>(child.attribute("kind").value()) == kind && static_cast<std::string>(child.child("name").child_value()) == child_value)
+                    if (static_cast<std::string>(child.attribute("kind").value()) == kind &&
+                        static_cast<std::string>(child.child("name").child_value()) == child_value)
                     {
                         found = true;
                         break;
                     }
                 }
+            }
             return found;
         }
     };
