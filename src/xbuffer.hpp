@@ -33,13 +33,14 @@ namespace xeus
 
         int overflow(int c) override
         {
+            this->sync();          
             using traits_type = std::streambuf::traits_type;
             if (!traits_type::eq_int_type(c, traits_type::eof()))
             {
                 *this->pptr() = traits_type::to_char_type(c);
                 this->pbump(1);
             }
-            return this->sync() ? traits_type::not_eof(c) : traits_type::eof();
+            return traits_type::not_eof(c);
         }
 
         int sync() override
