@@ -6,8 +6,6 @@
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
 the native implementation of the Jupyter protocol [xeus](https://github.com/QuantStack/xeus).
 
-This project is in development phase and is highly instable!
-
 ## Installation
 
 xeus-cling has been packaged for the conda package manager on the linux platform. From a new miniconda3 install:
@@ -28,6 +26,26 @@ make && make install
 ## Usage
 
 Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **xeus C++14** kernel in the *new* dropdown.
+
+### A C++ notebook
+
+You can now make use of the C++ programming language in the Jupyter notebook.
+
+![A C++ notebook](notebook.png)
+
+### Quick help and tab completion.
+
+Quick help is shown on the pager with the special `?` magic. 
+
+![Help](help.png)
+
+Content for the help is available for the standard library and the QuantStack packages.
+
+### Jupyter interactive widgets
+
+A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets`](https://github.com/QuantStack/xwidgets/) package.
+
+![Widgets](widgets.gif)
 
 ## Dependencies
 
