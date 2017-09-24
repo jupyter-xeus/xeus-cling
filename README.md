@@ -1,6 +1,6 @@
 # ![xeus-cling](http://quantstack.net/assets/images/xeus-cling.svg)
 
-[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.0.4-binder?filepath=notebooks/xcpp.ipynb)
+[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.0.5?filepath=notebooks/xcpp.ipynb)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
@@ -34,6 +34,7 @@ Launch the jupyter notebook with `jupyter notebook` and launch a new C++ noteboo
 ``xeus-cling`` depends on
 
  - [xeus](https://github.com/QuantStack/xeus)
+ - [xtl](https://github.com/QuantStack/xtl)
  - [cling](https://github.com/root-project/cling)
  - [pugixml](https://github.com/zeux/pugixml)
 
