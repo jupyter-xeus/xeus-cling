@@ -56,6 +56,12 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
  - [cling](https://github.com/root-project/cling)
  - [pugixml](https://github.com/zeux/pugixml)
 
+
+| `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | 
+|--------------|-----------------|-----------------|---------------|---------------|----------|
+|  master      |   >0.6.0,<0.7   |  >=0.2.12,<0.3  | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+|  0.0.6       |   >0.6.0,<0.7   |  >=0.2.2,<0.3   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+
 `xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`. 
 
 The `QuantStack` channel provides a `xeus`, `cling` and their dependencies built with gcc-6. We highly recommend installing
