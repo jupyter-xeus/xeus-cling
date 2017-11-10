@@ -1,6 +1,6 @@
 # ![xeus-cling](http://quantstack.net/assets/images/xeus-cling.svg)
 
-[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.0.6?filepath=notebooks/xcpp.ipynb)
+[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.0.7?filepath=notebooks/xcpp.ipynb)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
@@ -59,8 +59,9 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 
 | `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | 
 |--------------|-----------------|-----------------|---------------|---------------|----------|
-|  master      |   >0.6.0,<0.7   |  >=0.2.12,<0.3  | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
-|  0.0.6       |   >0.6.0,<0.7   |  >=0.2.2,<0.3   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+|  master      |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+|  0.0.7       |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+|  0.0.6       |   >0.6.0,<0.8   |  >=0.2.2,<0.3   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
 
 `xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`. 
 
