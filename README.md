@@ -8,7 +8,14 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/Quan
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the linux platform. From a new miniconda3 install:
+xeus-cling has been packaged for the conda package manager on the linux platform. To be sure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. So, if you want to create an environment named `cling`
+
+```
+conda create -n cling
+source activate cling
+```
+
+Then you can install in this environment `xeus-cling` and its dependencies
 
 ```
 conda install cling -c QuantStack -c conda-forge
