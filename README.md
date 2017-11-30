@@ -8,7 +8,7 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/Quan
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the linux platform. To be sure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It also needed to use a **miniconda** installation whereas because with anaconda you can have a conflict with the `libzmq` library which is already installed with anaconda.
+xeus-cling has been packaged for the conda package manager on the linux platform. To be sure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with [anaconda](https://www.anaconda.com/) you can have a conflict with the `zeromq` library which is already installed with anaconda.
 
 The safest usage is to create an environment named `cling` with your miniconda installation
 
