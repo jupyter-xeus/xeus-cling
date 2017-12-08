@@ -106,6 +106,14 @@ namespace xeus
                 }
             }
         }
+
+        // Remove last new line for each block. Without this cling complains
+        // when a user gives .L file_path
+        for (auto &r : result) {
+            if (!r.empty() && r.back() == '\n') {
+                r.pop_back();
+            }
+        }
         return result;
     }
 
