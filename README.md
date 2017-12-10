@@ -64,15 +64,16 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
  - [xtl](https://github.com/QuantStack/xtl)
  - [cling](https://github.com/root-project/cling)
  - [pugixml](https://github.com/zeux/pugixml)
+ - [cxxopts](https://github.com/jarro2783/cxxopts)
 
 
-| `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | 
-|--------------|-----------------|-----------------|---------------|---------------|----------|
-|  master      |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
-|  0.0.7       |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
-|  0.0.6       |   >0.6.0,<0.8   |  >=0.2.2,<0.3   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |
+| `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`       |
+|--------------|-----------------|-----------------|---------------|---------------|----------|-----------------|
+|  master      |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` | >=1.4.1,<=1.4.4 |
+|  0.0.7       |   >0.8.0,<0.9   |  >=0.3.4,<0.4   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |                 |
+|  0.0.6       |   >0.6.0,<0.8   |  >=0.2.2,<0.3   | >=0.3,<0.4    | ~1.8.1        | `~4.2.1` |                 |
 
-`xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`. 
+`xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`.
 
 The `QuantStack` channel provides a `xeus`, `cling` and their dependencies built with gcc-6. We highly recommend installing
 these dependencies from QuantStack in a clean conda installation or environment.
