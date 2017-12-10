@@ -60,6 +60,7 @@ namespace xeus
         // check if each line contains #include and concatenate the result in the good part of the result
         std::regex incl_re("\\#include.*");
         std::regex magic_re("^\\%\\w+");
+        std::regex dot_start_re("\\..*");
         std::vector<std::string> result;
         result.push_back("");
         std::size_t current = 0;  //0 include, 1 other
@@ -71,6 +72,11 @@ namespace xeus
                 if (std::regex_search(lines[i], magic_re))
                 {
                     result.push_back(lines[i] + "\n");
+                    result.push_back("");
+                    rindex += 2;
+                }
+                else if (std::regex_match(lines[i], dot_start_re)) {
+                    result.push_back(lines[i]);
                     result.push_back("");
                     rindex += 2;
                 }
