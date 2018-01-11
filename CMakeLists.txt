@@ -217,15 +217,18 @@ target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
 install(TARGETS ${XEUSCLING_TARGET}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
-set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
+if(MSVC)
+    set(XEUS_KERNELSPEC_INSTALL_DIR "../share/jupyter" CACHE STRING "install path for kernel specs")
+else(MSVC)
+    set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
+endif(MSVC)
 
+set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
 install(DIRECTORY ${KERNELSPEC_DIR}
         DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
 
 set(TAGFILESPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tagfile)
-set(XEUS_TAGFILESPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
-
 install(DIRECTORY ${TAGFILESPEC_DIR}
-        DESTINATION ${XEUS_TAGFILESPEC_INSTALL_DIR})
-add_definitions(-DTAGFILE_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_TAGFILESPEC_INSTALL_DIR}/tagfile")
+        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
+
+add_definitions(-DTAGFILE_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_KERNELSPEC_INSTALL_DIR}/tagfile")
