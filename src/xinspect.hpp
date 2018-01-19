@@ -257,14 +257,13 @@ namespace xeus
             <iframe class="xeus-iframe-pager" src=")" +
                 inspect_result + R"("></iframe>)";
 
-            kernel_res["payload"] = {
-                xjson::object({{"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
-                               {"source", "page"},
-                               {"start", 0}})};
+            kernel_res["payload"] = xjson::array();
 
-            kernel_res["data"] =
-                xjson::object({{"text/plain", inspect_result},
-                               {"text/html", html_content}});
+            kernel_res["payload"][0] = xjson::object({
+                {"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
+                {"source", "page"},
+                {"start", 0}
+            });
 
             std::cout << std::flush;
             kernel_res["found"] = true;
