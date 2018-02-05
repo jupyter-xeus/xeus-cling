@@ -65,8 +65,9 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
-find_package(xeus REQUIRED)
-include_directories(${xeus_INCLUDE_DIRS})
+find_package(xeus 0.10 REQUIRED)
+find_package(cppzmq 4.2.3 REQUIRED)
+find_package(pugixml REQUIRED)
 
 find_package(Clang REQUIRED)
 find_package(Cling REQUIRED)
@@ -138,7 +139,7 @@ set(XEUSCLING_SRC
     src/xmagics/os.hpp
 )
 set(LLVM_NO_DEAD_STRIP 1)
-set(LIBS ${xeus_LIBRARY} clingInterpreter clingMetaProcessor clingUtils pugixml)
+set(LIBS clingInterpreter clingMetaProcessor clingUtils xeus pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
