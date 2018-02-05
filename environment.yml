@@ -1,7 +1,7 @@
 name: xeus-cling
 channels:
-  - nodefaults
   - QuantStack
+  - conda-forge
 dependencies:
-  - xeus-cling
+  - xeus-cling=0.1.0
   - notebook
