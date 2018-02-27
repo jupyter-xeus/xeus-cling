@@ -19,7 +19,7 @@
 #include "llvm/Support/raw_ostream.h"
 
 #include "xbuffer.hpp"
-#include "xcpp_interpreter.hpp"
+#include "xinterpreter.hpp"
 #include "xinspect.hpp"
 #include "xmagics.hpp"
 #include "xmagics/execution.hpp"
@@ -29,10 +29,10 @@
 
 using namespace std::placeholders;
 
-namespace xeus
+namespace xcpp
 {
 
-    void xcpp_interpreter::configure_impl()
+    void interpreter::configure_impl()
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
         cling::Interpreter::CompilationResult compilation_result;
@@ -43,32 +43,32 @@ namespace xeus
         m_processor.process(block.c_str(), compilation_result, nullptr, true);
     }
 
-    xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
+    interpreter::interpreter(int argc, const char* const* argv)
         : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
           xmagics(),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
-          m_cout_buffer(std::bind(&xcpp_interpreter::publish_stdout, this, _1)),
-          m_cerr_buffer(std::bind(&xcpp_interpreter::publish_stderr, this, _1))
+          m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1)),
+          m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
     {
         redirect_output();
         init_preamble();
         init_magic();
     }
 
-    xcpp_interpreter::~xcpp_interpreter()
+    interpreter::~interpreter()
     {
         restore_output();
     }
 
-    xjson xcpp_interpreter::execute_request_impl(int execution_counter,
+    xeus::xjson interpreter::execute_request_impl(int execution_counter,
                                                  const std::string& code,
                                                  bool /*silent*/,
                                                  bool /*store_history*/,
-                                                 const xjson_node* /*user_expressions*/,
+                                                 const xeus::xjson_node* /*user_expressions*/,
                                                  bool /*allow_stdin*/)
     {
         cling::Interpreter::CompilationResult compilation_result;
-        xjson kernel_res;
+        xeus::xjson kernel_res;
 
         for (auto& pre : preamble_manager.preamble)
         {
@@ -129,9 +129,9 @@ namespace xeus
                 output.print(output_stream, true);
                 output_stream.flush();
             }
-            xjson pub_data;
+            xeus::xjson pub_data;
             pub_data["text/plain"] = std::move(text_output);
-            publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
+            publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
         }
 
         std::cout << std::flush;
@@ -139,12 +139,12 @@ namespace xeus
         return kernel_res;
     }
 
-    xjson xcpp_interpreter::complete_request_impl(const std::string& code,
+    xeus::xjson interpreter::complete_request_impl(const std::string& code,
                                                   int cursor_pos)
     {
         std::vector<std::string> result;
         cling::Interpreter::CompilationResult compilation_result;
-        xjson kernel_res;
+        xeus::xjson kernel_res;
 
         // split the input to have only the word in the back of the cursor
         std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?.";
@@ -170,16 +170,16 @@ namespace xeus
         kernel_res["matches"] = result;
         kernel_res["cursor_start"] = cursor_pos - to_complete.length();
         kernel_res["cursor_end"] = cursor_pos;
-        kernel_res["metadata"] = xjson::object();
+        kernel_res["metadata"] = xeus::xjson::object();
         kernel_res["status"] = "ok";
         return kernel_res;
     }
 
-    xjson xcpp_interpreter::inspect_request_impl(const std::string& code,
+    xeus::xjson interpreter::inspect_request_impl(const std::string& code,
                                                  int cursor_pos,
                                                  int /*detail_level*/)
     {
-        xjson kernel_res;
+        xeus::xjson kernel_res;
 
         auto dummy = code.substr(0, cursor_pos);
         // FIX: same pattern as in inspect function (keep only one)
@@ -193,19 +193,19 @@ namespace xeus
         return kernel_res;
     }
 
-    xjson xcpp_interpreter::history_request_impl(const xhistory_arguments& /*args*/)
+    xeus::xjson interpreter::history_request_impl(const xeus::xhistory_arguments& /*args*/)
     {
-        return xjson::object();
+        return xeus::xjson::object();
     }
 
-    xjson xcpp_interpreter::is_complete_request_impl(const std::string& /*code*/)
+    xeus::xjson interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
-        return xjson::object();
+        return xeus::xjson::object();
     }
 
-    xjson xcpp_interpreter::kernel_info_request_impl()
+    xeus::xjson interpreter::kernel_info_request_impl()
     {
-        xjson result;
+        xeus::xjson result;
         result["protocol_version"] = "5.0.0";
         result["implementation"] = "xeus-cling";
         result["implementation_version"] = "0.0.1";
@@ -217,15 +217,15 @@ namespace xeus
         return result;
     }
 
-    void xcpp_interpreter::input_reply_impl(const std::string& /*value*/)
+    void interpreter::input_reply_impl(const std::string& /*value*/)
     {
     }
 
-    xjson xcpp_interpreter::get_error_reply(const std::string& ename,
+    xeus::xjson interpreter::get_error_reply(const std::string& ename,
                                             const std::string& evalue,
                                             const std::vector<std::string>& trace_back)
     {
-        xjson result;
+        xeus::xjson result;
         result["status"] = "error";
         result["ename"] = ename;
         result["evalue"] = evalue;
@@ -233,7 +233,7 @@ namespace xeus
         return result;
     }
 
-    void xcpp_interpreter::redirect_output()
+    void interpreter::redirect_output()
     {
         p_cout_strbuf = std::cout.rdbuf();
         p_cerr_strbuf = std::cerr.rdbuf();
@@ -242,30 +242,30 @@ namespace xeus
         std::cerr.rdbuf(&m_cerr_buffer);
     }
 
-    void xcpp_interpreter::restore_output()
+    void interpreter::restore_output()
     {
         std::cout.rdbuf(p_cout_strbuf);
         std::cerr.rdbuf(p_cerr_strbuf);
     }
 
-    void xcpp_interpreter::publish_stdout(const std::string& s)
+    void interpreter::publish_stdout(const std::string& s)
     {
         publish_stream("stdout", s);
     }
 
-    void xcpp_interpreter::publish_stderr(const std::string& s)
+    void interpreter::publish_stderr(const std::string& s)
     {
         publish_stream("stderr", s);
     }
 
-    void xcpp_interpreter::init_preamble()
+    void interpreter::init_preamble()
     {
         preamble_manager.register_preamble("introspection", new xintrospection(m_processor));
         preamble_manager.register_preamble("magics", new xmagics_manager());
         preamble_manager.register_preamble("shell", new xsystem());
     }
 
-    void xcpp_interpreter::init_magic()
+    void interpreter::init_magic()
     {
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_processor));

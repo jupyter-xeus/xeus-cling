@@ -23,15 +23,15 @@
 #include <string>
 #include <vector>
 
-namespace xeus
+namespace xcpp
 {
 
-    class xcpp_interpreter : public xinterpreter
+    class interpreter : public xeus::xinterpreter
     {
     public:
 
-        xcpp_interpreter(int argc, const char* const* argv);
-        virtual ~xcpp_interpreter();
+        interpreter(int argc, const char* const* argv);
+        virtual ~interpreter();
 
         void publish_stdout(const std::string&);
         void publish_stderr(const std::string&);
@@ -40,29 +40,29 @@ namespace xeus
 
         void configure_impl() override;
 
-        xjson execute_request_impl(int execution_counter,
-                                   const std::string& code,
-                                   bool silent,
-                                   bool store_history,
-                                   const xjson_node* user_expressions,
-                                   bool allow_stdin) override;
+        xeus::xjson execute_request_impl(int execution_counter,
+                                         const std::string& code,
+                                         bool silent,
+                                         bool store_history,
+                                         const xeus::xjson_node* user_expressions,
+                                         bool allow_stdin) override;
 
-        xjson complete_request_impl(const std::string& code,
-                                    int cursor_pos) override;
+        xeus::xjson complete_request_impl(const std::string& code,
+                                          int cursor_pos) override;
 
-        xjson inspect_request_impl(const std::string& code,
-                                   int cursor_pos,
-                                   int detail_level) override;
+        xeus::xjson inspect_request_impl(const std::string& code,
+                                         int cursor_pos,
+                                         int detail_level) override;
 
-        xjson history_request_impl(const xhistory_arguments& args) override;
+        xeus::xjson history_request_impl(const xeus::xhistory_arguments& args) override;
 
-        xjson is_complete_request_impl(const std::string& code) override;
+        xeus::xjson is_complete_request_impl(const std::string& code) override;
 
-        xjson kernel_info_request_impl() override;
+        xeus::xjson kernel_info_request_impl() override;
 
         void input_reply_impl(const std::string& value) override;
 
-        xjson get_error_reply(const std::string& ename,
+        xeus::xjson get_error_reply(const std::string& ename,
                               const std::string& evalue,
                               const std::vector<std::string>& trace_back);
 

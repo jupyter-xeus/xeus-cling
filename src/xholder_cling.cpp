@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-namespace xeus
+namespace xcpp
 {
 
     /***********************************
@@ -56,8 +56,7 @@ namespace xeus
         return *this;
     }
 
-
-    void xholder_preamble::apply(const std::string& s, xjson& kernel_res)
+    void xholder_preamble::apply(const std::string& s, xeus::xjson& kernel_res)
     {
         if (p_holder != nullptr)
         {

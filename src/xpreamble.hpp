@@ -13,7 +13,7 @@
 
 #include "xeus/xjson.hpp"
 
-namespace xeus
+namespace xcpp
 {
     struct xpreamble
     {
@@ -25,8 +25,9 @@ namespace xeus
             return std::regex_search(s, match, pattern);
         }
 
-        virtual void apply(const std::string& s, xjson& kernel_res) = 0;
+        virtual void apply(const std::string& s, xeus::xjson& kernel_res) = 0;
         virtual xpreamble* clone() const = 0;
+        virtual ~xpreamble() {};
     };
 }
 #endif

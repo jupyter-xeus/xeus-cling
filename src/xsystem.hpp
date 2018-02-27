@@ -13,7 +13,7 @@
 
 #include "xpreamble.hpp"
 
-namespace xeus
+namespace xcpp
 {
     struct xsystem : xpreamble
     {
@@ -25,7 +25,7 @@ namespace xeus
             pattern = spattern;
         }
 
-        void apply(const std::string& code, xjson& kernel_res) override
+        void apply(const std::string& code, xeus::xjson& kernel_res) override
         {
             std::regex re(spattern + R"((.*))");
             std::smatch to_execute;

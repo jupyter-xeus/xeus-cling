@@ -5,6 +5,7 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -14,7 +15,7 @@
 #include "../xparser.hpp"
 #include "../xoptions.hpp"
 
-namespace xeus
+namespace xcpp
 {
     xoptions writefile::get_options()
     {
@@ -25,7 +26,7 @@ namespace xeus
         options.parse_positional("filename");
         return options;
     }
-    
+
     void writefile::operator()(const std::string& line, const std::string& cell)
     {
         auto options = get_options();
@@ -47,21 +48,21 @@ namespace xeus
             if (append)
             {
                 file.open(filename, std::ios::app);
-                std::cout << "Appending to " << filename << "\n"; 
+                std::cout << "Appending to " << filename << "\n";
             }
-            else 
+            else
             {
                 file.open(filename);
-                std::cout << "Overwriting " << filename << "\n"; 
+                std::cout << "Overwriting " << filename << "\n";
             }
         }
         else
         {
             file.open(filename);
-            std::cout << "Writing " << filename << "\n"; 
+            std::cout << "Writing " << filename << "\n";
         }
         file << cell << "\n";
-        file.close();        
+        file.close();
     }
 
     bool writefile::is_file_exist(const char* fileName)

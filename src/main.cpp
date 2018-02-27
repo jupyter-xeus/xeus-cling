@@ -6,7 +6,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xcpp_interpreter.hpp"
+#include "xinterpreter.hpp"
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include <iostream>
@@ -42,7 +42,7 @@ std::string get_stdopt(int argc, char** argv)
     return res;
 }
 
-using interpreter_ptr = std::unique_ptr<xeus::xcpp_interpreter>;
+using interpreter_ptr = std::unique_ptr<xcpp::interpreter>;
 interpreter_ptr build_interpreter(int argc, char** argv)
 {
     constexpr int interpreter_argc = 5;
@@ -54,7 +54,7 @@ interpreter_ptr build_interpreter(int argc, char** argv)
     interpreter_argv[2] = include_dir.c_str();
     interpreter_argv[3] = "";
     interpreter_argv[4] = "";
-    return interpreter_ptr(new xeus::xcpp_interpreter(interpreter_argc, interpreter_argv));
+    return interpreter_ptr(new xcpp::interpreter(interpreter_argc, interpreter_argv));
 }
 
 int main(int argc, char* argv[])

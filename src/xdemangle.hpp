@@ -32,7 +32,7 @@
 #endif
 #endif
 
-namespace xeus
+namespace xcpp
 {
     const char* demangle(const char* name) noexcept;
     const char* demangle(const std::string& name) noexcept;

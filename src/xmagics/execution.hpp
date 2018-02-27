@@ -5,6 +5,7 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+
 #ifndef XMAGICS_EXECUTION_HPP
 #define XMAGICS_EXECUTION_HPP
 
@@ -15,7 +16,7 @@
 #include "../xmagics.hpp"
 #include "../xoptions.hpp"
 
-namespace xeus
+namespace xcpp
 {
     class timeit: public xmagic_line_cell
     {

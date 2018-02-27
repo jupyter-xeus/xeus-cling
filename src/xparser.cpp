@@ -15,7 +15,7 @@
 
 #include "xparser.hpp"
 
-namespace xeus
+namespace xcpp
 {
     std::vector<std::string> split_line(const std::string& input, const std::string& delims, std::size_t cursor_pos)
     {

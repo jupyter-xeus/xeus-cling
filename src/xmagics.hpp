@@ -15,7 +15,7 @@
 #include "xoptions.hpp"
 #include "xpreamble.hpp"
 
-namespace xeus
+namespace xcpp
 {
     enum struct xmagic_type
     {
