@@ -16,6 +16,8 @@
 #include "cling/Interpreter/Value.h"
 #include "cling/Utils/Output.h"
 
+#include "llvm/Support/raw_ostream.h"
+
 #include "xbuffer.hpp"
 #include "xcpp_interpreter.hpp"
 #include "xinspect.hpp"
@@ -34,11 +36,11 @@ namespace xeus
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
         cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result);
+        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, nullptr, true);
 
         // Expose interpreter instance to cling
         std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
-        m_processor.process(block.c_str(), compilation_result);
+        m_processor.process(block.c_str(), compilation_result, nullptr, true);
     }
 
     xcpp_interpreter::xcpp_interpreter(int argc, const char* const* argv)
@@ -58,7 +60,7 @@ namespace xeus
         restore_output();
     }
 
-    xjson xcpp_interpreter::execute_request_impl(int /*execution_counter*/,
+    xjson xcpp_interpreter::execute_request_impl(int execution_counter,
                                                  const std::string& code,
                                                  bool /*silent*/,
                                                  bool /*store_history*/,
@@ -78,14 +80,15 @@ namespace xeus
         }
 
         auto blocks = split_from_includes(code.c_str());
+        cling::Value output;
 
-        for (auto block : blocks)
+        for (const auto& block : blocks)
         {
             // Perform normal evaluation
             auto errorlevel = 0;
             try
             {
-                errorlevel = m_processor.process(block.c_str(), compilation_result);
+                errorlevel = m_processor.process(block, compilation_result, &output, true);
             }
             catch (cling::InterpreterException& e)
             {
@@ -116,6 +119,19 @@ namespace xeus
                 kernel_res = get_error_reply("ename", "evalue", {});
                 return kernel_res;
             }
+        }
+
+        if (output.hasValue() && trim(blocks.back()).back() != ';')
+        {
+            std::string text_output;
+            {
+                llvm::raw_string_ostream output_stream(text_output);
+                output.print(output_stream, true);
+                output_stream.flush();
+            }
+            xjson pub_data;
+            pub_data["text/plain"] = std::move(text_output);
+            publish_execution_result(execution_counter, std::move(pub_data), xjson::object());
         }
 
         std::cout << std::flush;
