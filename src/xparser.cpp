@@ -100,9 +100,13 @@ namespace xeus
                             rindex++;
                         }
                     }
-                    // if we have multiple lines, we add a semicolon at the end of the lines that not conatin
+                    // if we have multiple lines, we add a semicolon at the end of the lines that not contain
                     // #include keyword (except for the last line)
-                    result[rindex] += lines[i] + "\n";
+                    result[rindex] += lines[i];
+                    if (i != lines.size() - 1)
+                    {
+                        result[rindex] += "\n";
+                    }
                 }
             }
         }
@@ -113,7 +117,9 @@ namespace xeus
     {
         auto n = short_opts.find(opt);
         if (n != std::string::npos)
+        {
             return short_opts[n + 1] == ':';
+        }
         // TODO raise an exception
         return false;
     }
@@ -134,11 +140,15 @@ namespace xeus
                 if (short_has_arg(match.str(1), short_opts))
                 {
                     if (match.str(2).empty())
+                    {
                         std::cout << "Error: add exception !!!!\n";
+                    }
                     map_opts[match.str(1)] = match.str(2);
                 }
                 else
+                {
                     map_opts[match.str(1)] = "";
+                }
             }
         }
         return map_opts;
@@ -147,7 +157,9 @@ namespace xeus
     std::string trim(std::string const& str)
     {
         if (str.empty())
+        {
             return str;
+        }
 
         std::size_t firstScan = str.find_first_not_of(' ');
         std::size_t first = firstScan == std::string::npos ? str.length() : firstScan;
@@ -163,7 +175,9 @@ namespace xeus
         {
             std::string tmp = "\\-" + o.first + "\\s*";
             if (!o.second.empty())
+            {
                 tmp += o.second;
+            }
             line = std::regex_replace(line, std::regex(tmp), "");
         }
         return map_opts;
