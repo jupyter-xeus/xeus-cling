@@ -14,7 +14,7 @@
 #include <streambuf>
 #include <string>
 
-namespace xeus
+namespace xcpp
 {
 
     class xbuffer : public std::streambuf
@@ -33,7 +33,7 @@ namespace xeus
 
         int overflow(int c) override
         {
-            this->sync();          
+            this->sync();
             using traits_type = std::streambuf::traits_type;
             if (!traits_type::eq_int_type(c, traits_type::eof()))
             {

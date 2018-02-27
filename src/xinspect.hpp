@@ -24,7 +24,7 @@
 #include "xparser.hpp"
 #include "xpreamble.hpp"
 
-namespace xeus
+namespace xcpp
 {
     struct node_predicate
     {
@@ -42,7 +42,6 @@ namespace xeus
         std::string class_name;
         std::string kind;
         std::string child_value;
-        std::string member_file;
 
         std::string get_filename(pugi::xml_node node)
         {
@@ -139,7 +138,7 @@ namespace xeus
         return typeString;
     }
 
-    void inspect(const std::string& code, xjson& kernel_res, cling::MetaProcessor& m_processor)
+    void inspect(const std::string& code, xeus::xjson& kernel_res, cling::MetaProcessor& m_processor)
     {
 
         std::string tagfile_dir = TAGFILE_DIR;
@@ -246,7 +245,7 @@ namespace xeus
                 width: 100%;
                 height: 100%;
             }
-            .xeus-iframe-pager {
+            .xcpp-iframe-pager {
                 padding: 0;
                 margin: 0;
                 width: 100%;
@@ -254,12 +253,12 @@ namespace xeus
                 border: none;
             }
             </style>
-            <iframe class="xeus-iframe-pager" src=")" +
+            <iframe class="xcpp-iframe-pager" src=")" +
                 inspect_result + R"("></iframe>)";
 
-            kernel_res["payload"] = xjson::array();
+            kernel_res["payload"] = xeus::xjson::array();
 
-            kernel_res["payload"][0] = xjson::object({
+            kernel_res["payload"][0] = xeus::xjson::object({
                 {"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
                 {"source", "page"},
                 {"start", 0}
@@ -284,7 +283,7 @@ namespace xeus
             pattern = spattern;
         }
 
-        void apply(const std::string& code, xjson& kernel_res) override
+        void apply(const std::string& code, xeus::xjson& kernel_res) override
         {
             std::regex re(spattern + R"((.*))");
             std::smatch to_inspect;

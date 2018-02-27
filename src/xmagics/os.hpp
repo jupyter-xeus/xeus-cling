@@ -5,6 +5,7 @@
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
+
 #ifndef XMAGICS_OS_HPP
 #define XMAGICS_OS_HPP
 
@@ -13,14 +14,17 @@
 #include "../xmagics.hpp"
 #include "../xoptions.hpp"
 
-namespace xeus
+namespace xcpp
 {
     class writefile: public xmagic_cell
     {
     public:
+
         xoptions get_options();
         virtual void operator()(const std::string& line, const std::string& cell) override;
+
     private:
+
         static bool is_file_exist(const char* fileName);
     };
 }

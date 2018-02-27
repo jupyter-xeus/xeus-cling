@@ -4,7 +4,8 @@
 * Distributed under the terms of the BSD 3-Clause License.                 *
 *                                                                          *
 * The full license is in the file LICENSE, distributed with this software. *
-****************************************************************************/   
+****************************************************************************/
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -18,7 +19,7 @@
 #include "execution.hpp"
 #include "../xparser.hpp"
 
-namespace xeus
+namespace xcpp
 {
     timeit::timeit(cling::MetaProcessor* p):m_processor(p)
     {
@@ -27,7 +28,7 @@ namespace xeus
         m_processor->process("#include <chrono>", compilation_result);
 
         std::string init_timeit = "auto _t0 = std::chrono::high_resolution_clock::now();\n";
-        init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";           
+        init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";
         m_processor->process(init_timeit.c_str(), compilation_result);
 
     }
@@ -44,7 +45,6 @@ namespace xeus
              "without an option", cxxopts::value<std::vector<std::string>>());
         options.parse_positional("positional");
         return options;
-        
     }
 
     std::string timeit::inner(std::size_t number, std::string const & code) const

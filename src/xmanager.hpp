@@ -13,7 +13,7 @@
 #include "xmagics.hpp"
 #include "xpreamble.hpp"
 
-namespace xeus
+namespace xcpp
 {
     struct xpreamble_manager
     {
@@ -121,7 +121,7 @@ namespace xeus
             }
         }
 
-        void apply(const std::string& code, xjson& kernel_res) override
+        void apply(const std::string& code, xeus::xjson& kernel_res) override
         {
             std::regex re_magic_cell(R"(^\%{2}(\w+))");
             std::smatch magic_name;

@@ -14,7 +14,7 @@
 
 #include <regex>
 
-namespace xeus
+namespace xcpp
 {
     class xholder_preamble
     {
@@ -36,7 +36,7 @@ namespace xeus
             std::swap(p_holder, rhs.p_holder);
         }
 
-        void apply(const std::string& s, xjson& kernel_res);
+        void apply(const std::string& s, xeus::xjson& kernel_res);
         bool is_match(const std::string& s) const;
 
         template <class D>

@@ -11,7 +11,7 @@
 
 #include "cxxopts.hpp"
 
-namespace xeus
+namespace xcpp
 {
     struct xoptions : public cxxopts::Options
     {

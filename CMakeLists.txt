@@ -123,8 +123,8 @@ endif("${isSystemDir}" STREQUAL "-1")
 set(XEUSCLING_SRC
     src/main.cpp
     src/xbuffer.hpp
-    src/xcpp_interpreter.cpp
-    src/xcpp_interpreter.hpp
+    src/xinterpreter.cpp
+    src/xinterpreter.hpp
     src/xdemangle.hpp
     src/xoptions.cpp
     src/xoptions.hpp
