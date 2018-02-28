@@ -150,12 +150,23 @@ set(XEUSCLING_SRC
     src/xmagics/execution.hpp
     src/xmagics/os.cpp
     src/xmagics/os.hpp
+    src/xmime_internal.hpp
 )
+
+set(XCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+set (XCPP_HEADERS
+   ${XCPP_INCLUDE_DIR}/xcpp/xmime.hpp
+   ${XCPP_INCLUDE_DIR}/xcpp/xdisplay.hpp
+)
+
 set(LLVM_NO_DEAD_STRIP 1)
 set(LIBS clingInterpreter clingMetaProcessor clingUtils xeus pugixml)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
+
+target_include_directories(${XEUSCLING_TARGET} PRIVATE ${XCPP_INCLUDE_DIR})
 
 if(MSVC)
     set_target_properties(${XEUSCLING_TARGET} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)  # Internal string
@@ -218,7 +229,7 @@ if(MSVC)
     foreach(sym ${cling_exports})
         set(cling_link_str "${cling_link_str} /EXPORT:${sym}")
     endforeach(sym ${cling_exports})
-    
+
     set_property(TARGET ${XEUSCLING_TARGET} APPEND_STRING PROPERTY LINK_FLAGS ${cling_link_str})
 endif(MSVC)
 
@@ -236,6 +247,9 @@ if(MSVC)
 else(MSVC)
     set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
 endif(MSVC)
+
+install(FILES ${XCPP_HEADERS}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xcpp)
 
 set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
 install(DIRECTORY ${KERNELSPEC_DIR}

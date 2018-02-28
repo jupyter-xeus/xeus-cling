@@ -12,18 +12,13 @@
 #include <sstream>
 #include <vector>
 
-#include "cling/Interpreter/Exception.h"
-#include "cling/Interpreter/Value.h"
-#include "cling/Utils/Output.h"
-
-#include "llvm/Support/raw_ostream.h"
-
 #include "xbuffer.hpp"
 #include "xinterpreter.hpp"
 #include "xinspect.hpp"
 #include "xmagics.hpp"
 #include "xmagics/execution.hpp"
 #include "xmagics/os.hpp"
+#include "xmime_internal.hpp"
 #include "xparser.hpp"
 #include "xsystem.hpp"
 
@@ -31,7 +26,6 @@ using namespace std::placeholders;
 
 namespace xcpp
 {
-
     void interpreter::configure_impl()
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
@@ -123,14 +117,7 @@ namespace xcpp
 
         if (output.hasValue() && trim(blocks.back()).back() != ';')
         {
-            std::string text_output;
-            {
-                llvm::raw_string_ostream output_stream(text_output);
-                output.print(output_stream, true);
-                output_stream.flush();
-            }
-            xeus::xjson pub_data;
-            pub_data["text/plain"] = std::move(text_output);
+            xeus::xjson pub_data = mime_repr(output);
             publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
         }
 
