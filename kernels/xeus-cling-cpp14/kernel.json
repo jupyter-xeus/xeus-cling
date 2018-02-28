@@ -1,5 +1,6 @@
 {
   "display_name": "xeus C++14",
+  "language": "c++",
   "argv": [
       "xeus-cling",
       "-f",
