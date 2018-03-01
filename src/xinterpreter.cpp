@@ -41,6 +41,20 @@ namespace xcpp
         // Expose interpreter instance to cling
         std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
         m_processor.process(block.c_str(), compilation_result, nullptr, true);
+
+        // Workaround for https://github.com/vgvassilev/cling/issues/176
+        std::string work = R"(
+namespace cling {
+  namespace runtime {
+    namespace internal {
+      template <class T>
+      void setValueNoAlloc(void* vpI, void* vpSVR, void* vpQT, char vpOn, T) {
+      }
+    }
+  }
+}
+        )";
+        m_processor.process(work.c_str(), compilation_result, nullptr, true);
     }
 
     interpreter::interpreter(int argc, const char* const* argv)
