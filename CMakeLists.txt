@@ -9,6 +9,19 @@
 cmake_minimum_required(VERSION 3.4.3)
 project(xeus-cling)
 
+# Configuration
+# =============
+
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json"
+)
+
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp14/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp14/kernel.json"
+)
+
 #######################
 # Rely on llvm-config #
 #######################
