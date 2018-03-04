@@ -195,7 +195,7 @@ namespace xcpp
         xeus::xjson result;
         result["protocol_version"] = "5.0.0";
         result["implementation"] = "xeus-cling";
-        result["implementation_version"] = "0.1.0";
+        result["implementation_version"] = "0.2.1";
         result["language_info"]["name"] = "c++";
         result["language_info"]["version"] = m_version;
         result["language_info"]["mimetype"] = "text/x-c++src";
