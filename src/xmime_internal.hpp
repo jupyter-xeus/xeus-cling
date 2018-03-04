@@ -190,9 +190,9 @@ namespace xcpp
             cling::ostrstream code;
             code << "using xcpp::mime_bundle_repr;";
             code << "mime_bundle_repr(";
-            code << xcpp::cling_detail::getTypeString(V);
+            code << "*(" << xcpp::cling_detail::getTypeString(V);
             code << &value;
-            code << ");";
+            code << "));";
 
             cling_detail::AccessCtrlRAII_t AccessCtrlRAII(*interpreter);
             cling_detail::LockCompilationDuringUserCodeExecutionRAII LCDUCER(*interpreter);
