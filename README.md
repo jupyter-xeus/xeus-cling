@@ -42,13 +42,17 @@ You can now make use of the C++ programming language in the Jupyter notebook.
 
 ![A C++ notebook](notebook.png)
 
-### Quick help and tab completion.
+### Quick help and tab-completion
 
 Quick help is shown on the pager with the special `?` magic.
 
 ![Help](help.png)
 
 Content for the help is available for the standard library and the QuantStack packages.
+
+### Rendering of rich outputs
+
+![Rich output](rich-output.png)
 
 ### Jupyter interactive widgets
 
