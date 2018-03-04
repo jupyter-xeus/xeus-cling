@@ -18,7 +18,7 @@ namespace xcpp
     {
         using ::xcpp::mime_bundle_repr;
         xeus::get_interpreter().display_data(
-            mime_bundle_repr(&t),
+            mime_bundle_repr(t),
             xeus::xjson::object(),
             xeus::xjson::object()
         );

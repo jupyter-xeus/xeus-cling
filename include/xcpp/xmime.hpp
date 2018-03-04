@@ -16,10 +16,10 @@ namespace xcpp
 {
     // Default implementation of mime_bundle_repr
     template <class T>
-    xeus::xjson mime_bundle_repr(const T* value)
+    xeus::xjson mime_bundle_repr(const T& value)
     {
         auto bundle = xeus::xjson::object();
-        bundle["text/plain"] = cling::printValue(value);
+        bundle["text/plain"] = cling::printValue(&value);
         return bundle;
     }
 }
