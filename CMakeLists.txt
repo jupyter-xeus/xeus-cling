@@ -12,6 +12,8 @@ project(xeus-cling)
 # Configuration
 # =============
 
+include(GNUInstallDirs)
+
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json.in"
     "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json"
@@ -123,7 +125,6 @@ endif()
 # Target and link #
 ###################
 
-include(GNUInstallDirs)
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
@@ -253,7 +254,8 @@ install(FILES ${XCPP_HEADERS}
 
 set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
 install(DIRECTORY ${KERNELSPEC_DIR}
-        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
+        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR}
+        PATTERN "*.in" EXCLUDE)
 
 set(TAGFILESPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tagfile)
 install(DIRECTORY ${TAGFILESPEC_DIR}
