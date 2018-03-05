@@ -6,7 +6,11 @@
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
 the native implementation of the Jupyter protocol [xeus](https://github.com/QuantStack/xeus).
 
-## Installation
+## Installation in a virtual machine (VirtualBox)
+
+To install in a virtual machine, see the example at https://github.com/swaroopch/vagrant_jupyter_cpp
+
+## Installation locally
 
 xeus-cling has been packaged for the conda package manager on the linux platform. To be sure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with [anaconda](https://www.anaconda.com/) you can have a conflict with the `zeromq` library which is already installed with anaconda.
 
