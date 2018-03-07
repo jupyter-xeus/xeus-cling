@@ -12,6 +12,7 @@
 #include <sstream>
 #include <vector>
 
+#include "xcpp_config.hpp"
 #include "xbuffer.hpp"
 #include "xinterpreter.hpp"
 #include "xinspect.hpp"
@@ -231,9 +232,8 @@ namespace xcpp
     xeus::xjson interpreter::kernel_info_request_impl()
     {
         xeus::xjson result;
-        result["protocol_version"] = "5.0.0";
         result["implementation"] = "xeus-cling";
-        result["implementation_version"] = "0.2.1";
+        result["implementation_version"] = XCPP_VERSION;
         result["language_info"]["name"] = "c++";
         result["language_info"]["version"] = m_version;
         result["language_info"]["mimetype"] = "text/x-c++src";
