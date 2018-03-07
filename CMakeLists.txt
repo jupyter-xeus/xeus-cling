@@ -9,6 +9,22 @@
 cmake_minimum_required(VERSION 3.4.3)
 project(xeus-cling)
 
+set(XCPP_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# Versionning
+# ===========
+
+file(STRINGS "${XCPP_SRC_DIR}/xcpp_config.hpp" xcpp_version_defines
+     REGEX "#define XCPP_VERSION_(MAJOR|MINOR|PATCH)")
+foreach(ver ${xcpp_version_defines})
+    if(ver MATCHES "#define XCPP_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
+        set(XCPP_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
+    endif()
+endforeach()
+set(${PROJECT_NAME}_VERSION
+    ${XCPP_VERSION_MAJOR}.${XCPP_VERSION_MINOR}.${XCPP_VERSION_PATCH})
+message(STATUS "Building xeus-cling v${${PROJECT_NAME}_VERSION}")
+
 # Configuration
 # =============
 
@@ -142,6 +158,7 @@ set(XEUSCLING_SRC
     src/xdemangle.hpp
     src/xoptions.cpp
     src/xoptions.hpp
+    src/xcpp_config.hpp
     src/xparser.cpp
     src/xparser.hpp
     src/xholder_cling.cpp
