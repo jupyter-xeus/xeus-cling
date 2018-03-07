@@ -55,15 +55,15 @@ namespace xcpp
     }
 
     xeus::xjson interpreter::execute_request_impl(int execution_counter,
-                                                 const std::string& code,
-                                                 bool /*silent*/,
-                                                 bool /*store_history*/,
-                                                 const xeus::xjson_node* /*user_expressions*/,
-                                                 bool /*allow_stdin*/)
+                                                  const std::string& code,
+                                                  bool /*silent*/,
+                                                  bool /*store_history*/,
+                                                  const xeus::xjson_node* /*user_expressions*/,
+                                                  bool /*allow_stdin*/)
     {
-        cling::Interpreter::CompilationResult compilation_result;
         xeus::xjson kernel_res;
 
+        // Check for magics
         for (auto& pre : preamble_manager.preamble)
         {
             if (pre.second.is_match(code))
@@ -73,61 +73,99 @@ namespace xcpp
             }
         }
 
+        // Split code from includes
         auto blocks = split_from_includes(code.c_str());
+
+        auto errorlevel = 0;
+        std::string ename;
+        std::string evalue;
         cling::Value output;
+        cling::Interpreter::CompilationResult compilation_result;
 
         for (const auto& block : blocks)
         {
-            // Perform normal evaluation
-            auto errorlevel = 0;
+            // Attempt normal evaluation
             try
             {
                 errorlevel = m_processor.process(block, compilation_result, &output, true);
             }
+
+            // Catch all errors
             catch (cling::InterpreterException& e)
             {
+                errorlevel = 1;
+                ename = "Interpreter Exception";
                 if (!e.diagnose())
                 {
-                    std::cerr << "Caught an interpreter exception!\n"
-                              << e.what() << '\n';
+                    evalue = e.what();
                 }
             }
             catch (std::exception& e)
             {
-                std::cerr << "Caught a std::exception!\n"
-                          << e.what() << '\n';
+                errorlevel = 1;
+                ename = "Standard Exception";
+                evalue = e.what();
             }
             catch (...)
             {
-                std::cerr << "Exception occurred. Recovering...\n";
+                errorlevel = 1;
+                ename = "Error";
+            }
+            if (compilation_result != cling::Interpreter::kSuccess)
+            {
+                errorlevel = 1;
+                ename = "Interpreter Error";
             }
 
+            // If an error was encountered, don't attempt further execution
             if (errorlevel)
             {
                 m_processor.cancelContinuation();
-                kernel_res = get_error_reply("ename", "evalue", {});
-                return kernel_res;
-            }
-            else if (compilation_result != cling::Interpreter::kSuccess)
-            {
-                kernel_res = get_error_reply("ename", "evalue", {});
-                return kernel_res;
+                break;
             }
         }
 
-        if (output.hasValue() && trim(blocks.back()).back() != ';')
-        {
-            xeus::xjson pub_data = mime_repr(output);
-            publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
-        }
-
+        // Flush streams
         std::cout << std::flush;
-        kernel_res["status"] = "ok";
+        std::cerr << std::flush;
+
+        // Depending of error level, publish execution result or execution
+        // error.
+        if (errorlevel)
+        {
+            // Classic Notebook does not make use of the "evalue" or "ename"
+            // fields, and only displays the traceback.
+            //
+            // JupyterLab displays the "{ename}: {evalue}" if the traceback is
+            // empty.
+            std::vector<std::string> traceback({ename + ": " + evalue});
+            publish_execution_error(ename, evalue, traceback);
+        }
+        else
+        {
+            // Publish a mime bundle for the last return value if
+            // the semicolon was omitted.
+            if (output.hasValue() && trim(blocks.back()).back() != ';')
+            {
+                xeus::xjson pub_data = mime_repr(output);
+                publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
+            }
+        }
+
+        // Return status shell message
+        if (errorlevel)
+        {
+            kernel_res["status"] = "error";
+        }
+        else
+        {
+            kernel_res["status"] = "ok";
+        }
         return kernel_res;
     }
 
     xeus::xjson interpreter::complete_request_impl(const std::string& code,
-                                                  int cursor_pos)
+                                                   int cursor_pos)
     {
         std::vector<std::string> result;
         cling::Interpreter::CompilationResult compilation_result;
@@ -163,8 +201,8 @@ namespace xcpp
     }
 
     xeus::xjson interpreter::inspect_request_impl(const std::string& code,
-                                                 int cursor_pos,
-                                                 int /*detail_level*/)
+                                                  int cursor_pos,
+                                                  int /*detail_level*/)
     {
         xeus::xjson kernel_res;
 
@@ -206,18 +244,6 @@ namespace xcpp
 
     void interpreter::input_reply_impl(const std::string& /*value*/)
     {
-    }
-
-    xeus::xjson interpreter::get_error_reply(const std::string& ename,
-                                            const std::string& evalue,
-                                            const std::vector<std::string>& trace_back)
-    {
-        xeus::xjson result;
-        result["status"] = "error";
-        result["ename"] = ename;
-        result["evalue"] = evalue;
-        result["traceback"] = trace_back;
-        return result;
     }
 
     void interpreter::redirect_output()
