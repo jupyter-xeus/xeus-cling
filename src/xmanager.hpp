@@ -77,6 +77,7 @@ namespace xcpp
             {
                 return m_magic_line.find(magic_name) != m_magic_line.end();
             }
+            return false;
         }
 
         void apply(const std::string& magic_name, const std::string& line, const std::string& cell)
