@@ -63,8 +63,8 @@ namespace xcpp
         void input_reply_impl(const std::string& value) override;
 
         xeus::xjson get_error_reply(const std::string& ename,
-                              const std::string& evalue,
-                              const std::vector<std::string>& trace_back);
+                                    const std::string& evalue,
+                                    const std::vector<std::string>& trace_back);
 
         void redirect_output();
         void restore_output();

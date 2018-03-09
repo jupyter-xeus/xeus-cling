@@ -53,6 +53,7 @@ namespace xcpp
                     return child.child("anchorfile").child_value();
                 }
             }
+            return "";
         }
 
         bool operator()(pugi::xml_node node)
