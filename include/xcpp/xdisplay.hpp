@@ -25,16 +25,27 @@ namespace xcpp
     }
 
     template <class T>
-    void display(const T& t, xeus::xguid id)
+    void display(const T& t, xeus::xguid id, bool update=false)
     {
         xeus::xjson transient;
         transient["display_id"] = id;
         using ::xcpp::mime_bundle_repr;
-        xeus::get_interpreter().display_data(
-            mime_bundle_repr(t),
-            xeus::xjson::object(),
-            std::move(transient)
-        );
+        if (update)
+        {
+            xeus::get_interpreter().update_display_data(
+                mime_bundle_repr(t),
+                xeus::xjson::object(),
+                std::move(transient)
+            );
+        }
+        else
+        {
+            xeus::get_interpreter().display_data(
+                mime_bundle_repr(t),
+                xeus::xjson::object(),
+                std::move(transient)
+            );
+        }
     }
 }
 
