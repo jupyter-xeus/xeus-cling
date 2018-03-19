@@ -40,5 +40,8 @@ install:
     - cd build
     - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ ..
     - make -j2 install
+    # Install jupyter_kernel_test and pytest
+    - pip install jupyter_kernel_test
+    - cd ../test
 script:
-    - echo "xeus-cling built successfully"
+    - python test_xcpp_kernel.py
