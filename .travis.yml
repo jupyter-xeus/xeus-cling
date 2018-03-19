@@ -1,0 +1,44 @@
+language: cpp
+env:
+  global:
+    - MINCONDA_VERSION="latest"
+    - MINCONDA_LINUX="Linux-x86_64"
+    - MINCONDA_OSX="MacOSX-x86_64"
+matrix:
+  fast_finish: true
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+install:
+    # Define the version of miniconda to download
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        MINCONDA_OS=$MINCONDA_LINUX;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+        MINCONDA_OS=$MINCONDA_OSX;
+      fi
+    - wget "http://repo.continuum.io/miniconda/Miniconda3-$MINCONDA_VERSION-$MINCONDA_OS.sh" -O miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    # Install dependencies
+    - conda install cmake xeus=0.11.0 cling=0.5.0 nlohmann_json=3.1.1 cppzmq xtl=0.4.3 pugixml cxxopts=1.4.1 nlohmann_json=3.1.1 -c QuantStack -c conda-forge
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+          conda install gcc-7 -c QuantStack -c conda-forge;
+      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          conda install clangdev llvmdev -c QuantStack -c conda-forge;
+      fi
+    # Build and install xeus-cling
+    - mkdir build
+    - cd build
+    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ ..
+    - make -j2 install
+script:
+    - echo "xeus-cling built successfully"
