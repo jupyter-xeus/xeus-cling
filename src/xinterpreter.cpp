@@ -132,7 +132,7 @@ namespace xcpp
         std::cerr << std::flush;
 
         // Depending of error level, publish execution result or execution
-        // error.
+        // error, and compose execute_reply message.
         if (errorlevel)
         {
             // Classic Notebook does not make use of the "evalue" or "ename"
@@ -142,6 +142,12 @@ namespace xcpp
             // empty.
             std::vector<std::string> traceback({ename + ": " + evalue});
             publish_execution_error(ename, evalue, traceback);
+
+            // Compose execute_reply message.
+            kernel_res["status"] = "error";
+            kernel_res["ename"] = ename;
+            kernel_res["evalue"] = evalue;
+            kernel_res["traceback"] = traceback;
         }
         else
         {
@@ -152,16 +158,11 @@ namespace xcpp
                 xeus::xjson pub_data = mime_repr(output);
                 publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
             }
-        }
 
-        // Return status shell message
-        if (errorlevel)
-        {
-            kernel_res["status"] = "error";
-        }
-        else
-        {
+            // Compose execute_reply message.
             kernel_res["status"] = "ok";
+            kernel_res["payload"] = xeus::xjson::array();
+            kernel_res["user_expressions"] = xeus::xjson::object();
         }
         return kernel_res;
     }
@@ -235,6 +236,23 @@ namespace xcpp
         xeus::xjson result;
         result["implementation"] = "xeus-cling";
         result["implementation_version"] = XCPP_VERSION;
+
+        /* The jupyter-console banner for xeus-cling is the following:
+         __  _____ _   _ ___      ___ _    ___ _  _  ___
+         \ \/ / __| | | / __|___ / __| |  |_ _| \| |/ __|
+          >  <| _|| |_| \__ \___| (__| |__ | || .` | (_ |
+         /_/\_\___|\___/|___/    \___|____|___|_|\_|\___|
+
+          Jupyter Kernel for the Cling C++ interpreter
+        */
+
+        result["banner"] = " __  _____ _   _ ___      ___ _    ___ _  _  ___ \n"
+                           " \\ \\/ / __| | | / __|___ / __| |  |_ _| \\| |/ __|\n"
+                           "  >  <| _|| |_| \\__ \\___| (__| |__ | || .` | (_ |\n"
+                           " /_/\\_\\___|\\___/|___/    \\___|____|___|_|\\_|\\___|\n"
+                           "\n"
+                           "  Jupyter Kernel for the Cling C++ interpreter  ";
+
         result["language_info"]["name"] = "c++";
         result["language_info"]["version"] = m_version;
         result["language_info"]["mimetype"] = "text/x-c++src";

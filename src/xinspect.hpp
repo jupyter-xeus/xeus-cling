@@ -232,9 +232,9 @@ namespace xcpp
             std::cout << std::flush;
             kernel_res["found"] = false;
             kernel_res["status"] = "error";
-            kernel_res["ename"] = "ename";
-            kernel_res["evalue"] = "evalue";
-            kernel_res["traceback"] = {};
+            kernel_res["ename"] = "No documentation found";
+            kernel_res["evalue"] = "";
+            kernel_res["traceback"] = xeus::xjson::object();
         }
         else
         {
@@ -258,12 +258,12 @@ namespace xcpp
                 inspect_result + R"("></iframe>)";
 
             kernel_res["payload"] = xeus::xjson::array();
-
             kernel_res["payload"][0] = xeus::xjson::object({
                 {"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
                 {"source", "page"},
                 {"start", 0}
             });
+            kernel_res["user_expressions"] = xeus::xjson::object();
 
             std::cout << std::flush;
             kernel_res["found"] = true;
