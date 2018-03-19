@@ -1,0 +1,45 @@
+build: false
+
+platform:
+  - x64
+
+image:
+  - Visual Studio 2017
+  - Visual Studio 2015
+
+environment:
+  matrix:
+    - MINICONDA: C:\xwidgets-conda
+
+init:
+  - "ECHO %MINICONDA%"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCARGUMENT=%PLATFORM%
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x64" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x86" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - echo "%VCVARPATH% %VCARGUMENT%"
+  - "%VCVARPATH% %VCARGUMENT%"
+  - ps: if($env:Platform -eq "x64"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe; echo "Done"}
+  - ps: if($env:Platform -eq "x86"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe' C:\Miniconda.exe; echo "Done"}
+  - cmd: C:\Miniconda.exe /S /D=C:\xwidgets-conda
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+
+install:
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  # Install dependencies
+  - conda install cmake xeus=0.11.0 cling=0.5.0 nlohmann_json=3.1.1 cppzmq xtl=0.4.3 pugixml cxxopts=1.4.1 -c QuantStack -c conda-forge
+  # Build and install xeus-cling
+  - mkdir build
+  - cd build
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\LIBRARY ..
+  - nmake
+  - nmake install
+  # Install jupyter_kernel_test and pytest
+  - pip install jupyter_kernel_test
+  - cd..
+  - cd test
+
+build_script:
+  - python test_xcpp_kernel.py
