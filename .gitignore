@@ -45,8 +45,8 @@ docs/build/
 build/
 
 # generated kernel specs
-/kernels/xeus-cling-cpp11/kernel.json
-/kernels/xeus-cling-cpp14/kernel.json
+/share/jupyter/kernels/xeus-cling-cpp11/kernel.json
+/share/jupyter/kernels/xeus-cling-cpp14/kernel.json
 
 # Jupyter artefacts
 .ipynb_checkpoints/
