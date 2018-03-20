@@ -41,7 +41,8 @@ install:
     - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ ..
     - make -j2 install
     # Install jupyter_kernel_test and pytest
+    - conda install pytest -c conda-forge
     - pip install jupyter_kernel_test
     - cd ../test
 script:
-    - python test_xcpp_kernel.py
+    - py.test .

@@ -37,10 +37,11 @@ install:
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
+  - conda install pytest -c conda-forge
   - pip install jupyter_kernel_test
   - cd..
   - cd test
 
 build_script:
   # Allowing failure on jupyter kernel tests as Cling does not support windows
-  - python test_xcpp_kernel.py & exit 0
+  - py.test .
