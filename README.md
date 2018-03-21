@@ -10,7 +10,10 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/Quan
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the linux platform. To be sure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with [anaconda](https://www.anaconda.com/) you can have a conflict with the `zeromq` library which is already installed with anaconda.
+xeus-cling has been packaged for the conda package manager on the **linux** and **OS X** platforms. The build for the **windows** platform made available on our channel is merely experimental.
+
+To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `zeromq` library which is already installed in the anaconda distribution.
+
 
 The safest usage is to create an environment named `cling` with your miniconda installation
 
@@ -22,9 +25,7 @@ source activate cling
 Then you can install in this environment `xeus-cling` and its dependencies
 
 ```
-conda install cling -c QuantStack -c conda-forge
-conda install xeus-cling -c QuantStack -c conda-forge
-conda install notebook -c conda-forge
+conda install xeus-cling notebook -c QuantStack -c conda-forge
 ```
 
 Or you can install it directly from the sources, if all the dependencies are already installed.
@@ -36,7 +37,7 @@ make && make install
 
 ## Usage
 
-Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **xeus C++14** kernel in the *new* dropdown.
+Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **C++14** kernel in the *new* dropdown.
 
 ### A C++ notebook
 

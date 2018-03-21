@@ -37,8 +37,7 @@ install:
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
-  - conda install pytest -c conda-forge
-  - pip install jupyter_kernel_test
+  - conda install pytest jupyter_kernel_test -c conda-forge
   - cd..
   - cd test
 
