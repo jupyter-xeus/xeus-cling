@@ -1,7 +1,7 @@
 # ![xeus-cling](http://quantstack.net/assets/images/xeus-cling.svg)
 
 [![Travis](https://travis-ci.org/QuantStack/xeus-cling.svg?branch=master)](https://travis-ci.org/QuantStack/xeus-cling)
-[![Appveyor](https://ci.appveyor.com/api/projects/status/panude2p4px78vpo?svg=true)](https://ci.appveyor.com/project/QuantStack/xeus-cling)
+[![Appveyor](https://ci.appveyor.com/api/projects/status/jh45g5pj44jqj8vw?svg=true)](https://ci.appveyor.com/project/QuantStack/xeus-cling)
 [![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.2.4?filepath=notebooks/xcpp.ipynb)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
