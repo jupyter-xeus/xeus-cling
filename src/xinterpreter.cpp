@@ -58,7 +58,7 @@ namespace xcpp
 
     xeus::xjson interpreter::execute_request_impl(int execution_counter,
                                                   const std::string& code,
-                                                  bool /*silent*/,
+                                                  bool silent,
                                                   bool /*store_history*/,
                                                   const xeus::xjson_node* /*user_expressions*/,
                                                   bool /*allow_stdin*/)
@@ -79,17 +79,31 @@ namespace xcpp
         auto blocks = split_from_includes(code.c_str());
 
         auto errorlevel = 0;
+        auto indent = 0;
         std::string ename;
         std::string evalue;
         cling::Value output;
         cling::Interpreter::CompilationResult compilation_result;
+
+        // If silent is set to true, temporarily dismiss all std::cerr and
+        // std::cout outpus resulting from `m_processor.process`.
+
+        auto cout_strbuf = std::cout.rdbuf();
+        auto cerr_strbuf = std::cerr.rdbuf();
+
+        if (silent)
+        {
+            auto null = xnull();
+            std::cout.rdbuf(&null);
+            std::cerr.rdbuf(&null);
+        }
 
         for (const auto& block : blocks)
         {
             // Attempt normal evaluation
             try
             {
-                errorlevel = m_processor.process(block, compilation_result, &output, true);
+                indent = m_processor.process(block, compilation_result, &output, true);
             }
 
             // Catch all errors
@@ -113,6 +127,7 @@ namespace xcpp
                 errorlevel = 1;
                 ename = "Error";
             }
+
             if (compilation_result != cling::Interpreter::kSuccess)
             {
                 errorlevel = 1;
@@ -131,6 +146,13 @@ namespace xcpp
         std::cout << std::flush;
         std::cerr << std::flush;
 
+        // Reset non-silent output buffers
+        if (silent)
+        {
+            std::cout.rdbuf(cout_strbuf);
+            std::cerr.rdbuf(cerr_strbuf);
+        }
+
         // Depending of error level, publish execution result or execution
         // error, and compose execute_reply message.
         if (errorlevel)
@@ -141,7 +163,10 @@ namespace xcpp
             // JupyterLab displays the "{ename}: {evalue}" if the traceback is
             // empty.
             std::vector<std::string> traceback({ename + ": " + evalue});
-            publish_execution_error(ename, evalue, traceback);
+            if (!silent)
+            {
+                publish_execution_error(ename, evalue, traceback);
+            }
 
             // Compose execute_reply message.
             kernel_res["status"] = "error";
@@ -153,7 +178,7 @@ namespace xcpp
         {
             // Publish a mime bundle for the last return value if
             // the semicolon was omitted.
-            if (output.hasValue() && trim(blocks.back()).back() != ';')
+            if (!silent && output.hasValue() && trim(blocks.back()).back() != ';')
             {
                 xeus::xjson pub_data = mime_repr(output);
                 publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
@@ -228,7 +253,12 @@ namespace xcpp
 
     xeus::xjson interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
-        return xeus::xjson::object();
+        // TODO: use indentation returned from processing the code to determine
+        // if the code is complete.
+        xeus::xjson kernel_res;
+        kernel_res["status"] = "complete";
+        kernel_res["indent"] = "";
+        return kernel_res;
     }
 
     xeus::xjson interpreter::kernel_info_request_impl()
