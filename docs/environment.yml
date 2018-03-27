@@ -1,0 +1,7 @@
+name: xeus-cling-docs
+
+channels:
+  - conda-forge
+
+dependencies:
+  - breathe
