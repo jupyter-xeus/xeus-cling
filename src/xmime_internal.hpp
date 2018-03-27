@@ -31,6 +31,7 @@
 #include "clang/AST/DeclCXX.h"
 #include "clang/AST/Expr.h"
 #include "clang/AST/Type.h"
+#include "clang/Tooling/Core/QualTypeNames.h"
 #include "clang/Frontend/CompilerInstance.h"
 
 #include "llvm/ExecutionEngine/GenericValue.h"
@@ -108,7 +109,7 @@ namespace xcpp
                                    const char* Begin = "(", const char* End = "*)",
                                    std::size_t Hint = 3)
         {
-            return enclose(cling::utils::TypeName::GetFullyQualifiedName(Ty, C), Begin, End, Hint);
+            return enclose(clang::TypeName::getFullyQualifiedName(Ty, C, true), Begin, End, Hint);
         }
 
         static clang::QualType getElementTypeAndExtent(const clang::ConstantArrayType* CArrTy, std::string& extent)
