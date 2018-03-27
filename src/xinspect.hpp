@@ -12,7 +12,11 @@
 #include <fstream>
 #include <string>
 
+#include <dirent.h>
+
 #include "pugixml.hpp"
+
+#include "xeus/xjson.hpp"
 
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
@@ -139,15 +143,42 @@ namespace xcpp
         return typeString;
     }
 
+    static xeus::xjson read_tagconfs(const char* path)
+    {
+        xeus::xjson result = xeus::xjson::array();
+        DIR* directory = opendir(path);
+        if (directory == nullptr)
+        {
+            return result;
+        }
+        dirent* item = readdir(directory);
+        while (item != nullptr)
+        {
+            std::string extension = "json";
+            if (item->d_type == DT_REG)
+            {
+                std::string fname = item->d_name;
+
+                if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
+                {
+                    std::ifstream i(path + ('/' + fname));
+                    xeus::xjson entry;
+                    i >> entry;
+                    result.emplace_back(std::move(entry));
+                }
+            }
+            item = readdir(directory);
+        }
+        closedir(directory);
+        return result;
+    }
+
     void inspect(const std::string& code, xeus::xjson& kernel_res, cling::MetaProcessor& m_processor)
     {
-
-        std::string tagfile_dir = TAGFILE_DIR;
+        xeus::xjson tagconfs = read_tagconfs(XCPP_TAGCONFS_DIR);
+        std::string tagfiles_dir = XCPP_TAGFILES_DIR;
 
         std::vector<std::string> check{"class", "struct", "function"};
-
-        std::string search_file = tagfile_dir + "/search_list.txt";
-        std::ifstream search(search_file);
 
         std::string url, tagfile;
 
@@ -160,16 +191,18 @@ namespace xcpp
         std::smatch method;
         std::string to_inspect = inspect[1];
 
-        // method or variable of class found found (xxxx.yyyy)
+        // Method or variable of class found (xxxx.yyyy)
         if (std::regex_search(to_inspect, method, std::regex(R"((.*)\.(\w*)$)")))
         {
             std::string typename_ = find_type(method[1], m_processor);
 
             if (!typename_.empty())
             {
-                while (search >> url >> tagfile)
+                for (xeus::xjson::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
                 {
-                    std::string filename = tagfile_dir + "/" + tagfile;
+                    url = it->at("url");
+                    tagfile = it->at("tagfile");
+                    std::string filename = tagfiles_dir + "/" + tagfile;
                     pugi::xml_document doc;
                     pugi::xml_parse_result result = doc.load_file(filename.c_str());
                     class_member_predicate predicate{typename_, "function", method[2]};
@@ -183,7 +216,7 @@ namespace xcpp
         }
         else
         {
-            std::string findString;
+            std::string find_string;
 
             // check if we try to find the documentation of a namespace
             // if yes, don't try to find the type using typeid
@@ -191,22 +224,24 @@ namespace xcpp
             std::smatch namespace_match;
             if (std::regex_match(to_inspect, namespace_match, is_namespace))
             {
-                findString = to_inspect;
+                find_string = to_inspect;
             }
             else
             {
                 std::string typename_ = find_type(to_inspect, m_processor);
-                findString = (typename_.empty()) ? to_inspect : typename_;
+                find_string = (typename_.empty()) ? to_inspect : typename_;
             }
 
-            while (search >> url >> tagfile)
+            for (xeus::xjson::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
             {
-                std::string filename = tagfile_dir + "/" + tagfile;
+                url = it->at("url");
+                tagfile = it->at("tagfile");
+                std::string filename = tagfiles_dir + "/" + tagfile;
                 pugi::xml_document doc;
                 pugi::xml_parse_result result = doc.load_file(filename.c_str());
                 for (auto c : check)
                 {
-                    node_predicate predicate{c, findString};
+                    node_predicate predicate{c, find_string};
                     std::string node;
 
                     if (c == "class" || c == "struct")

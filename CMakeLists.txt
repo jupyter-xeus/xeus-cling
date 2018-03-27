@@ -31,13 +31,13 @@ message(STATUS "Building xeus-cling v${${PROJECT_NAME}_VERSION}")
 include(GNUInstallDirs)
 
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp11/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp11/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp11/kernel.json"
 )
 
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp14/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/kernels/xeus-cling-cpp14/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp14/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp14/kernel.json"
 )
 
 #######################
@@ -257,25 +257,34 @@ target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
 # Installation #
 ################
 
+# Install xeus-cling
 install(TARGETS ${XEUSCLING_TARGET}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-if(MSVC)
-    set(XEUS_KERNELSPEC_INSTALL_DIR "../share/jupyter" CACHE STRING "install path for kernel specs")
-else(MSVC)
-    set(XEUS_KERNELSPEC_INSTALL_DIR "share/jupyter" CACHE STRING "install path for kernel specs")
-endif(MSVC)
+# Configuration and data directories for jupyter and xeus-cling
+set(XJUPYTER_DATA_DIR "share/jupyter"    CACHE STRING "Jupyter data directory")
+set(XCPP_DATA_DIR     "share/xcpp"       CACHE STRING "xeus-cling data directory")
+set(XCPP_CONF_DIR     "etc/xcpp"         CACHE STRING "xeus-cling configuration directory")
 
+# Install xcpp headers
 install(FILES ${XCPP_HEADERS}
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xcpp)
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xcpp)
 
-set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+# Install Jupyter kernelspecs
+set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels)
 install(DIRECTORY ${KERNELSPEC_DIR}
-        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR}
+        DESTINATION ${XJUPYTER_DATA_DIR}
         PATTERN "*.in" EXCLUDE)
 
-set(TAGFILESPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tagfile)
-install(DIRECTORY ${TAGFILESPEC_DIR}
-        DESTINATION ${XEUS_KERNELSPEC_INSTALL_DIR})
+# Install xeus-cling tag files
+set(XCPP_TAGFILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/xcpp/tagfiles)
+install(DIRECTORY ${XCPP_TAGFILES_DIR}
+        DESTINATION ${XCPP_DATA_DIR})
 
-add_definitions(-DTAGFILE_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_KERNELSPEC_INSTALL_DIR}/tagfile")
+set(XCPP_TAGCONFS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/etc/xcpp/tags.d)
+install(DIRECTORY ${XCPP_TAGCONFS_DIR}
+        DESTINATION ${XCPP_CONF_DIR})
+
+# Add definitions for the kernel to find tagfiles.
+add_definitions(-DXCPP_TAGFILES_DIR="${CMAKE_INSTALL_PREFIX}/${XCPP_DATA_DIR}/tagfiles")
+add_definitions(-DXCPP_TAGCONFS_DIR="${CMAKE_INSTALL_PREFIX}/${XCPP_CONF_DIR}/tags.d")
