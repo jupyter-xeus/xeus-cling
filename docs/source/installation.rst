@@ -4,48 +4,54 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
+.. raw:: html
+
+   <style>
+   .rst-content .section>img {
+       width: 30px;
+       margin-bottom: 0;
+       margin-top: 0;
+       margin-right: 15px;
+       margin-left: 15px;
+       float: left;
+   }
+   </style>
+
 Installation
 ============
 
-With Conda
-----------
+.. image:: conda.svg
 
-``xeus-cling`` has been packaged on all platforms for the conda package manager.
+Using the conda package
+-----------------------
 
-.. code::
-
-    conda install xeus-cling notebook -c QuantStack -c conda-forge
-
-From Source
------------
-
-``xeus-cling`` depends on the following libraries:
-
- - `xeus`
- - `xtl`
- - `cling`
- - `pugxml`
- - `cppzmq`
- - `cxxopts`
- - `nlohmann_json`
- - `dirent` (on Windows only)
-
-We have packaged all these dependencies for the conda package manager. The simplest way to install them with conda is to run:
+A package for xeus-cling is available on the conda package manager.
 
 .. code::
 
-    conda install cmake zeromq cppzmq cryptopp xtl -c conda-forge .
+    conda install -c QuantStack -c conda-forge xeus-cling
 
-On Linux platform, you will also need:
+.. image:: cmake.svg
+
+From source with cmake
+----------------------
+
+You can also install ``xeus-cling`` from source with cmake. This requires that you have all the dependencies installed in the same prefix.
 
 .. code::
 
-    conda install libuuid -c conda-forge
-
-Once you have installed the dependencies, you can build and install `xeus`:
-
-.. code::
-
-    cmake -D BUILD_EXAMPLES=ON -D CMAKE_BUILD_TYPE=Release .
-    make
+    mkdir build
+    cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/path/to/prefix ..
     make install
+
+On Windows platforms, from the source directory:
+
+.. code::
+
+    mkdir build
+    cd build
+    cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX=/path/to/prefix ..
+    nmake
+    nmake install
+

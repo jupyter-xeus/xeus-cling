@@ -32,12 +32,5 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
    :caption: USAGE
    :maxdepth: 2
 
-   basic_usage
-
-.. toctree::
-   :caption: API REFERENCE
-   :maxdepth: 2
-
-   api/xdisplay
-
-
+   rich_display
+   quick_help
