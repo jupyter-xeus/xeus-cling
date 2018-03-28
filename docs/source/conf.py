@@ -31,4 +31,3 @@ highlight_language = 'c++'
 pygments_style = 'sphinx'
 todo_include_todos = False
 htmlhelp_basename = 'xeus-clingdoc'
-
