@@ -11,8 +11,8 @@
 
 // Project version
 #define XCPP_VERSION_MAJOR 0
-#define XCPP_VERSION_MINOR 2
-#define XCPP_VERSION_PATCH 4
+#define XCPP_VERSION_MINOR 3
+#define XCPP_VERSION_PATCH 0
 
 // Composing the version string from major, minor and patch
 #define XCPP_CONCATENATE(A, B) XCPP_CONCATENATE_IMPL(A, B)
