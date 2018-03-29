@@ -290,7 +290,7 @@ namespace xcpp
             }
             </style>
             <iframe class="xcpp-iframe-pager" src=")" +
-                inspect_result + R"("></iframe>)";
+                inspect_result + + R"(?action=purge"></iframe>)";
 
             kernel_res["payload"] = xeus::xjson::array();
             kernel_res["payload"][0] = xeus::xjson::object({
