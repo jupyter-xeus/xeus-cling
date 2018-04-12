@@ -3,7 +3,7 @@
 [![Travis](https://travis-ci.org/QuantStack/xeus-cling.svg?branch=master)](https://travis-ci.org/QuantStack/xeus-cling)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/jh45g5pj44jqj8vw?svg=true)](https://ci.appveyor.com/project/QuantStack/xeus-cling)
 [![Documentation Status](http://readthedocs.org/projects/xeus-cling/badge/?version=latest)](https://xeus-cling.readthedocs.io/en/latest/?badge=latest)
-[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.3.0?filepath=notebooks/xcpp.ipynb)
+[![Binder](https://img.shields.io/badge/launch-binder-brightgreen.svg)](https://beta.mybinder.org/v2/gh/QuantStack/xeus-cling/0.4.0?filepath=notebooks/xcpp.ipynb)
 [![Join the Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/QuantStack/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
@@ -79,7 +79,7 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 | `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`       | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|-----------------|-----------------|-------------------------|
 |  master      |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
-|  0.4.0       |  >=0.11.0,<0.12 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
+|  0.4.0       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 |  0.3.0       |  >=0.11.0,<0.12 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 |  0.2.4       |  >=0.11.0,<0.12 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    |                         |
 |  0.2.3       |  >=0.11.0,<0.12 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    |                         |
