@@ -281,6 +281,13 @@ install(DIRECTORY ${KERNELSPEC_DIR}
         DESTINATION ${XJUPYTER_DATA_DIR}
         PATTERN "*.in" EXCLUDE)
 
+# Extra path for installing Jupyter kernelspec
+if (XEXTRA_JUPYTER_DATA_DIR)
+    install(DIRECTORY ${KERNELSPEC_DIR}
+            DESTINATION ${XEXTRA_JUPYTER_DATA_DIR}
+            PATTERN "*.in" EXCLUDE)
+endif(XEXTRA_JUPYTER_DATA_DIR)
+
 # Install xeus-cling tag files
 set(XCPP_TAGFILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/xcpp/tagfiles)
 install(DIRECTORY ${XCPP_TAGFILES_DIR}
