@@ -33,7 +33,7 @@ install:
   # Build and install xeus-cling
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\LIBRARY ..
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
