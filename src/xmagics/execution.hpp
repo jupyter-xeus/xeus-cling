@@ -21,6 +21,7 @@ namespace xcpp
     class timeit: public xmagic_line_cell
     {
     public:
+
         timeit(cling::MetaProcessor* p);
         virtual void operator()(const std::string& line) override
         {
@@ -35,8 +36,10 @@ namespace xcpp
             std::string ccell = cell;
             execute(cline, ccell);
         }
+
     private:
-        cling::MetaProcessor *m_processor;
+
+        cling::MetaProcessor* m_processor;
 
         xoptions get_options();
         std::string inner(std::size_t number, std::string const & code) const;

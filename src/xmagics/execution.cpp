@@ -21,7 +21,8 @@
 
 namespace xcpp
 {
-    timeit::timeit(cling::MetaProcessor* p):m_processor(p)
+    timeit::timeit(cling::MetaProcessor* p)
+        : m_processor(p)
     {
         cling::Interpreter::CompilationResult compilation_result;
 
@@ -67,9 +68,13 @@ namespace xcpp
         int order;
 
         if (timespan > 0.0)
-            order = std::min(-static_cast<int>(std::floor(std::floor(std::log10(timespan))/3)), 3);
+        {
+            order = std::min(-static_cast<int>(std::floor(std::floor(std::log10(timespan)) / 3)), 3);
+        }
         else
+        {
             order = 3;
+        }
         output.precision(precision);
         output << timespan * scaling[order] << " " << units[order];
         return output.str();
@@ -84,15 +89,15 @@ namespace xcpp
         auto options = get_options();
         options.parse(line);
 
-        std::size_t number = (options.count("n"))?options["n"].as<std::size_t>(): 0ul;
+        std::size_t number = (options.count("n")) ? options["n"].as<std::size_t>() : 0ul;
         std::size_t repeat = options["r"].as<std::size_t>();
         std::size_t precision = options["p"].as<std::size_t>();
-        
+
         std::string code;
         if (options.count("positional"))
         {
             auto& v = options["positional"].as<std::vector<std::string>>();
-            for (const auto& s : v) 
+            for (const auto& s : v)
             {
                 code += " " + s;
             }
@@ -100,8 +105,10 @@ namespace xcpp
 
         code += cell;
         if (trim(code).empty())
+        {
             return;
-        
+        }
+
         cling::Value result;
         cling::Interpreter::CompilationResult compilation_result;
 
@@ -109,33 +116,39 @@ namespace xcpp
         try
         {
             if (number == 0ul)
+            {
                 for(std::size_t n=0; n<10; ++n)
                 {
                     number = std::pow(10, n);
                     std::string timeit_code = inner(number, code);
                     errorlevel = m_processor->process(timeit_code.c_str(), compilation_result, &result);
                     if (result.simplisticCastAs<double>() >= 0.2)
+                    {
                         break;
+                    }
                 }
+            }
 
             std::vector<double> all_runs;
             double mean = 0;
             double stdev = 0;
-            for(std::size_t r=0; r<repeat; ++r)
+            for(std::size_t r = 0; r < repeat; ++r)
             {
                 std::string timeit_code = inner(number, code);
                 errorlevel = m_processor->process(timeit_code.c_str(), compilation_result, &result);
-                all_runs.push_back(result.simplisticCastAs<double>()/number);
+                all_runs.push_back(result.simplisticCastAs<double>() / number);
                 mean += all_runs.back();
             }
             mean /= repeat;
-            for(std::size_t r=0; r<repeat; ++r)
-                stdev += (all_runs[r] - mean)*(all_runs[r] - mean);
-            stdev = std::sqrt(stdev/repeat);
+            for(std::size_t r = 0; r < repeat; ++r)
+            {
+                stdev += (all_runs[r] - mean) * (all_runs[r] - mean);
+            }
+            stdev = std::sqrt(stdev / repeat);
 
             std::cout << _format_time(mean, precision) << " +- " << _format_time(stdev, precision);
-            std::cout << " per loop (mean +- std. dev. of " << repeat << " run" << ((repeat==1)? ", ":"s ");
-            std::cout << number << " loop" << ((number==1)? "":"s") << " each)\n";             
+            std::cout << " per loop (mean +- std. dev. of " << repeat << " run" << ((repeat == 1) ? ", " : "s ");
+            std::cout << number << " loop" << ((number == 1) ? "" : "s") << " each)\n";
         }
         catch (cling::InterpreterException& e)
         {
