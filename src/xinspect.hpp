@@ -290,11 +290,17 @@ namespace xcpp
             }
             </style>
             <iframe class="xcpp-iframe-pager" src=")" +
-                inspect_result + + R"(?action=purge"></iframe>)";
+                inspect_result + R"(?action=purge"></iframe>)";
+
+            // Note: Adding "?action=purge" suffix to force cppreference's
+            // Mediawiki to purge the HTTP cache.
 
             kernel_res["payload"] = xeus::xjson::array();
             kernel_res["payload"][0] = xeus::xjson::object({
-                {"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
+                {"data", {
+                    {"text/plain", inspect_result},
+                    {"text/html", html_content}}
+                },
                 {"source", "page"},
                 {"start", 0}
             });
