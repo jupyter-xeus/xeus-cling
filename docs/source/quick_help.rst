@@ -82,15 +82,12 @@ Another popular documentation system is the combination of doxygen and sphinx,
 thanks for the breathe_ package, which generates sphinx documentation using the
 XML output of doxygen.
 
-A Python script for converting a sphinx inventory into a doxygen tag file is
-available with xeus-cling. From there, the enabling of the live documentation
-in xeus-cling works in the same fashion.
-
-The case  of the ``xtensor`` library was handled with the conversion of the
-sphinx inventory.
+The xhale_ Python package can be used to convert the sphinx inventory files
+produced breathe into doxygen tag files.
 
 .. image:: xtensor.png
 
 .. _cppreference: https://en.cppreference.com
 .. _`relevant section`: https://www.stack.nl/~dimitri/doxygen/manual/external.html
 .. _breathe: https://breathe.readthedocs.io
+.. _xhale: https://xhale.readthedocs.io

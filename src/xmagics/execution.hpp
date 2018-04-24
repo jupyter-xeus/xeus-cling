@@ -9,6 +9,7 @@
 #ifndef XMAGICS_EXECUTION_HPP
 #define XMAGICS_EXECUTION_HPP
 
+#include <cstddef>
 #include <string>
 
 #include "cling/MetaProcessor/MetaProcessor.h"
@@ -18,7 +19,7 @@
 
 namespace xcpp
 {
-    class timeit: public xmagic_line_cell
+    class timeit : public xmagic_line_cell
     {
     public:
 
@@ -42,9 +43,9 @@ namespace xcpp
         cling::MetaProcessor* m_processor;
 
         xoptions get_options();
-        std::string inner(std::size_t number, std::string const & code) const;
+        std::string inner(std::size_t number, const std::string& code) const;
         std::string _format_time(double timespan, std::size_t precision) const;
-        void execute(std::string & line, std::string & cell);
+        void execute(std::string& line, std::string& cell);
     };
 }
 #endif

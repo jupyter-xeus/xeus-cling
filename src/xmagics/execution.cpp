@@ -6,6 +6,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+#include <cstddef>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -48,11 +49,11 @@ namespace xcpp
         return options;
     }
 
-    std::string timeit::inner(std::size_t number, std::string const & code) const
+    std::string timeit::inner(std::size_t number, const std::string& code) const
     {
         std::string timeit_code = "";
         timeit_code += "_t0 = std::chrono::high_resolution_clock::now();\n";
-        timeit_code += "for(std::size_t _i=0; _i<" + std::to_string(number) + ";++_i){\n";
+        timeit_code += "for (std::size_t _i = 0; _i < " + std::to_string(number) + "; ++_i) {\n";
         timeit_code += "   " + code + "\n";
         timeit_code += "}\n";
         timeit_code += "_t1 = std::chrono::high_resolution_clock::now();\n";
@@ -80,7 +81,7 @@ namespace xcpp
         return output.str();
     }
 
-    void timeit::execute(std::string & line, std::string & cell)
+    void timeit::execute(std::string& line, std::string& cell)
     {
         // std::istringstream iss(line);
         // std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
@@ -117,7 +118,7 @@ namespace xcpp
         {
             if (number == 0ul)
             {
-                for(std::size_t n=0; n<10; ++n)
+                for (std::size_t n = 0; n < 10; ++n)
                 {
                     number = std::pow(10, n);
                     std::string timeit_code = inner(number, code);
@@ -132,7 +133,7 @@ namespace xcpp
             std::vector<double> all_runs;
             double mean = 0;
             double stdev = 0;
-            for(std::size_t r = 0; r < repeat; ++r)
+            for (std::size_t r = 0; r < repeat; ++r)
             {
                 std::string timeit_code = inner(number, code);
                 errorlevel = m_processor->process(timeit_code.c_str(), compilation_result, &result);
@@ -140,7 +141,7 @@ namespace xcpp
                 mean += all_runs.back();
             }
             mean /= repeat;
-            for(std::size_t r = 0; r < repeat; ++r)
+            for (std::size_t r = 0; r < repeat; ++r)
             {
                 stdev += (all_runs[r] - mean) * (all_runs[r] - mean);
             }
