@@ -36,6 +36,12 @@ cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_p
 make && make install
 ```
 
+## Documentation
+
+To get started with using `xeus-cling`, check out the full documentation
+
+http://xeus-cling.readthedocs.io/
+
 ## Usage
 
 Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **C++14** kernel in the *new* dropdown.
@@ -46,7 +52,7 @@ You can now make use of the C++ programming language in the Jupyter notebook.
 
 ![A C++ notebook](notebook.png)
 
-### Quick help and tab-completion
+### Inline help and tab-completion
 
 Quick help is shown on the pager with the special `?` magic.
 
