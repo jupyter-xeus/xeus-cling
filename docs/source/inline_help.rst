@@ -12,8 +12,8 @@
    }
    </style>
 
-Accessing documentation
-=======================
+Inline documentation
+====================
 
 The standard library
 --------------------
