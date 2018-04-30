@@ -108,10 +108,7 @@ namespace xcpp
                                    const char* Begin = "(", const char* End = "*)",
                                    std::size_t Hint = 3)
         {
-            clang::PrintingPolicy Policy(C.getPrintingPolicy());
-            Policy.PolishForDeclaration = true;
-            std::string name = Ty.getAsString(Policy);
-            return enclose(name, Begin, End, Hint);
+            return enclose(cling::utils::TypeName::GetFullyQualifiedName(Ty, C), Begin, End, Hint);
         }
 
         static clang::QualType getElementTypeAndExtent(const clang::ConstantArrayType* CArrTy, std::string& extent)
