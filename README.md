@@ -36,6 +36,13 @@ cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_p
 make && make install
 ```
 
+## Trying it online
+
+To try out xeus-cling interactively in your web browser, just click on the binder
+link:
+
+[![Binder](binder-logo.svg)](https://mybinder.org/v2/gh/QuantStack/xeus-cling/0.4.2?filepath=notebooks/xcpp.ipynb)
+
 ## Documentation
 
 To get started with using `xeus-cling`, check out the full documentation
@@ -85,6 +92,7 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 | `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`       | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|-----------------|-----------------|-------------------------|
 |  master      |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
+|  0.4.3       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 |  0.4.2       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 |  0.4.1       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 |  0.4.0       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | `~4.2.3` | >=1.4.1,<=1.4.4 | >=3.1.0,<4.0    | >=2.3.2,<3              |
