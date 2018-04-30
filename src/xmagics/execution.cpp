@@ -32,7 +32,6 @@ namespace xcpp
         std::string init_timeit = "auto _t0 = std::chrono::high_resolution_clock::now();\n";
         init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";
         m_processor->process(init_timeit.c_str(), compilation_result);
-
     }
 
     xoptions timeit::get_options()
@@ -110,10 +109,13 @@ namespace xcpp
             return;
         }
 
-        cling::Value result;
+        auto errorlevel = 0;
+        auto indent = 0;
+        std::string ename;
+        std::string evalue;
+        cling::Value output;
         cling::Interpreter::CompilationResult compilation_result;
 
-        auto errorlevel = 0;
         try
         {
             if (number == 0ul)
@@ -122,8 +124,8 @@ namespace xcpp
                 {
                     number = std::pow(10, n);
                     std::string timeit_code = inner(number, code);
-                    errorlevel = m_processor->process(timeit_code.c_str(), compilation_result, &result);
-                    if (result.simplisticCastAs<double>() >= 0.2)
+                    indent = m_processor->process(timeit_code.c_str(), compilation_result, &output);
+                    if (output.simplisticCastAs<double>() >= 0.2)
                     {
                         break;
                     }
@@ -136,8 +138,8 @@ namespace xcpp
             for (std::size_t r = 0; r < repeat; ++r)
             {
                 std::string timeit_code = inner(number, code);
-                errorlevel = m_processor->process(timeit_code.c_str(), compilation_result, &result);
-                all_runs.push_back(result.simplisticCastAs<double>() / number);
+                indent = m_processor->process(timeit_code.c_str(), compilation_result, &output);
+                all_runs.push_back(output.simplisticCastAs<double>() / number);
                 mean += all_runs.back();
             }
             mean /= repeat;
@@ -149,24 +151,40 @@ namespace xcpp
 
             std::cout << _format_time(mean, precision) << " +- " << _format_time(stdev, precision);
             std::cout << " per loop (mean +- std. dev. of " << repeat << " run" << ((repeat == 1) ? ", " : "s ");
-            std::cout << number << " loop" << ((number == 1) ? "" : "s") << " each)\n";
+            std::cout << number << " loop" << ((number == 1) ? "" : "s") << " each)" << std::endl;
         }
+        // Catch all errors
         catch (cling::InterpreterException& e)
         {
+            errorlevel = 1;
+            ename = "Interpreter Exception";
             if (!e.diagnose())
             {
-                std::cerr << "Caught an interpreter exception!\n"
-                       << e.what() << '\n';
+                evalue = e.what();
             }
         }
         catch (std::exception& e)
         {
-            std::cerr << "Caught a std::exception!\n"
-                   << e.what() << '\n';
+            errorlevel = 1;
+            ename = "Standard Exception";
+            evalue = e.what();
         }
         catch (...)
         {
-            std::cerr << "Exception occurred. Recovering...\n";
+            errorlevel = 1;
+            ename = "Error";
+        }
+
+        if (compilation_result != cling::Interpreter::kSuccess)
+        {
+            errorlevel = 1;
+            ename = "Interpreter Error";
+        }
+
+        // If an error was encountered, don't attempt further execution
+        if (errorlevel)
+        {
+            m_processor->cancelContinuation();
         }
     }
 }

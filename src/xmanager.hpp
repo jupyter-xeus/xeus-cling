@@ -9,6 +9,12 @@
 #ifndef XCPP_MANAGER_HPP
 #define XCPP_MANAGER_HPP
 
+#include <map>
+#include <memory>
+#include <regex>
+#include <string>
+#include <type_traits>
+
 #include "xholder_cling.hpp"
 #include "xmagics.hpp"
 #include "xpreamble.hpp"
