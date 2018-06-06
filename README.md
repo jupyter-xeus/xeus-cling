@@ -1,4 +1,4 @@
-# ![xeus-cling](http://quantstack.net/assets/images/xeus-cling.svg)
+# ![xeus-cling](docs/source/xeus-cling.svg)
 
 [![Travis](https://travis-ci.org/QuantStack/xeus-cling.svg?branch=master)](https://travis-ci.org/QuantStack/xeus-cling)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/jh45g5pj44jqj8vw?svg=true)](https://ci.appveyor.com/project/QuantStack/xeus-cling)
