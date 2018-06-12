@@ -87,16 +87,16 @@ namespace xcpp
         //                          std::istream_iterator<std::string>());
 
         auto options = get_options();
-        options.parse(line);
+        auto result = options.parse(line);
 
-        std::size_t number = (options.count("n")) ? options["n"].as<std::size_t>() : 0ul;
-        std::size_t repeat = options["r"].as<std::size_t>();
-        std::size_t precision = options["p"].as<std::size_t>();
+        std::size_t number = (result.count("n")) ? result["n"].as<std::size_t>() : 0ul;
+        std::size_t repeat = result["r"].as<std::size_t>();
+        std::size_t precision = result["p"].as<std::size_t>();
 
         std::string code;
-        if (options.count("positional"))
+        if (result.count("positional"))
         {
-            auto& v = options["positional"].as<std::vector<std::string>>();
+            auto& v = result["positional"].as<std::vector<std::string>>();
             for (const auto& s : v)
             {
                 code += " " + s;

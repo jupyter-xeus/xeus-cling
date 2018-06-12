@@ -30,10 +30,10 @@ namespace xcpp
     void writefile::operator()(const std::string& line, const std::string& cell)
     {
         auto options = get_options();
-        options.parse(line);
+        auto result = options.parse(line);
 
-        auto append = options.count("a");
-        auto filename = options["filename"].as<std::string>();
+        auto append = result.count("a");
+        auto filename = result["filename"].as<std::string>();
         if (filename.empty())
         {
             std::cerr << "UsageError: the following arguments are required: filename\n";
