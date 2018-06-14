@@ -17,7 +17,7 @@ namespace xcpp
     {
         using parent = cxxopts::Options;
         using parent::Options;
-        void parse(const std::string& line);
+        cxxopts::ParseResult parse(const std::string& line);
     };
 }
 #endif
