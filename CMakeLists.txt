@@ -184,7 +184,7 @@ set (XCPP_HEADERS
 )
 
 set(LLVM_NO_DEAD_STRIP 1)
-set(LIBS clingInterpreter clingMetaProcessor clingUtils xeus pugixml)
+set(LIBS clingInterpreter clingMetaProcessor clingUtils xeus pugixml cxxopts::cxxopts)
 set(XEUSCLING_TARGET xeus-cling)
 add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
 set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
