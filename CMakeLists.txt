@@ -276,14 +276,14 @@ install(FILES ${XCPP_HEADERS}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xcpp)
 
 # Install Jupyter kernelspecs
-set(KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels)
-install(DIRECTORY ${KERNELSPEC_DIR}
+set(XCPP_KERNELSPEC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels)
+install(DIRECTORY ${XCPP_KERNELSPEC_DIR}
         DESTINATION ${XJUPYTER_DATA_DIR}
         PATTERN "*.in" EXCLUDE)
 
 # Extra path for installing Jupyter kernelspec
 if (XEXTRA_JUPYTER_DATA_DIR)
-    install(DIRECTORY ${KERNELSPEC_DIR}
+    install(DIRECTORY ${XCPP_KERNELSPEC_DIR}
             DESTINATION ${XEXTRA_JUPYTER_DATA_DIR}
             PATTERN "*.in" EXCLUDE)
 endif(XEXTRA_JUPYTER_DATA_DIR)
