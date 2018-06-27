@@ -21,6 +21,8 @@ std::string get_filename(int argc, char* argv[])
         if ((std::string(argv[i]) == "-f") && (i + 1 < argc))
         {
             res = argv[i + 1];
+            argv[i] = (char*)"";
+            argv[i + 1] = (char*)"";
             break;
         }
     }
@@ -36,6 +38,7 @@ std::string get_stdopt(int argc, char** argv)
         if (tmp.find("-std=c++") != std::string::npos)
         {
             res = tmp;
+            argv[i] = (char*)"";
             break;
         }
     }
@@ -45,16 +48,22 @@ std::string get_stdopt(int argc, char** argv)
 using interpreter_ptr = std::unique_ptr<xcpp::interpreter>;
 interpreter_ptr build_interpreter(int argc, char** argv)
 {
-    constexpr int interpreter_argc = 5;
-    const char* interpreter_argv[interpreter_argc];
+    int interpreter_argc = argc + 2;
+    const char** interpreter_argv = new const char*[interpreter_argc];
     interpreter_argv[0] = "xeus-cling";
     std::string stdopt = get_stdopt(argc, argv);
     interpreter_argv[1] = stdopt.c_str();
+    // Copy all arguments in the new array excepting the process name.
+    for(int i = 1; i < argc; i++)
+    {
+        interpreter_argv[i + 1] = argv[i];
+    }
     std::string include_dir = std::string(LLVM_DIR) + std::string("/include");
-    interpreter_argv[2] = include_dir.c_str();
-    interpreter_argv[3] = "";
-    interpreter_argv[4] = "";
-    return interpreter_ptr(new xcpp::interpreter(interpreter_argc, interpreter_argv));
+    interpreter_argv[interpreter_argc - 1] = include_dir.c_str();
+
+    interpreter_ptr interp_ptr = interpreter_ptr(new xcpp::interpreter(interpreter_argc, interpreter_argv));
+    delete[] interpreter_argv;
+    return interp_ptr;
 }
 
 int main(int argc, char* argv[])
