@@ -72,6 +72,8 @@ namespace xcpp
         void init_preamble();
         void init_magic();
 
+        std::string get_stdopt(int argc, const char* const* argv);
+
         cling::Interpreter m_cling;
         cling::MetaProcessor m_processor;
         std::string m_version;
