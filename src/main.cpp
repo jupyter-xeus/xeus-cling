@@ -29,34 +29,17 @@ std::string get_filename(int argc, char* argv[])
     return res;
 }
 
-std::string get_stdopt(int argc, char** argv)
-{
-    std::string res = "-std=c++11";
-    for (int i = 0; i < argc; ++i)
-    {
-        std::string tmp(argv[i]);
-        if (tmp.find("-std=c++") != std::string::npos)
-        {
-            res = tmp;
-            argv[i] = (char*)"";
-            break;
-        }
-    }
-    return res;
-}
 
 using interpreter_ptr = std::unique_ptr<xcpp::interpreter>;
 interpreter_ptr build_interpreter(int argc, char** argv)
 {
-    int interpreter_argc = argc + 2;
+    int interpreter_argc = argc + 1;
     const char** interpreter_argv = new const char*[interpreter_argc];
     interpreter_argv[0] = "xeus-cling";
-    std::string stdopt = get_stdopt(argc, argv);
-    interpreter_argv[1] = stdopt.c_str();
     // Copy all arguments in the new array excepting the process name.
     for(int i = 1; i < argc; i++)
     {
-        interpreter_argv[i + 1] = argv[i];
+        interpreter_argv[i] = argv[i];
     }
     std::string include_dir = std::string(LLVM_DIR) + std::string("/include");
     interpreter_argv[interpreter_argc - 1] = include_dir.c_str();
