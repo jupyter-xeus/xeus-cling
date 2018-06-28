@@ -13,7 +13,7 @@
 #include <memory>
 #include <string>
 
-std::string get_filename(int argc, char* argv[])
+std::string extract_filename(int& argc, char* argv[])
 {
     std::string res = "";
     for (int i = 0; i < argc; ++i)
@@ -21,8 +21,11 @@ std::string get_filename(int argc, char* argv[])
         if ((std::string(argv[i]) == "-f") && (i + 1 < argc))
         {
             res = argv[i + 1];
-            argv[i] = (char*)"";
-            argv[i + 1] = (char*)"";
+            for(int j = i; j < argc - 2; ++j)
+            {
+                argv[j]  = argv[j + 2];
+            }
+            argc -= 2;
             break;
         }
     }
@@ -51,7 +54,7 @@ interpreter_ptr build_interpreter(int argc, char** argv)
 
 int main(int argc, char* argv[])
 {
-    std::string file_name = (argc == 1) ? "connection.json" : get_filename(argc, argv);
+    std::string file_name = (argc == 1) ? "connection.json" : extract_filename(argc, argv);
     xeus::xconfiguration config = xeus::load_configuration(file_name);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
