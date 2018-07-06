@@ -15,11 +15,14 @@
 Magic commands
 ==============
 
-Magic commands are widely used in the IPython kernel to perform some actions on a notebook cell. There are defined by the symbol `%` for a line magic and `%%` for a cell magic.
+Magics are special commands for the kernel that are not part of the C++
+programming language.
 
-We have started to implement these commands in `xeus-cling` and, in a future release, it will be possible to add your own. In general, the magic command is defined by its name and several options. We use cxxopts_ to manage the options.
+There are defined with the symbol ``%`` for a line magic and ``%%`` for a cell
+magic.
 
-For now, we have implemented 2 magic commands
+A few magics are available in xeus-cling. In the future, user-defined magics
+will also be enabled.
 
 %%file
 ------
@@ -43,7 +46,8 @@ This magic command copies the content of the cell in a file named `filename`.
 %timeit
 -------
 
-Time execution of a line statement (`%timeit`) or of a block of statements (`%%timeit`)
+Measure the execution time execution for a line statement (`%timeit`) or for a
+block of statements (`%%timeit`)
 
 - Usage in line mode
 
@@ -71,6 +75,3 @@ Time execution of a line statement (`%timeit`) or of a block of statements (`%%t
 +------------+---------------------------------------------------------------------------------------------------------+
 | -p         | use a precision of <P> digits to display the timing result. Default: 3                                  |
 +------------+---------------------------------------------------------------------------------------------------------+
-
-
-.. _cxxopts: https://en.cppreference.com
