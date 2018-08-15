@@ -28,7 +28,14 @@ namespace xcpp
         }
 
         int argc = copt_strings.size();
-        auto argv = &copt_strings[0];
+
+        // Const-casting as cxxopts::parse moved from (int&, const char**&) to
+        // (int&, char**&) between 2.1.0 and 2.1.1.).
+        // This should not be required in 2.2.0.
+        //
+        // Macros CXXOPTS__VERSION_[MAJOR/MINOR/PATCH] were only defined
+        // after 2.1.1.]
+        auto argv = const_cast<char**>(&copt_strings[0]);
         return parent::parse(argc, argv);
     }
 }
