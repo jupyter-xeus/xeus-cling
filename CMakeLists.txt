@@ -101,6 +101,8 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
+# Dependencies that provide cmake project config
+
 find_package(xeus 0.13 REQUIRED)
 find_package(cppzmq 4.2.3 REQUIRED)
 find_package(pugixml REQUIRED)
@@ -108,6 +110,13 @@ find_package(pugixml REQUIRED)
 find_package(Clang REQUIRED)
 find_package(Cling REQUIRED)
 find_package(cxxopts REQUIRED)
+
+# Dependencies built with autotools
+
+if(NOT WIN32)
+    find_package(PkgConfig)
+	pkg_check_modules(ZeroMQ libzmq>=4.2.3 REQUIRED)
+endif()
 
 #########
 # flags #
