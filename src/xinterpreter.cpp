@@ -51,10 +51,7 @@ namespace xcpp
         init_magic();
     }
 
-    interpreter::~interpreter()
-    {
-        restore_output();
-    }
+    interpreter::~interpreter() {}
 
     xeus::xjson interpreter::execute_request_impl(int execution_counter,
                                                   const std::string& code,
@@ -289,6 +286,11 @@ namespace xcpp
         result["language_info"]["codemirror_mode"] = "text/x-c++src";
         result["language_info"]["file_extension"] = ".cpp";
         return result;
+    }
+
+    void interpreter::shutdown_request_impl()
+    {
+        restore_output();
     }
 
     void interpreter::input_reply_impl(const std::string& /*value*/)
