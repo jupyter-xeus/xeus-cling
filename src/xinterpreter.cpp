@@ -243,11 +243,6 @@ namespace xcpp
         return kernel_res;
     }
 
-    xeus::xjson interpreter::history_request_impl(const xeus::xhistory_arguments& /*args*/)
-    {
-        return xeus::xjson::object();
-    }
-
     xeus::xjson interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
         // TODO: use indentation returned from processing the code to determine

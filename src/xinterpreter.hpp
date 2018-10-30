@@ -54,8 +54,6 @@ namespace xcpp
                                          int cursor_pos,
                                          int detail_level) override;
 
-        xeus::xjson history_request_impl(const xeus::xhistory_arguments& args) override;
-
         xeus::xjson is_complete_request_impl(const std::string& code) override;
 
         xeus::xjson kernel_info_request_impl() override;
