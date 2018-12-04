@@ -44,7 +44,7 @@ namespace xcpp
                                          const std::string& code,
                                          bool silent,
                                          bool store_history,
-                                         const xeus::xjson_node* user_expressions,
+                                         xeus::xjson user_expressions,
                                          bool allow_stdin) override;
 
         xeus::xjson complete_request_impl(const std::string& code,
@@ -54,15 +54,11 @@ namespace xcpp
                                          int cursor_pos,
                                          int detail_level) override;
 
-        xeus::xjson history_request_impl(const xeus::xhistory_arguments& args) override;
-
         xeus::xjson is_complete_request_impl(const std::string& code) override;
 
         xeus::xjson kernel_info_request_impl() override;
 
         void shutdown_request_impl() override;
-
-        void input_reply_impl(const std::string& value) override;
 
         xeus::xjson get_error_reply(const std::string& ename,
                                     const std::string& evalue,
