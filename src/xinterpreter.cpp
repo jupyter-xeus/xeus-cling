@@ -57,7 +57,7 @@ namespace xcpp
                                                   const std::string& code,
                                                   bool silent,
                                                   bool /*store_history*/,
-                                                  const xeus::xjson_node* /*user_expressions*/,
+                                                  xeus::xjson /*user_expressions*/,
                                                   bool /*allow_stdin*/)
     {
         xeus::xjson kernel_res;
@@ -243,11 +243,6 @@ namespace xcpp
         return kernel_res;
     }
 
-    xeus::xjson interpreter::history_request_impl(const xeus::xhistory_arguments& /*args*/)
-    {
-        return xeus::xjson::object();
-    }
-
     xeus::xjson interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
         // TODO: use indentation returned from processing the code to determine
@@ -291,10 +286,6 @@ namespace xcpp
     void interpreter::shutdown_request_impl()
     {
         restore_output();
-    }
-
-    void interpreter::input_reply_impl(const std::string& /*value*/)
-    {
     }
 
     void interpreter::redirect_output()
