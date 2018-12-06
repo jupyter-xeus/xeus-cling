@@ -54,7 +54,24 @@ interpreter_ptr build_interpreter(int argc, char** argv)
 
 int main(int argc, char* argv[])
 {
-    std::string file_name = (argc == 1) ? "connection.json" : extract_filename(argc, argv);
+    std::string file_name = extract_filename(argc, argv);
+    if (file_name.compare("") == 0)
+    {
+        std::cout <<
+              "\033[31;1;4mError\033[0m: The xeus-cling kernel needs a connection file.\n\n"
+              "If you are trying to run xeus-cling in the console, please run one of the following commands "
+              "(Please make sure that `jupyter` and `jupyter_console` packages are installed first):\n"
+              "```\n"
+              "# For a C++ 11 interpreter:\n"
+              "jupyter console --kernel=xeus-cling-cpp11\n\n"
+              "# C++ 14:\n"
+              "jupyter console --kernel=xeus-cling-cpp14\n\n"
+              "# C++ 17:\n"
+              "jupyter console --kernel=xeus-cling-cpp17\n"
+              "```" << std::endl;
+        return 1;
+    }
+
     xeus::xconfiguration config = xeus::load_configuration(file_name);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
