@@ -82,8 +82,8 @@ namespace xcpp
         std::streambuf* p_cout_strbuf;
         std::streambuf* p_cerr_strbuf;
 
-        xbuffer m_cout_buffer;
-        xbuffer m_cerr_buffer;
+        xoutput_buffer m_cout_buffer;
+        xoutput_buffer m_cerr_buffer;
     };
 }
 

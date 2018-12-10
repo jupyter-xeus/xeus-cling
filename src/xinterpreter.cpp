@@ -15,6 +15,7 @@
 #include "xcpp_config.hpp"
 #include "xbuffer.hpp"
 #include "xinterpreter.hpp"
+#include "xinput.hpp"
 #include "xinspect.hpp"
 #include "xmagics.hpp"
 #include "xmagics/execution.hpp"
@@ -58,7 +59,7 @@ namespace xcpp
                                                   bool silent,
                                                   bool /*store_history*/,
                                                   xeus::xjson /*user_expressions*/,
-                                                  bool /*allow_stdin*/)
+                                                  bool allow_stdin)
     {
         xeus::xjson kernel_res;
 
@@ -94,6 +95,9 @@ namespace xcpp
             std::cout.rdbuf(&null);
             std::cerr.rdbuf(&null);
         }
+        
+        // Scope guard performing the temporary redirection of input requests.
+        auto input_guard = input_redirection(allow_stdin); 
 
         for (const auto& block : blocks)
         {
