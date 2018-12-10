@@ -55,29 +55,47 @@ interpreter_ptr build_interpreter(int argc, char** argv)
 int main(int argc, char* argv[])
 {
     std::string file_name = extract_filename(argc, argv);
-    if (file_name.compare("") == 0)
-    {
-        std::cout <<
-              "\033[31;1;4mError\033[0m: The xeus-cling kernel needs a connection file.\n\n"
-              "If you are trying to run xeus-cling in the console, please run one of the following commands "
-              "(Please make sure that `jupyter` and `jupyter_console` packages are installed first):\n"
-              "```\n"
-              "# For a C++ 11 interpreter:\n"
-              "jupyter console --kernel=xeus-cling-cpp11\n\n"
-              "# C++ 14:\n"
-              "jupyter console --kernel=xeus-cling-cpp14\n\n"
-              "# C++ 17:\n"
-              "jupyter console --kernel=xeus-cling-cpp17\n"
-              "```" << std::endl;
-        return 1;
-    }
-
-    xeus::xconfiguration config = xeus::load_configuration(file_name);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
-    xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
-    std::cout << "starting kernel" << std::endl;
-    kernel.start();
+
+    if (!file_name.empty())
+    {
+        xeus::xconfiguration config = xeus::load_configuration(file_name);
+
+        xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
+
+        std::clog <<
+            "Starting xeus-cling kernel...\n\n"
+            "If you want to connect to this kernel from an other client, you can use"
+            " the " + file_name + " file."
+            << std::endl;
+
+        kernel.start();
+    }
+    else
+    {
+        xeus::xkernel kernel(xeus::get_user_name(), std::move(interpreter));
+
+        const auto& config = kernel.get_config();
+        std::clog <<
+            "Starting xeus-cling kernel...\n\n"
+            "If you want to connect to this kernel from an other client, just copy"
+            " and paste the following content inside of a `kernel.json` file. And then run for example:\n\n"
+            "# jupyter console --existing kernel.json\n\n"
+            "kernel.json\n```\n{\n"
+            "    \"transport\": \"" + config.m_transport + "\",\n"
+            "    \"ip\": \"" + config.m_ip + "\",\n"
+            "    \"control_port\": " + config.m_control_port + ",\n"
+            "    \"shell_port\": " + config.m_shell_port + ",\n"
+            "    \"stdin_port\": " + config.m_stdin_port + ",\n"
+            "    \"iopub_port\": " + config.m_iopub_port + ",\n"
+            "    \"hb_port\": " + config.m_hb_port + ",\n"
+            "    \"signature_scheme\": \"" + config.m_signature_scheme + "\",\n"
+            "    \"key\": \"" + config.m_key + "\"\n"
+            "}\n```\n";
+
+        kernel.start();
+    }
 
     return 0;
 }
