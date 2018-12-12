@@ -54,13 +54,48 @@ interpreter_ptr build_interpreter(int argc, char** argv)
 
 int main(int argc, char* argv[])
 {
-    std::string file_name = (argc == 1) ? "connection.json" : extract_filename(argc, argv);
-    xeus::xconfiguration config = xeus::load_configuration(file_name);
+    std::string file_name = extract_filename(argc, argv);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
-    xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
-    std::cout << "starting kernel" << std::endl;
-    kernel.start();
+
+    if (!file_name.empty())
+    {
+        xeus::xconfiguration config = xeus::load_configuration(file_name);
+
+        xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
+
+        std::clog <<
+            "Starting xeus-cling kernel...\n\n"
+            "If you want to connect to this kernel from an other client, you can use"
+            " the " + file_name + " file."
+            << std::endl;
+
+        kernel.start();
+    }
+    else
+    {
+        xeus::xkernel kernel(xeus::get_user_name(), std::move(interpreter));
+
+        const auto& config = kernel.get_config();
+        std::clog <<
+            "Starting xeus-cling kernel...\n\n"
+            "If you want to connect to this kernel from an other client, just copy"
+            " and paste the following content inside of a `kernel.json` file. And then run for example:\n\n"
+            "# jupyter console --existing kernel.json\n\n"
+            "kernel.json\n```\n{\n"
+            "    \"transport\": \"" + config.m_transport + "\",\n"
+            "    \"ip\": \"" + config.m_ip + "\",\n"
+            "    \"control_port\": " + config.m_control_port + ",\n"
+            "    \"shell_port\": " + config.m_shell_port + ",\n"
+            "    \"stdin_port\": " + config.m_stdin_port + ",\n"
+            "    \"iopub_port\": " + config.m_iopub_port + ",\n"
+            "    \"hb_port\": " + config.m_hb_port + ",\n"
+            "    \"signature_scheme\": \"" + config.m_signature_scheme + "\",\n"
+            "    \"key\": \"" + config.m_key + "\"\n"
+            "}\n```\n";
+
+        kernel.start();
+    }
 
     return 0;
 }
