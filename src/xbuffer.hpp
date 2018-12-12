@@ -16,20 +16,23 @@
 
 namespace xcpp
 {
+    /********************
+     * output streambuf *
+     ********************/
 
-    class xbuffer : public std::streambuf
+    class xoutput_buffer : public std::streambuf
     {
     public:
 
         using callback_type = std::function<void(std::string)>;
 
-        xbuffer(callback_type callback)
+        xoutput_buffer(callback_type callback)
             : m_callback(std::move(callback))
         {
             this->setp(this->m_buffer, this->m_buffer + sizeof(this->m_buffer) - 1);
         }
 
-    private:
+    protected:
 
         int overflow(int c) override
         {
@@ -56,6 +59,46 @@ namespace xcpp
         callback_type m_callback;
         char m_buffer[1024];
     };
+
+    /*******************
+     * input streambuf *
+     *******************/
+
+    class xinput_buffer : public std::streambuf
+    {
+    public:
+
+        using base_type = std::streambuf;
+        using callback_type = std::function<void(std::string&)>;
+        using traits_type = base_type::traits_type;
+
+        xinput_buffer(callback_type callback)
+            : m_callback(std::move(callback))
+            , m_value()
+        {
+            char* data = const_cast<char*>(m_value.data());
+            this->setg(data, data, data);
+        }
+
+    protected:
+
+        int underflow() override
+        {
+            m_callback(m_value);
+            // null-terminate the string to trigger parsing.
+            m_value += '\0';
+            char* data = const_cast<char*>(m_value.data());
+            setg(data, data, data + m_value.size());
+            return traits_type::to_int_type(*gptr());
+        }
+
+        callback_type m_callback;
+        std::string m_value;
+    };
+
+    /*************************
+     * output null streambuf *
+     *************************/
 
     class xnull : public std::streambuf
     {

@@ -151,6 +151,8 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${
 set(XEUSCLING_SRC
     src/main.cpp
     src/xbuffer.hpp
+    src/xinput.hpp
+    src/xinput.cpp
     src/xinterpreter.cpp
     src/xinterpreter.hpp
     src/xdemangle.hpp
