@@ -101,7 +101,7 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
-find_package(xeus 0.18.0 REQUIRED)
+find_package(xeus 0.18.1 REQUIRED)
 find_package(cppzmq 4.3.0 REQUIRED)
 find_package(pugixml REQUIRED)
 
