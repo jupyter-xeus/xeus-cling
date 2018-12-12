@@ -85,8 +85,8 @@ namespace xcpp
         int underflow() override
         {
             m_callback(m_value);
-            // null-terminate the string to trigger parsing.
-            m_value += '\0';
+            // Terminate the string to trigger parsing.
+            m_value += '\n';
             char* data = const_cast<char*>(m_value.data());
             setg(data, data, data + m_value.size());
             return traits_type::to_int_type(*gptr());
