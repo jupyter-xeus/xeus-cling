@@ -14,7 +14,6 @@ matrix:
             - ubuntu-toolchain-r-test
     - os: osx
       osx_image: xcode8
-      compiler: clang
 install:
     # Define the version of miniconda to download
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -28,17 +27,19 @@ install:
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
-    # Install dependencies
-    - conda install cmake xeus=0.18.1 cling=0.5.0 nlohmann_json=3.3.0 cppzmq=4.3.0 xtl=0.5.2 pugixml cxxopts=2.1.1 -c QuantStack -c conda-forge
+    # Install host dependencies
+    - conda install xeus=0.18.1 cling=0.5.0 nlohmann_json=3.4.0 cppzmq=4.3.0 xtl=0.5.2 pugixml cxxopts=2.1.1 -c conda-forge
+    # Install build dependencies
+    - conda install cmake -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-          conda install gcc-7 -c QuantStack -c conda-forge;
-      elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-          conda install clangdev llvmdev -c QuantStack -c conda-forge;
+        conda install gxx_linux-64 -c conda-forge;
       fi
+    # Activate root environment
+    - source activate root
     # Build and install xeus-cling
     - mkdir build
     - cd build
-    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ ..
+    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
     - make -j2 install
     # Install jupyter_kernel_test and pytest
     - conda install pytest jupyter_kernel_test -c conda-forge
