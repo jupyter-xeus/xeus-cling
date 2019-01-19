@@ -26,7 +26,7 @@ source activate cling
 Then you can install in this environment `xeus-cling` and its dependencies
 
 ```
-conda install xeus-cling notebook -c QuantStack -c conda-forge
+conda install xeus-cling -c conda-forge
 ```
 
 Or you can install it directly from the sources, if all the dependencies are already installed.
