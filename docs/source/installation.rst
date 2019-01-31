@@ -29,7 +29,7 @@ A package for xeus-cling is available on the conda package manager.
 
 .. code::
 
-    conda install -c QuantStack -c conda-forge xeus-cling
+    conda install -c conda-forge xeus-cling
 
 .. image:: cmake.svg
 

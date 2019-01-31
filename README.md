@@ -65,7 +65,7 @@ Quick help is shown on the pager with the special `?` magic.
 
 ![Help](help.png)
 
-Content for the help is available for the standard library and the QuantStack packages.
+Content for the quick help is available for the standard library and the QuantStack packages.
 
 ### Rendering of rich outputs
 
