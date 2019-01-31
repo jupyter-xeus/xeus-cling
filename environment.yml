@@ -6,4 +6,3 @@ dependencies:
   - xtensor=0.19.2
   - xtensor-blas=0.15.1
   - notebook
-  - xtl=0.5.3
