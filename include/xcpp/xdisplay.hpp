@@ -47,6 +47,11 @@ namespace xcpp
             );
         }
     }
+
+    inline void clear_output(bool wait=false)
+    {
+        xeus::get_interpreter().clear_output(wait);
+    }
 }
 
 #endif
