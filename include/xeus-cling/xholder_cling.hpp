@@ -9,10 +9,11 @@
 #ifndef XCPP_HOLDER_CLING_HPP
 #define XCPP_HOLDER_CLING_HPP
 
-#include "xeus/xjson.hpp"
-#include "xpreamble.hpp"
-
 #include <regex>
+
+#include "xeus/xjson.hpp"
+
+#include "xeus-cling/xpreamble.hpp"
 
 namespace xcpp
 {

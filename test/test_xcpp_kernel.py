@@ -4,7 +4,7 @@ import jupyter_kernel_test
 
 class XCppTests(jupyter_kernel_test.KernelTests):
 
-    kernel_name = 'xeus-cling-cpp14'
+    kernel_name = 'xcpp14'
 
     # language_info.name in a kernel_info_reply should match this
     language_name = 'c++'

@@ -11,9 +11,11 @@
 #include <string>
 #include <vector>
 
-#include "os.hpp"
+#include "xeus-cling/xoptions.hpp"
+
 #include "../xparser.hpp"
-#include "../xoptions.hpp"
+
+#include "os.hpp"
 
 namespace xcpp
 {

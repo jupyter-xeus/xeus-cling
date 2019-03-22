@@ -12,12 +12,13 @@
 #include <sstream>
 #include <vector>
 
-#include "xcpp_config.hpp"
-#include "xbuffer.hpp"
-#include "xinterpreter.hpp"
+#include "xeus-cling/xbuffer.hpp"
+#include "xeus-cling/xeus_cling_config.hpp"
+#include "xeus-cling/xinterpreter.hpp"
+#include "xeus-cling/xmagics.hpp"
+
 #include "xinput.hpp"
 #include "xinspect.hpp"
-#include "xmagics.hpp"
 #include "xmagics/execution.hpp"
 #include "xmagics/os.hpp"
 #include "xmime_internal.hpp"
@@ -261,7 +262,7 @@ namespace xcpp
     {
         xeus::xjson result;
         result["implementation"] = "xeus-cling";
-        result["implementation_version"] = XCPP_VERSION;
+        result["implementation_version"] = XEUS_CLING_VERSION;
 
         /* The jupyter-console banner for xeus-cling is the following:
          __  _____ _   _ ___      ___ _    ___ _  _  ___

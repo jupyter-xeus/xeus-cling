@@ -6,16 +6,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XCPP_INTERPRETER_HPP
-#define XCPP_INTERPRETER_HPP
-
-#include "cling/Interpreter/Interpreter.h"
-#include "cling/MetaProcessor/MetaProcessor.h"
-
-#include "xeus/xinterpreter.hpp"
-
-#include "xbuffer.hpp"
-#include "xmanager.hpp"
+#ifndef XEUS_CLING_INTERPRETER_HPP
+#define XEUS_CLING_INTERPRETER_HPP
 
 #include <iostream>
 #include <sstream>
@@ -23,10 +15,18 @@
 #include <string>
 #include <vector>
 
+#include "cling/Interpreter/Interpreter.h"
+#include "cling/MetaProcessor/MetaProcessor.h"
+
+#include "xeus/xinterpreter.hpp"
+
+#include "xeus_cling_config.hpp"
+#include "xbuffer.hpp"
+#include "xmanager.hpp"
+
 namespace xcpp
 {
-
-    class interpreter : public xeus::xinterpreter
+    class XEUS_CLING_API interpreter : public xeus::xinterpreter
     {
     public:
 

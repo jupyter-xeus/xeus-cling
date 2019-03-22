@@ -14,8 +14,8 @@
 
 #include "cling/MetaProcessor/MetaProcessor.h"
 
-#include "../xmagics.hpp"
-#include "../xoptions.hpp"
+#include "xeus-cling/xmagics.hpp"
+#include "xeus-cling/xoptions.hpp"
 
 namespace xcpp
 {
@@ -24,6 +24,7 @@ namespace xcpp
     public:
 
         timeit(cling::MetaProcessor* p);
+
         virtual void operator()(const std::string& line) override
         {
             std::string cline = line;

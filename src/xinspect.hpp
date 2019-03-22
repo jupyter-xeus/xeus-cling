@@ -14,19 +14,20 @@
 
 #include <dirent.h>
 
-#include "pugixml.hpp"
-
-#include "xeus/xjson.hpp"
-
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
 #include "cling/MetaProcessor/MetaProcessor.h"
 #include "cling/Utils/Output.h"
 
-#include "xbuffer.hpp"
+#include "pugixml.hpp"
+
+#include "xeus/xjson.hpp"
+
+#include "xeus-cling/xbuffer.hpp"
+#include "xeus-cling/xpreamble.hpp"
+
 #include "xdemangle.hpp"
 #include "xparser.hpp"
-#include "xpreamble.hpp"
 
 namespace xcpp
 {

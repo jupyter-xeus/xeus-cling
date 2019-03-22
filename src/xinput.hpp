@@ -12,7 +12,7 @@
 
 #include <streambuf>
 
-#include "xbuffer.hpp"
+#include "xeus-cling/xbuffer.hpp"
 
 namespace xcpp
 {
