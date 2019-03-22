@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "xoptions.hpp"
+#include "xeus-cling/xoptions.hpp"
 
 namespace xcpp
 {

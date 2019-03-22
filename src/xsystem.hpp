@@ -11,7 +11,7 @@
 
 #include <cstdio>
 
-#include "xpreamble.hpp"
+#include "xeus-cling/xpreamble.hpp"
 
 namespace xcpp
 {

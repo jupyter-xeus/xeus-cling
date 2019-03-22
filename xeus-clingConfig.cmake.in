@@ -1,0 +1,33 @@
+############################################################################
+# Copyright (c) 2016, Johan Mabille, Loic Gouarin and Sylvain Corlay       #
+#                                                                          #
+# Distributed under the terms of the BSD 3-Clause License.                 #
+#                                                                          #
+# The full license is in the file LICENSE, distributed with this software. #
+############################################################################
+
+# xeus-cling cmake module
+# This module sets the following variables in your project::
+#
+#   xeus-cling_FOUND - true if xeus-cling found on the system
+#   xeus-cling_INCLUDE_DIRS - the directory containing xeus-cling headers
+#   xeus-cling_LIBRARY - the library for dynamic linking
+
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
+
+@XEUS_CONFIG_CODE@
+
+include(CMakeFindDependencyMacro)
+find_dependency(xeus @xeus_REQUIRED_VERSION@)
+find_dependency(cppzmq @cppzmq_REQUIRED_VERSION@)
+find_dependency(pugixml)
+find_dependency(cxxopts)
+
+if(NOT TARGET xeus-cling)
+  include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+
+  get_target_property(@PROJECT_NAME@_INCLUDE_DIR xeus-cling INTERFACE_INCLUDE_DIRECTORIES)
+  get_target_property(@PROJECT_NAME@_LIBRARY xeus-cling LOCATION)
+endif()

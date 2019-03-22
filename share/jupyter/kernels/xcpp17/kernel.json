@@ -1,0 +1,10 @@
+{
+  "display_name": "C++17",
+  "argv": [
+      "/home/sylvain/miniconda3/bin/xcpp",
+      "-f",
+      "{connection_file}",
+      "-std=c++17"
+  ],
+  "language": "C++17"
+}

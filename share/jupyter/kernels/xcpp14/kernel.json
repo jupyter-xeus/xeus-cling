@@ -1,7 +1,7 @@
 {
   "display_name": "C++14",
   "argv": [
-      "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xeus-cling",
+      "/home/sylvain/miniconda3/bin/xcpp",
       "-f",
       "{connection_file}",
       "-std=c++14"

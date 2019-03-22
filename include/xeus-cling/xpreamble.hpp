@@ -10,6 +10,7 @@
 #define XCPP_PREAMBLE_HPP
 
 #include <regex>
+#include <string>
 
 #include "xeus/xjson.hpp"
 

@@ -6,17 +6,17 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xholder_cling.hpp"
-#include "xpreamble.hpp"
-
 #include <algorithm>
+
+#include "xeus-cling/xpreamble.hpp"
+#include "xeus-cling/xholder_cling.hpp"
 
 namespace xcpp
 {
-
     /***********************************
      * xholder_preamble implementation *
      ***********************************/
+
     xholder_preamble::xholder_preamble()
         : p_holder(nullptr)
     {

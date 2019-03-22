@@ -1,7 +1,7 @@
 {
   "display_name": "C++11",
   "argv": [
-      "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xeus-cling",
+      "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xcpp",
       "-f",
       "{connection_file}",
       "-std=c++11"

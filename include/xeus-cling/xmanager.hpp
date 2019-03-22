@@ -15,9 +15,9 @@
 #include <string>
 #include <type_traits>
 
-#include "xholder_cling.hpp"
-#include "xmagics.hpp"
-#include "xpreamble.hpp"
+#include "xeus-cling/xholder_cling.hpp"
+#include "xeus-cling/xmagics.hpp"
+#include "xeus-cling/xpreamble.hpp"
 
 namespace xcpp
 {

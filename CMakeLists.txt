@@ -9,20 +9,20 @@
 cmake_minimum_required(VERSION 3.4.3)
 project(xeus-cling)
 
-set(XCPP_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(XEUS_CLING_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Versionning
 # ===========
 
-file(STRINGS "${XCPP_SRC_DIR}/xcpp_config.hpp" xcpp_version_defines
-     REGEX "#define XCPP_VERSION_(MAJOR|MINOR|PATCH)")
-foreach(ver ${xcpp_version_defines})
-    if(ver MATCHES "#define XCPP_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
-        set(XCPP_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
+file(STRINGS "${XEUS_CLING_INCLUDE_DIR}/xeus-cling/xeus_cling_config.hpp" xeus_cling_version_defines
+     REGEX "#define XEUS_CLING_VERSION_(MAJOR|MINOR|PATCH)")
+foreach(ver ${xeus_cling_version_defines})
+    if(ver MATCHES "#define XEUS_CLING_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
+        set(XEUS_CLING_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif()
 endforeach()
 set(${PROJECT_NAME}_VERSION
-    ${XCPP_VERSION_MAJOR}.${XCPP_VERSION_MINOR}.${XCPP_VERSION_PATCH})
+    ${XEUS_CLING_VERSION_MAJOR}.${XEUS_CLING_VERSION_MINOR}.${XEUS_CLING_VERSION_PATCH})
 message(STATUS "Building xeus-cling v${${PROJECT_NAME}_VERSION}")
 
 # Configuration
@@ -31,18 +31,18 @@ message(STATUS "Building xeus-cling v${${PROJECT_NAME}_VERSION}")
 include(GNUInstallDirs)
 
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp11/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp11/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json"
 )
 
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp14/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp14/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp14/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp14/kernel.json"
 )
 
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp17/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xeus-cling-cpp17/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp17/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp17/kernel.json"
 )
 
 #######################
@@ -101,8 +101,11 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
-find_package(xeus 0.19.0 REQUIRED)
-find_package(cppzmq 4.3.0 REQUIRED)
+set(xeus_REQUIRED_VERSION 0.19.0)
+set(cppzmq_REQUIRED_VERSION 4.3.0)
+
+find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
+find_package(cppzmq ${cppzmq_REQUIRED_VERSION} REQUIRED)
 find_package(pugixml REQUIRED)
 
 find_package(Clang REQUIRED)
@@ -118,9 +121,8 @@ include(CheckCXXCompilerFlag)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
 if(MSVC)
-    add_definitions(/DNOMINMAX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251 /wd4141")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4018 /wd4267 /wd4715 /wd4146 /wd4129")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4018 /wd4267 /wd4715 /wd4146 /wd4129")
 endif()
 
 OPTION(DISABLE_ARCH_NATIVE "disable -march=native flag" OFF)
@@ -148,22 +150,16 @@ endif()
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-set(XEUSCLING_SRC
-    src/main.cpp
-    src/xbuffer.hpp
+# xeus-cling sources
+set(XEUS_CLING_SRC
     src/xinput.hpp
     src/xinput.cpp
     src/xinterpreter.cpp
-    src/xinterpreter.hpp
     src/xdemangle.hpp
     src/xoptions.cpp
-    src/xoptions.hpp
-    src/xcpp_config.hpp
     src/xparser.cpp
     src/xparser.hpp
     src/xholder_cling.cpp
-    src/xholder_cling.hpp
-    src/xmagics.hpp
     src/xmagics/execution.cpp
     src/xmagics/execution.hpp
     src/xmagics/os.cpp
@@ -171,38 +167,65 @@ set(XEUSCLING_SRC
     src/xmime_internal.hpp
 )
 
-set(XCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-set (XCPP_HEADERS
-   ${XCPP_INCLUDE_DIR}/xcpp/xmime.hpp
-   ${XCPP_INCLUDE_DIR}/xcpp/xdisplay.hpp
+# xeus-cling headers
+set(XEUS_CLING_HEADERS
+    include/xeus-cling/xbuffer.hpp
+    include/xeus-cling/xeus_cling_config.hpp
+    include/xeus-cling/xholder_cling.hpp
+    include/xeus-cling/xinterpreter.hpp
+    include/xeus-cling/xmagics.hpp
+    include/xeus-cling/xmanager.hpp
+    include/xeus-cling/xoptions.hpp
+    include/xeus-cling/xpreamble.hpp
 )
 
-set(LLVM_NO_DEAD_STRIP 1)
-set(LIBS clingInterpreter clingMetaProcessor clingUtils xeus pugixml cxxopts::cxxopts)
-set(XEUSCLING_TARGET xeus-cling)
-add_executable(${XEUSCLING_TARGET} ${XEUSCLING_SRC})
-set_target_properties(${XEUSCLING_TARGET} PROPERTIES ENABLE_EXPORTS 1)
+# xcpp headers (needed at runtime by the C++ kernel)
+set(XCPP_HEADERS
+    include/xcpp/xmime.hpp
+    include/xcpp/xdisplay.hpp
+)
 
-target_include_directories(${XEUSCLING_TARGET} PRIVATE ${XCPP_INCLUDE_DIR})
+# xeus-cling is the target for the library
+add_library(xeus-cling SHARED ${XEUS_CLING_SRC} ${XEUS_CLING_HEADERS})
+
+# xcpp is the target for the kernel executable
+add_executable(xcpp src/main.cpp)
+set_target_properties(xcpp PROPERTIES ENABLE_EXPORTS 1)
+target_link_libraries(xcpp PRIVATE xeus-cling)
+
+set(LLVM_NO_DEAD_STRIP 1)
 
 if (APPLE)
-    set_target_properties(${XEUSCLING_TARGET} PROPERTIES
+    set_target_properties(xcpp xeus-cling PROPERTIES
         MACOSX_RPATH ON
     )
 else()
-    set_target_properties(${XEUSCLING_TARGET} PROPERTIES
+    set_target_properties(xcpp xeus-cling PROPERTIES
         BUILD_WITH_INSTALL_RPATH 1
         SKIP_BUILD_RPATH FALSE
     )
 endif()
 
-set_target_properties(${XEUSCLING_TARGET} PROPERTIES
+set_target_properties(xcpp xeus-cling PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
+target_include_directories(xeus-cling
+                           PUBLIC
+                           $<BUILD_INTERFACE:${XEUS_CLING_INCLUDE_DIR}>
+                           $<INSTALL_INTERFACE:include>)
+target_link_libraries(xeus-cling PUBLIC clingInterpreter clingMetaProcessor clingUtils xeus pugixml cxxopts::cxxopts)
+
+set_target_properties(xeus-cling PROPERTIES
+                      PUBLIC_HEADER "${XEUS_CLING_HEADERS}"
+                      COMPILE_DEFINITIONS "XEUS_CLING_EXPORTS"
+                      PREFIX ""
+                      VERSION ${${PROJECT_NAME}_VERSION}
+                      SOVERSION ${XEUS_CLING_VERSION_MAJOR}
+                      OUTPUT_NAME "libxeus-cling")
+
 if(MSVC)
-    set_target_properties(${XEUSCLING_TARGET} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)  # Internal string
+    set_target_properties(xeus-cling PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)  # Internal string
 
     # Internal string
     set(cling_exports ?kEmptyCollection@valuePrinterInternal@cling@@3QEBDEB)
@@ -263,23 +286,31 @@ if(MSVC)
         set(cling_link_str "${cling_link_str} /EXPORT:${sym}")
     endforeach(sym ${cling_exports})
 
-    set_property(TARGET ${XEUSCLING_TARGET} APPEND_STRING PROPERTY LINK_FLAGS ${cling_link_str})
+    set_property(TARGET xeus-cling APPEND_STRING PROPERTY LINK_FLAGS ${cling_link_str})
 endif(MSVC)
-
-target_link_libraries(${XEUSCLING_TARGET} ${LIBS})
 
 ################
 # Installation #
 ################
 
-# Install xeus-cling
-install(TARGETS ${XEUSCLING_TARGET}
+include(CMakePackageConfigHelpers)
+
+set(XEUS_CLING_CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}" CACHE STRING "install path for xeus-clingConfig.cmake")
+
+# Install xeus-cling and xcpp
+install(TARGETS xeus-cling
+        EXPORT ${PROJECT_NAME}-targets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xeus-cling)
+install(TARGETS xcpp
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Configuration and data directories for jupyter and xeus-cling
-set(XJUPYTER_DATA_DIR "share/jupyter"    CACHE STRING "Jupyter data directory")
-set(XCPP_DATA_DIR     "share/xcpp"       CACHE STRING "xeus-cling data directory")
-set(XCPP_CONF_DIR     "etc/xcpp"         CACHE STRING "xeus-cling configuration directory")
+set(XJUPYTER_DATA_DIR   "share/jupyter"    CACHE STRING "Jupyter data directory")
+set(XEUS_CLING_DATA_DIR "share/xeus-cling" CACHE STRING "xeus-cling data directory")
+set(XEUS_CLING_CONF_DIR "etc/xeus-cling"   CACHE STRING "xeus-cling configuration directory")
 
 # Install xcpp headers
 install(FILES ${XCPP_HEADERS}
@@ -299,14 +330,42 @@ if (XEXTRA_JUPYTER_DATA_DIR)
 endif(XEXTRA_JUPYTER_DATA_DIR)
 
 # Install xeus-cling tag files
-set(XCPP_TAGFILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/xcpp/tagfiles)
+set(XCPP_TAGFILES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share/xeus-cling/tagfiles)
 install(DIRECTORY ${XCPP_TAGFILES_DIR}
-        DESTINATION ${XCPP_DATA_DIR})
+        DESTINATION ${XEUS_CLING_DATA_DIR})
 
-set(XCPP_TAGCONFS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/etc/xcpp/tags.d)
+set(XCPP_TAGCONFS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/etc/xeus-cling/tags.d)
 install(DIRECTORY ${XCPP_TAGCONFS_DIR}
-        DESTINATION ${XCPP_CONF_DIR})
+        DESTINATION ${XEUS_CLING_CONF_DIR})
 
 # Add definitions for the kernel to find tagfiles.
-add_definitions(-DXCPP_TAGFILES_DIR="${CMAKE_INSTALL_PREFIX}/${XCPP_DATA_DIR}/tagfiles")
-add_definitions(-DXCPP_TAGCONFS_DIR="${CMAKE_INSTALL_PREFIX}/${XCPP_CONF_DIR}/tags.d")
+add_definitions(-DXCPP_TAGFILES_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_DATA_DIR}/tagfiles")
+add_definitions(-DXCPP_TAGCONFS_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_CONF_DIR}/tags.d")
+
+# Makes the project importable from the build directory
+export(EXPORT ${PROJECT_NAME}-targets
+       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+
+# Configure 'xeus-clingConfig.cmake' for a build tree
+set(XEUS_CLING_CONFIG_CODE "####### Expanded from \@XEUS_CLING_CONFIG_CODE\@ #######\n")
+set(XEUS_CLING_CONFIG_CODE "${XEUS_CLING_CONFIG_CODE}set(CMAKE_MODULE_PATH \"${CMAKE_CURRENT_SOURCE_DIR}/cmake;\${CMAKE_MODULE_PATH}\")\n")
+set(XEUS_CLING_CONFIG_CODE "${XEUS_CLING_CONFIG_CODE}##################################################")
+configure_package_config_file(${PROJECT_NAME}Config.cmake.in
+                              "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+                              INSTALL_DESTINATION ${PROJECT_BINARY_DIR})
+
+# Configure 'xeus-clingConfig.cmake' for an install tree
+set(XEUS_CLING_CONFIG_CODE "")
+configure_package_config_file(${PROJECT_NAME}Config.cmake.in
+                              "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake"
+                              INSTALL_DESTINATION ${XEUS_CLING_CMAKECONFIG_INSTALL_DIR})
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+                                 VERSION ${${PROJECT_NAME}_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+              DESTINATION ${XEUS_CLING_CMAKECONFIG_INSTALL_DIR})
+install(EXPORT ${PROJECT_NAME}-targets
+        FILE ${PROJECT_NAME}Targets.cmake
+        DESTINATION ${XEUS_CLING_CMAKECONFIG_INSTALL_DIR})

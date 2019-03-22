@@ -6,35 +6,20 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XCPP_MAGICS_HPP
-#define XCPP_MAGICS_HPP
+#ifndef XCPP_OPTIONS_HPP
+#define XCPP_OPTIONS_HPP
 
-#include <map>
-#include <memory>
+#include <string>
 
-#include "xoptions.hpp"
-#include "xpreamble.hpp"
+#include "cxxopts.hpp"
 
 namespace xcpp
 {
-    enum struct xmagic_type
+    struct xoptions : public cxxopts::Options
     {
-        cell,
-        line
-    };
-
-    struct xmagic_line
-    {
-        virtual void operator()(const std::string& line) = 0;
-    };
-
-    struct xmagic_cell
-    {
-        virtual void operator()(const std::string& line, const std::string& cell) = 0;
-    };
-
-    struct xmagic_line_cell : public xmagic_line, xmagic_cell
-    {
+        using parent = cxxopts::Options;
+        using parent::Options;
+        cxxopts::ParseResult parse(const std::string& line);
     };
 }
 #endif

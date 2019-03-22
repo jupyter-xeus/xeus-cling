@@ -11,8 +11,8 @@
 
 #include <string>
 
-#include "../xmagics.hpp"
-#include "../xoptions.hpp"
+#include "xeus-cling/xmagics.hpp"
+#include "xeus-cling/xoptions.hpp"
 
 namespace xcpp
 {

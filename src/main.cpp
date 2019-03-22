@@ -6,12 +6,15 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xinterpreter.hpp"
-#include "xeus/xkernel.hpp"
-#include "xeus/xkernel_configuration.hpp"
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
+
+#include "xeus/xkernel.hpp"
+#include "xeus/xkernel_configuration.hpp"
+
+#include "xeus-cling/xinterpreter.hpp"
 
 std::string extract_filename(int& argc, char* argv[])
 {
