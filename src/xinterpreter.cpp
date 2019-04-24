@@ -285,6 +285,7 @@ namespace xcpp
         result["language_info"]["mimetype"] = "text/x-c++src";
         result["language_info"]["codemirror_mode"] = "text/x-c++src";
         result["language_info"]["file_extension"] = ".cpp";
+        result["status"] = "ok";
         return result;
     }
 
