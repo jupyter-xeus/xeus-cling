@@ -119,9 +119,6 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 
 `xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`.
 
-The `QuantStack` channel provides a `xeus`, `cling` and their dependencies built with gcc-7 We highly recommend installing
-these dependencies from QuantStack in a clean conda installation or environment.
-
 ## License
 
 We use a shared copyright model that enables all contributors to maintain the
