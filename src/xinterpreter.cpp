@@ -55,14 +55,14 @@ namespace xcpp
 
     interpreter::~interpreter() {}
 
-    xeus::xjson interpreter::execute_request_impl(int execution_counter,
-                                                  const std::string& code,
-                                                  bool silent,
-                                                  bool /*store_history*/,
-                                                  xeus::xjson /*user_expressions*/,
-                                                  bool allow_stdin)
+    nl::json interpreter::execute_request_impl(int execution_counter,
+                                               const std::string& code,
+                                               bool silent,
+                                               bool /*store_history*/,
+                                               nl::json /*user_expressions*/,
+                                               bool allow_stdin)
     {
-        xeus::xjson kernel_res;
+        nl::json kernel_res;
 
         // Check for magics
         for (auto& pre : preamble_manager.preamble)
@@ -96,9 +96,9 @@ namespace xcpp
             std::cout.rdbuf(&null);
             std::cerr.rdbuf(&null);
         }
-        
+
         // Scope guard performing the temporary redirection of input requests.
-        auto input_guard = input_redirection(allow_stdin); 
+        auto input_guard = input_redirection(allow_stdin);
 
         for (const auto& block : blocks)
         {
@@ -182,24 +182,24 @@ namespace xcpp
             // the semicolon was omitted.
             if (!silent && output.hasValue() && trim(blocks.back()).back() != ';')
             {
-                xeus::xjson pub_data = mime_repr(output);
-                publish_execution_result(execution_counter, std::move(pub_data), xeus::xjson::object());
+                nl::json pub_data = mime_repr(output);
+                publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
             }
 
             // Compose execute_reply message.
             kernel_res["status"] = "ok";
-            kernel_res["payload"] = xeus::xjson::array();
-            kernel_res["user_expressions"] = xeus::xjson::object();
+            kernel_res["payload"] = nl::json::array();
+            kernel_res["user_expressions"] = nl::json::object();
         }
         return kernel_res;
     }
 
-    xeus::xjson interpreter::complete_request_impl(const std::string& code,
-                                                   int cursor_pos)
+    nl::json interpreter::complete_request_impl(const std::string& code,
+                                                int cursor_pos)
     {
         std::vector<std::string> result;
         cling::Interpreter::CompilationResult compilation_result;
-        xeus::xjson kernel_res;
+        nl::json kernel_res;
 
         // split the input to have only the word in the back of the cursor
         std::string delims = " \t\n`!@#$^&*()=+[{]}\\|;:\'\",<>?.";
@@ -225,16 +225,16 @@ namespace xcpp
         kernel_res["matches"] = result;
         kernel_res["cursor_start"] = cursor_pos - to_complete.length();
         kernel_res["cursor_end"] = cursor_pos;
-        kernel_res["metadata"] = xeus::xjson::object();
+        kernel_res["metadata"] = nl::json::object();
         kernel_res["status"] = "ok";
         return kernel_res;
     }
 
-    xeus::xjson interpreter::inspect_request_impl(const std::string& code,
-                                                  int cursor_pos,
-                                                  int /*detail_level*/)
+    nl::json interpreter::inspect_request_impl(const std::string& code,
+                                               int cursor_pos,
+                                               int /*detail_level*/)
     {
-        xeus::xjson kernel_res;
+        nl::json kernel_res;
 
         auto dummy = code.substr(0, cursor_pos);
         // FIX: same pattern as in inspect function (keep only one)
@@ -248,19 +248,19 @@ namespace xcpp
         return kernel_res;
     }
 
-    xeus::xjson interpreter::is_complete_request_impl(const std::string& /*code*/)
+    nl::json interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
         // TODO: use indentation returned from processing the code to determine
         // if the code is complete.
-        xeus::xjson kernel_res;
+        nl::json kernel_res;
         kernel_res["status"] = "complete";
         kernel_res["indent"] = "";
         return kernel_res;
     }
 
-    xeus::xjson interpreter::kernel_info_request_impl()
+    nl::json interpreter::kernel_info_request_impl()
     {
-        xeus::xjson result;
+        nl::json result;
         result["implementation"] = "xeus-cling";
         result["implementation_version"] = XEUS_CLING_VERSION;
 

@@ -25,7 +25,7 @@ namespace xcpp
             pattern = spattern;
         }
 
-        void apply(const std::string& code, xeus::xjson& kernel_res) override
+        void apply(const std::string& code, nl::json& kernel_res) override
         {
             std::regex re(spattern + R"((.*))");
             std::smatch to_execute;

@@ -11,9 +11,11 @@
 
 #include <regex>
 
-#include "xeus/xjson.hpp"
+#include "nlohmann/json.hpp"
 
 #include "xeus-cling/xpreamble.hpp"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
@@ -37,7 +39,7 @@ namespace xcpp
             std::swap(p_holder, rhs.p_holder);
         }
 
-        void apply(const std::string& s, xeus::xjson& kernel_res);
+        void apply(const std::string& s, nl::json& kernel_res);
         bool is_match(const std::string& s) const;
 
         template <class D>

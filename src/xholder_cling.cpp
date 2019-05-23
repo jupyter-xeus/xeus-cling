@@ -64,7 +64,7 @@ namespace xcpp
         return *this;
     }
 
-    void xholder_preamble::apply(const std::string& s, xeus::xjson& kernel_res)
+    void xholder_preamble::apply(const std::string& s, nl::json& kernel_res)
     {
         if (p_holder != nullptr)
         {
