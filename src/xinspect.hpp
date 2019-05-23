@@ -21,8 +21,6 @@
 
 #include "pugixml.hpp"
 
-#include "xeus/xjson.hpp"
-
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xpreamble.hpp"
 
@@ -144,9 +142,9 @@ namespace xcpp
         return typeString;
     }
 
-    static xeus::xjson read_tagconfs(const char* path)
+    static nl::json read_tagconfs(const char* path)
     {
-        xeus::xjson result = xeus::xjson::array();
+        nl::json result = nl::json::array();
         DIR* directory = opendir(path);
         if (directory == nullptr)
         {
@@ -163,7 +161,7 @@ namespace xcpp
                 if (fname.find(extension, (fname.length() - extension.length())) != std::string::npos)
                 {
                     std::ifstream i(path + ('/' + fname));
-                    xeus::xjson entry;
+                    nl::json entry;
                     i >> entry;
                     result.emplace_back(std::move(entry));
                 }
@@ -174,9 +172,9 @@ namespace xcpp
         return result;
     }
 
-    void inspect(const std::string& code, xeus::xjson& kernel_res, cling::MetaProcessor& m_processor)
+    void inspect(const std::string& code, nl::json& kernel_res, cling::MetaProcessor& m_processor)
     {
-        xeus::xjson tagconfs = read_tagconfs(XCPP_TAGCONFS_DIR);
+        nl::json tagconfs = read_tagconfs(XCPP_TAGCONFS_DIR);
         std::string tagfiles_dir = XCPP_TAGFILES_DIR;
 
         std::vector<std::string> check{"class", "struct", "function"};
@@ -199,7 +197,7 @@ namespace xcpp
 
             if (!typename_.empty())
             {
-                for (xeus::xjson::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
+                for (nl::json::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
                 {
                     url = it->at("url");
                     tagfile = it->at("tagfile");
@@ -233,7 +231,7 @@ namespace xcpp
                 find_string = (typename_.empty()) ? to_inspect : typename_;
             }
 
-            for (xeus::xjson::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
+            for (nl::json::const_iterator it = tagconfs.cbegin(); it != tagconfs.cend(); ++it)
             {
                 url = it->at("url");
                 tagfile = it->at("tagfile");
@@ -270,7 +268,7 @@ namespace xcpp
             kernel_res["status"] = "error";
             kernel_res["ename"] = "No documentation found";
             kernel_res["evalue"] = "";
-            kernel_res["traceback"] = xeus::xjson::object();
+            kernel_res["traceback"] = nl::json::object();
         }
         else
         {
@@ -296,8 +294,8 @@ namespace xcpp
             // Note: Adding "?action=purge" suffix to force cppreference's
             // Mediawiki to purge the HTTP cache.
 
-            kernel_res["payload"] = xeus::xjson::array();
-            kernel_res["payload"][0] = xeus::xjson::object({
+            kernel_res["payload"] = nl::json::array();
+            kernel_res["payload"][0] = nl::json::object({
                 {"data", {
                     {"text/plain", inspect_result},
                     {"text/html", html_content}}
@@ -305,7 +303,7 @@ namespace xcpp
                 {"source", "page"},
                 {"start", 0}
             });
-            kernel_res["user_expressions"] = xeus::xjson::object();
+            kernel_res["user_expressions"] = nl::json::object();
 
             std::cout << std::flush;
             kernel_res["found"] = true;
@@ -326,7 +324,7 @@ namespace xcpp
             pattern = spattern;
         }
 
-        void apply(const std::string& code, xeus::xjson& kernel_res) override
+        void apply(const std::string& code, nl::json& kernel_res) override
         {
             std::regex re(spattern + R"((.*))");
             std::smatch to_inspect;

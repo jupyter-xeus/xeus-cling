@@ -9,7 +9,11 @@
 #ifndef XCPP_DISPLAY_HPP
 #define XCPP_DISPLAY_HPP
 
+#include "nlohmann/json.hpp"
+
 #include "xmime.hpp"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
@@ -19,22 +23,22 @@ namespace xcpp
         using ::xcpp::mime_bundle_repr;
         xeus::get_interpreter().display_data(
             mime_bundle_repr(t),
-            xeus::xjson::object(),
-            xeus::xjson::object()
+            nl::json::object(),
+            nl::json::object()
         );
     }
 
     template <class T>
     void display(const T& t, xeus::xguid id, bool update=false)
     {
-        xeus::xjson transient;
+        nl::json transient;
         transient["display_id"] = id;
         using ::xcpp::mime_bundle_repr;
         if (update)
         {
             xeus::get_interpreter().update_display_data(
                 mime_bundle_repr(t),
-                xeus::xjson::object(),
+                nl::json::object(),
                 std::move(transient)
             );
         }
@@ -42,7 +46,7 @@ namespace xcpp
         {
             xeus::get_interpreter().display_data(
                 mime_bundle_repr(t),
-                xeus::xjson::object(),
+                nl::json::object(),
                 std::move(transient)
             );
         }

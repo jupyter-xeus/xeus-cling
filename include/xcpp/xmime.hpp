@@ -9,16 +9,19 @@
 #ifndef XCPP_MIME_HPP
 #define XCPP_MIME_HPP
 
+#include "nlohmann/json.hpp"
+
 #include "cling/Interpreter/RuntimePrintValue.h"
-#include "xeus/xjson.hpp"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
     // Default implementation of mime_bundle_repr
     template <class T>
-    xeus::xjson mime_bundle_repr(const T& value)
+    nl::json mime_bundle_repr(const T& value)
     {
-        auto bundle = xeus::xjson::object();
+        auto bundle = nl::json::object();
         bundle["text/plain"] = cling::printValue(&value);
         return bundle;
     }

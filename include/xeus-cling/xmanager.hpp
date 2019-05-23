@@ -15,9 +15,13 @@
 #include <string>
 #include <type_traits>
 
+#include "nlohmann/json.hpp"
+
 #include "xeus-cling/xholder_cling.hpp"
 #include "xeus-cling/xmagics.hpp"
 #include "xeus-cling/xpreamble.hpp"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
@@ -128,7 +132,7 @@ namespace xcpp
             }
         }
 
-        void apply(const std::string& code, xeus::xjson& kernel_res) override
+        void apply(const std::string& code, nl::json& kernel_res) override
         {
             std::regex re_magic_cell(R"(^\%{2}(\w+))");
             std::smatch magic_name;

@@ -12,7 +12,9 @@
 #include <regex>
 #include <string>
 
-#include "xeus/xjson.hpp"
+#include "nlohmann/json.hpp"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
@@ -26,7 +28,7 @@ namespace xcpp
             return std::regex_search(s, match, pattern);
         }
 
-        virtual void apply(const std::string& s, xeus::xjson& kernel_res) = 0;
+        virtual void apply(const std::string& s, nl::json& kernel_res) = 0;
         virtual xpreamble* clone() const = 0;
         virtual ~xpreamble() {};
     };

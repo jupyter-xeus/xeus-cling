@@ -13,7 +13,7 @@
 #include <locale>
 #include <string>
 
-#include "xeus/xjson.hpp"
+#include "nlohmann/json.hpp"
 
 #include "cling/Interpreter/Exception.h"
 #include "cling/Interpreter/CValuePrinter.h"
@@ -36,6 +36,8 @@
 #include "llvm/ExecutionEngine/GenericValue.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
+
+namespace nl = nlohmann;
 
 namespace xcpp
 {
@@ -167,7 +169,7 @@ namespace xcpp
         }
     }
 
-    inline xeus::xjson mime_repr(const cling::Value& V)
+    inline nl::json mime_repr(const cling::Value& V)
     {
         // Return a JSON mime bundle representing the specified value.
 
@@ -201,11 +203,11 @@ namespace xcpp
 
         if (mimeReprV.isValid() && mimeReprV.getPtr())
         {
-            return *(xeus::xjson*)mimeReprV.getPtr();
+            return *(nl::json*)mimeReprV.getPtr();
         }
         else
         {
-            return xeus::xjson::object();
+            return nl::json::object();
         }
     }
 }
