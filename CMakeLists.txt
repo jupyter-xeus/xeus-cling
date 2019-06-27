@@ -101,7 +101,7 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
-set(xeus_REQUIRED_VERSION 0.19.0)
+set(xeus_REQUIRED_VERSION 0.20.0)
 set(cppzmq_REQUIRED_VERSION 4.3.0)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
