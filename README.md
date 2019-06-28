@@ -20,7 +20,7 @@ The safest usage is to create an environment named `cling` with your miniconda i
 
 ```
 conda create -n cling
-source activate cling
+conda activate cling # Or `source activate cling` for conda < 4.6
 ```
 
 Then you can install in this environment `xeus-cling` and its dependencies
