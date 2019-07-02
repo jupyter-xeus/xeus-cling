@@ -7,6 +7,9 @@ image:
   - Visual Studio 2017
   - Visual Studio 2015
 
+configuration:
+  - Release
+
 environment:
   matrix:
     - MINICONDA: C:\xeus-conda
@@ -33,7 +36,7 @@ install:
   # Build and install xeus-cling
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
