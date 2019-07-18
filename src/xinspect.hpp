@@ -268,7 +268,7 @@ namespace xcpp
             kernel_res["status"] = "error";
             kernel_res["ename"] = "No documentation found";
             kernel_res["evalue"] = "";
-            kernel_res["traceback"] = nl::json::object();
+            kernel_res["traceback"] = nl::json::array();
         }
         else
         {

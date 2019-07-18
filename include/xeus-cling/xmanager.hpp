@@ -145,7 +145,7 @@ namespace xcpp
                     kernel_res["status"] = "error";
                     kernel_res["ename"] = "ename";
                     kernel_res["evalue"] = "evalue";
-                    kernel_res["traceback"] = {};
+                    kernel_res["traceback"] = nl::json::array();
                     return;
                 }
                 std::regex re_magic_cell(R"(^\%{2}(\w+(?:\s.*)?)\n((?:.*\n?)*))");
