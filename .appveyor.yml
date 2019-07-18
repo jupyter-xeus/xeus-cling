@@ -32,7 +32,7 @@ install:
   - conda update -q conda
   - conda info -a
   # Install dependencies
-  - conda install cmake dirent xeus=0.20.0 cling=0.5.0 clangdev=5.0 clang_variant=*=cling_6.14.06 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c QuantStack -c conda-forge
+  - conda install cmake dirent xeus=0.21.1 cling=0.5.0 clangdev=5.0 clang_variant=*=cling_6.14.06 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c QuantStack -c conda-forge
   # Build and install xeus-cling
   - mkdir build
   - cd build
