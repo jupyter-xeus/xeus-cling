@@ -11,7 +11,7 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/Quan
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the **linux** and **OS X** platforms. The build for the **windows** platform made available on our channel is merely experimental.
+xeus-cling has been packaged for the conda package manager on the **Linux** and **OS X** platforms. The build for the **Windows** platform made available on our channel is merely experimental.
 
 To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `zeromq` library which is already installed in the anaconda distribution.
 
@@ -27,6 +27,12 @@ Then you can install in this environment `xeus-cling` and its dependencies
 
 ```
 conda install xeus-cling -c conda-forge
+```
+
+The experimental build for the **Windows** platform is available on the QuantStack channel only:
+
+```
+conda install xeus-cling -c QuantStack
 ```
 
 Or you can install it directly from the sources, if all the dependencies are already installed.
