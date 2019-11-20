@@ -32,18 +32,18 @@ install:
   - conda update -q conda
   - conda info -a
   # Install dependencies
-  - conda install cmake dirent xeus=0.21.1 cling=0.5.0 clangdev=5.0 clang_variant=*=cling_6.14.06 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c QuantStack -c conda-forge
+  #- conda install cmake dirent xeus=0.21.1 cling=0.5.0 clangdev=5.0 clang_variant=*=cling_6.14.06 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c conda-forge
   # Build and install xeus-cling
-  - mkdir build
-  - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
-  - nmake
-  - nmake install
+  #- mkdir build
+  #- cd build
+  #- cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
+  #- nmake
+  #- nmake install
   # Install jupyter_kernel_test and pytest
-  - conda install pytest jupyter_kernel_test -c conda-forge
-  - cd..
-  - cd test
+  #- conda install pytest jupyter_kernel_test -c conda-forge
+  #- cd..
+  #- cd test
 
 build_script:
   # Allowing failure on jupyter kernel tests as Cling does not support windows
-  - py.test . & exit 0
+  #- py.test . & exit 0
