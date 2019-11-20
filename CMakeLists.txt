@@ -162,6 +162,8 @@ set(XEUS_CLING_SRC
     src/xoptions.cpp
     src/xparser.cpp
     src/xparser.hpp
+    src/xpaths.cpp
+    src/xpaths.hpp
     src/xholder_cling.cpp
     src/xmagics/execution.cpp
     src/xmagics/execution.hpp
@@ -182,6 +184,13 @@ set(XEUS_CLING_HEADERS
     include/xeus-cling/xpreamble.hpp
 )
 
+# xcpp sources
+set(XCPP_SRC
+    src/main.cpp
+    src/xpaths.hpp
+    src/xpaths.cpp
+)
+
 # xcpp headers (needed at runtime by the C++ kernel)
 set(XCPP_HEADERS
     include/xcpp/xmime.hpp
@@ -192,7 +201,7 @@ set(XCPP_HEADERS
 add_library(xeus-cling SHARED ${XEUS_CLING_SRC} ${XEUS_CLING_HEADERS})
 
 # xcpp is the target for the kernel executable
-add_executable(xcpp src/main.cpp)
+add_executable(xcpp ${XCPP_SRC})
 set_target_properties(xcpp PROPERTIES ENABLE_EXPORTS 1)
 target_link_libraries(xcpp PRIVATE xeus-cling)
 
@@ -342,8 +351,8 @@ install(DIRECTORY ${XCPP_TAGCONFS_DIR}
         DESTINATION ${XEUS_CLING_CONF_DIR})
 
 # Add definitions for the kernel to find tagfiles.
-add_definitions(-DXCPP_TAGFILES_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_DATA_DIR}/tagfiles")
-add_definitions(-DXCPP_TAGCONFS_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_CONF_DIR}/tags.d")
+add_definitions(-DXCPP_TAGFILES_DIR="${XEUS_CLING_DATA_DIR}/tagfiles")
+add_definitions(-DXCPP_TAGCONFS_DIR="${XEUS_CLING_CONF_DIR}/tags.d")
 
 # Makes the project importable from the build directory
 export(EXPORT ${PROJECT_NAME}-targets

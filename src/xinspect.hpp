@@ -26,6 +26,7 @@
 
 #include "xdemangle.hpp"
 #include "xparser.hpp"
+#include "xpaths.hpp"
 
 namespace xcpp
 {
@@ -174,8 +175,10 @@ namespace xcpp
 
     void inspect(const std::string& code, nl::json& kernel_res, cling::MetaProcessor& m_processor)
     {
-        nl::json tagconfs = read_tagconfs(XCPP_TAGCONFS_DIR);
-        std::string tagfiles_dir = XCPP_TAGFILES_DIR;
+        std::string tagconf_dir = prefix_path() + XCPP_TAGCONFS_DIR;
+        std::string tagfiles_dir = prefix_path() + XCPP_TAGFILES_DIR;
+
+        nl::json tagconfs = read_tagconfs(tagconf_dir.c_str());
 
         std::vector<std::string> check{"class", "struct", "function"};
 
