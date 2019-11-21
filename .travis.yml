@@ -13,7 +13,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode10.2
 install:
     # Define the version of miniconda to download
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -28,7 +28,11 @@ install:
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Install host dependencies
-    - conda install xeus=0.23.2 cling=0.5.0 clang_variant=*=cling_6.14.06 clangdev=5.0 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c conda-forge
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        conda install xeus=0.23.2 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c conda-forge;
+      else
+        conda install xeus=0.23.2 cling=0.6.0 clangdev=5.0 libcxx llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c conda-forge;
+      fi
     # Install build dependencies
     - conda install cmake -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
