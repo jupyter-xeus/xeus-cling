@@ -12,7 +12,7 @@ configuration:
 
 environment:
   matrix:
-    - MINICONDA: C:\xeus-conda
+    - MINICONDA: C:\\xeus-conda
 
 init:
   - "ECHO %MINICONDA%"
@@ -36,14 +36,14 @@ install:
   # Build and install xeus-cling
   - mkdir build
   - cd build
-  # - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
-  #- nmake
-  #- nmake install
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
+  - nmake
+  - nmake install
   # Install jupyter_kernel_test and pytest
   - conda install pytest jupyter_kernel_test -c conda-forge
   - cd..
   - cd test
 
 build_script:
-  # Allowing failure on jupyter kernel tests as Cling does not support windows
-  #- py.test . & exit 0
+  # Allowing failures on Windows
+  - py.test . & exit 0
