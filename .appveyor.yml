@@ -7,9 +7,6 @@ image:
   - Visual Studio 2017
   - Visual Studio 2015
 
-configuration:
-  - Release
-
 environment:
   matrix:
     - MINICONDA: C:\\xeus-conda
@@ -18,12 +15,10 @@ init:
   - "ECHO %MINICONDA%"
   - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
   - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCARGUMENT=%PLATFORM%
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x64" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" if "%PLATFORM%" == "x86" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - echo "%VCVARPATH% %VCARGUMENT%"
   - "%VCVARPATH% %VCARGUMENT%"
-  - ps: if($env:Platform -eq "x64"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe; echo "Done"}
-  - ps: if($env:Platform -eq "x86"){Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86.exe' C:\Miniconda.exe; echo "Done"}
+  - ps: Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe; echo "Done"
   - cmd: C:\Miniconda.exe /S /D=C:\xeus-conda
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
@@ -36,7 +31,7 @@ install:
   # Build and install xeus-cling
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=%CONFIGURATION% -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=Release -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter ..
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
@@ -45,5 +40,4 @@ install:
   - cd test
 
 build_script:
-  # Allowing failures on Windows
   - py.test . & exit 0
