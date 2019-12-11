@@ -27,7 +27,7 @@ install:
   - conda update -q conda
   - conda info -a
   # Install dependencies
-  - conda install cmake dirent xeus=0.23.2 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json=3.6.1 cppzmq=4.3.0 xtl=0.6.5 pugixml cxxopts=2.1.1 -c conda-forge
+  - conda install cmake dirent xeus=0.23.3 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq=4.3.0 xtl=0.6.9 pugixml cxxopts=2.1.1 -c conda-forge
   # Build and install xeus-cling
   - mkdir build
   - cd build

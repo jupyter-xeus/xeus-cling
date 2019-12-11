@@ -265,21 +265,24 @@ namespace xcpp
         result["implementation_version"] = XEUS_CLING_VERSION;
 
         /* The jupyter-console banner for xeus-cling is the following:
-         __  _____ _   _ ___      ___ _    ___ _  _  ___
-         \ \/ / __| | | / __|___ / __| |  |_ _| \| |/ __|
-          >  <| _|| |_| \__ \___| (__| |__ | || .` | (_ |
-         /_/\_\___|\___/|___/    \___|____|___|_|\_|\___|
+          __  _____ _   _ ___ 
+          \ \/ / _ \ | | / __|
+           >  <  __/ |_| \__ \
+          /_/\_\___|\__,_|___/
 
-          Jupyter Kernel for the Cling C++ interpreter
+          xeus-cling: a Jupyter Kernel C++ - based on cling
         */
 
-        result["banner"] = " __  _____ _   _ ___      ___ _    ___ _  _  ___ \n"
-                           " \\ \\/ / __| | | / __|___ / __| |  |_ _| \\| |/ __|\n"
-                           "  >  <| _|| |_| \\__ \\___| (__| |__ | || .` | (_ |\n"
-                           " /_/\\_\\___|\\___/|___/    \\___|____|___|_|\\_|\\___|\n"
-                           "\n"
-                           "  Jupyter Kernel for the Cling C++ interpreter  ";
-
+        std::string banner = ""
+              "  __  _____ _   _ ___\n"
+              "  \\ \\/ / _ \\ | | / __|\n"
+              "   >  <  __/ |_| \\__ \\\n"
+              "  /_/\\_\\___|\\__,_|___/\n"
+              "\n"
+              "  xeus-cling: a Jupyter Kernel C++ - based on cling\n"
+              "  C++";
+        banner.append(m_version);
+        result["banner"] = banner;
         result["language_info"]["name"] = "c++";
         result["language_info"]["version"] = m_version;
         result["language_info"]["mimetype"] = "text/x-c++src";
@@ -334,13 +337,14 @@ namespace xcpp
 
     std::string interpreter::get_stdopt(int argc, const char* const* argv)
     {
-        std::string res = "-std=c++11";
+        std::string res = "11";
         for (int i = 0; i < argc; ++i)
         {
             std::string tmp(argv[i]);
-            if (tmp.find("-std=c++") != std::string::npos)
+            auto pos = tmp.find("-std=c++");
+            if (pos != std::string::npos)
             {
-                res = tmp;
+                res = tmp.substr(pos + 8);
                 break;
             }
         }
