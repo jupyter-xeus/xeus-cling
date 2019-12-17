@@ -13,7 +13,7 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/Quan
 
 xeus-cling has been packaged for the conda package manager on the **Linux** and **OS X** platforms. At the moment, we are not providing packages for the **Windows** platform.
 
-To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `zeromq` library which is already installed in the anaconda distribution.
+To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `ZeroMQ` library which is already installed in the anaconda distribution.
 
 
 The safest usage is to create an environment named `cling` with your miniconda installation
@@ -113,6 +113,10 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 |  0.4.0       |  >=0.12.0,<0.13 |  >=0.4.0,<0.5   | >=0.5,<0.6    | ~1.8.1        | ~4.2.3   | >=1.4.1,<=2.0 | >=3.1.0,<4.0    | >=2.3.2,<3              |
 
 `xeus-cling` requires its dependencies to be built with the same compiler and same C runtime as the one used to build `cling`.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) to know how to contribute and set up a development environment.
 
 ## License
 
