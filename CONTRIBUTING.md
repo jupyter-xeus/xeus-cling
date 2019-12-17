@@ -1,6 +1,6 @@
 # Contributing to Xeus-cling
 
-Xeus and xeus-cling are a subprojects of Project Jupyter and subject to the [Jupyter governance](https://github.com/jupyter/governance) and [Code of conduct](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md).
+Xeus and xeus-cling are subprojects of Project Jupyter and subject to the [Jupyter governance](https://github.com/jupyter/governance) and [Code of conduct](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md).
 
 ## General Guidelines
 
@@ -23,5 +23,5 @@ conda activate xeus-cling
 git clone https://github.com/<your-github-username>/xeus-cling.git
 ```
 
-You may also want to install a C++ compiler, cmake, and pkg-config from conda if they are not available on your system. Pkg-config is required at build time for locating zeromq and OpenSSL.
+You may also want to install a C++ compiler, and cmake from conda if they are not available on your system.
 
