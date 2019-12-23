@@ -36,7 +36,7 @@ namespace xcpp
             // Redirection of stderr to stdout
             std::string command = to_execute.str(1) + " 2>&1";
 
-#if defined(WIN32)
+#if defined(_WIN32)
             FILE* shell_result = _popen(command.c_str(), "r");
 #else
             FILE* shell_result = popen(command.c_str(), "r");
@@ -49,7 +49,7 @@ namespace xcpp
                 {
                     std::cout << buff;
                 }
-#if defined(WIN32)
+#if defined(_WIN32)
                 _pclose(shell_result);
 #else
                 pclose(shell_result);
@@ -60,7 +60,7 @@ namespace xcpp
             }
             else
             {
-                std::cerr << "Unable to execute the shell command\n";
+                std::cerr << "Unable to execute the shell command" << std::endl;
                 std::cout << std::flush;
                 kernel_res["status"] = "error";
                 kernel_res["ename"] = "ename";

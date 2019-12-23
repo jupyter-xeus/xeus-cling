@@ -99,7 +99,7 @@ namespace xcpp
                 {
                     std::cerr << " Did you mean the line magic %" << magic_name << " (single %)?";
                 }
-                std::cerr << "\n";
+                std::cerr << std::endl;
                 return;
             }
             try
@@ -108,11 +108,11 @@ namespace xcpp
             }
             catch (const cxxopts::OptionException& e)
             {
-                std::cerr << "UsageError: " << e.what() << "\n";
+                std::cerr << "UsageError: " << e.what() << std::endl;
             }
             catch (...)
             {
-                std::cerr << "Exception occurred. Recovering...\n";
+                std::cerr << "Exception occurred. Recovering..." << std::endl;
             }
         }
 
@@ -124,11 +124,11 @@ namespace xcpp
             }
             catch (const cxxopts::OptionException& e)
             {
-                std::cerr << "UsageError: " << e.what() << "\n";
+                std::cerr << "UsageError: " << e.what() << std::endl;
             }
             catch (...)
             {
-                std::cerr << "Exception occurred. Recovering...\n";
+                std::cerr << "Exception occurred. Recovering..." << std::endl;
             }
         }
 
@@ -140,7 +140,7 @@ namespace xcpp
             {
                 if (!contains(magic_name.str(1)))
                 {
-                    std::cerr << "Unknown magic cell function %%" << magic_name[1] << "\n";
+                    std::cerr << "Unknown magic cell function %%" << magic_name[1] << std::endl;
                     std::cout << std::flush;
                     kernel_res["status"] = "error";
                     kernel_res["ename"] = "ename";
@@ -148,7 +148,11 @@ namespace xcpp
                     kernel_res["traceback"] = nl::json::array();
                     return;
                 }
+#if defined(_WIN32)
                 std::regex re_magic_cell(R"(^\%{2}(\w+(?:\s.*)?)\n((?:.*\n?)*))");
+#else
+                std::regex re_magic_cell(R"(^\%{2}(\w+(?:\s.*)?)\r\n((?:.*\n?)*))");
+#endif
                 std::smatch split_code;
                 std::regex_search(code, split_code, re_magic_cell);
                 apply(magic_name[1], split_code[1], split_code[2]);
@@ -161,7 +165,7 @@ namespace xcpp
             {
                 if (!contains(magic_name.str(1), xmagic_type::line))
                 {
-                    std::cerr << "Unknown magic line function %" << magic_name[1] << "\n";
+                    std::cerr << "Unknown magic line function %" << magic_name[1] << std::endl;
                     std::cout << std::flush;
                     kernel_res["status"] = "error";
                     kernel_res["ename"] = "ename";
