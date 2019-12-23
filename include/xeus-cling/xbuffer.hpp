@@ -24,40 +24,40 @@ namespace xcpp
     {
     public:
 
+        using base_type = std::streambuf;
         using callback_type = std::function<void(std::string)>;
+        using traits_type = base_type::traits_type;
 
         xoutput_buffer(callback_type callback)
             : m_callback(std::move(callback))
         {
-            this->setp(this->m_buffer, this->m_buffer + sizeof(this->m_buffer) - 1);
         }
 
     protected:
 
-        int overflow(int c) override
+        traits_type::int_type overflow(traits_type::int_type c) override
         {
-            this->sync();
-            using traits_type = std::streambuf::traits_type;
+            // Called for each output character.
             if (!traits_type::eq_int_type(c, traits_type::eof()))
             {
-                *this->pptr() = traits_type::to_char_type(c);
-                this->pbump(1);
+                m_output.push_back(traits_type::to_char_type(c));
             }
-            return traits_type::not_eof(c);
+            return c;
         }
 
-        int sync() override
+        traits_type::int_type sync() override
         {
-            if (this->pbase() != this->pptr())
+            // Called in case of flush.
+            if (!m_output.empty())
             {
-                this->m_callback(std::string(this->pbase(), this->pptr()));
-                this->setp(this->pbase(), this->epptr());
+                m_callback(m_output);
+                m_output.clear();
             }
             return 0;
         }
 
         callback_type m_callback;
-        char m_buffer[1024];
+        std::string m_output;
     };
 
     /*******************
@@ -82,7 +82,7 @@ namespace xcpp
 
     protected:
 
-        int underflow() override
+        traits_type::int_type underflow() override
         {
             m_callback(m_value);
             // Terminate the string to trigger parsing.
@@ -102,7 +102,10 @@ namespace xcpp
 
     class xnull : public std::streambuf
     {
-        int overflow(int c) override
+        using base_type = std::streambuf;
+        using traits_type = base_type::traits_type;
+
+        traits_type::int_type overflow(traits_type::int_type c) override
         {
             return c;
         }

@@ -53,7 +53,10 @@ namespace xcpp
         init_magic();
     }
 
-    interpreter::~interpreter() {}
+    interpreter::~interpreter()
+    {
+        restore_output();
+    }
 
     nl::json interpreter::execute_request_impl(int execution_counter,
                                                const std::string& code,
