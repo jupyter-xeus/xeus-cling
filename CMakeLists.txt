@@ -335,6 +335,21 @@ if(MSVC)
     set_property(TARGET xeus-cling APPEND_STRING PROPERTY LINK_FLAGS ${cling_link_str})
 endif(MSVC)
 
+#########
+# Tests #
+#########
+
+OPTION(BUILD_TESTS "xeus-cling test suite" OFF)
+OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
+
+if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
+    set(BUILD_TESTS ON)
+endif()
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif()
+
 ################
 # Installation #
 ################

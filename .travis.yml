@@ -43,10 +43,12 @@ install:
     # Build and install xeus-cling
     - mkdir build
     - cd build
-    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ..
+    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda/ -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -D DOWNLOAD_GTEST=ON ..
     - make -j2 install
     # Install jupyter_kernel_test and pytest
     - conda install pytest jupyter_kernel_test -c conda-forge
-    - cd ../test
 script:
+    - cd test
+    - ./test_xeus_cling
+    - cd ../../test
     - py.test .
