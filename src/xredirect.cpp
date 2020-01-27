@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdarg.h>
 
 bool c_io_redirect = false;
 
