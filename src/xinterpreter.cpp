@@ -28,6 +28,9 @@
 
 using namespace std::placeholders;
 
+// the global variable enables redirection in printf and fprintf
+extern bool c_io_redirect;
+
 namespace xcpp
 {
     void interpreter::configure_impl()
@@ -308,12 +311,16 @@ namespace xcpp
 
         std::cout.rdbuf(&m_cout_buffer);
         std::cerr.rdbuf(&m_cerr_buffer);
+
+	c_io_redirect = true;
     }
 
     void interpreter::restore_output()
     {
         std::cout.rdbuf(p_cout_strbuf);
         std::cerr.rdbuf(p_cerr_strbuf);
+
+	c_io_redirect = false;
     }
 
     void interpreter::publish_stdout(const std::string& s)

@@ -171,6 +171,7 @@ set(XEUS_CLING_SRC
     src/xmagics/os.cpp
     src/xmagics/os.hpp
     src/xmime_internal.hpp
+    src/xredirect.cpp
 )
 
 # xeus-cling headers
