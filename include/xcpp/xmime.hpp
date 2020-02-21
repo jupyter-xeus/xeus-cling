@@ -10,6 +10,9 @@
 #ifndef XCPP_MIME_HPP
 #define XCPP_MIME_HPP
 
+#include <complex>
+#include <sstream>
+
 #include "nlohmann/json.hpp"
 
 #include "cling/Interpreter/RuntimePrintValue.h"
@@ -24,6 +27,20 @@ namespace xcpp
     {
         auto bundle = nl::json::object();
         bundle["text/plain"] = cling::printValue(&value);
+        return bundle;
+    }
+
+    // Implementation for std::complex.
+    template <class T>
+    nl::json mime_bundle_repr(const std::complex<T>& value)
+    {
+        auto bundle = nl::json::object();
+
+        // Implement via the default stream operator.
+        std::ostringstream oss;
+        oss << value;
+
+        bundle["text/plain"] = oss.str();
         return bundle;
     }
 }
