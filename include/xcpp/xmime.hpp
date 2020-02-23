@@ -21,6 +21,26 @@ namespace nl = nlohmann;
 
 namespace xcpp
 {
+
+    namespace detail
+    {
+
+        // Generic mime_bundle_repr() implementation
+        // via std::ostringstream.
+        template <class T>
+        nl::json mime_bundle_repr_via_sstream(const T& value)
+        {
+            auto bundle = nl::json::object();
+
+            std::ostringstream oss;
+            oss << value;
+
+            bundle["text/plain"] = oss.str();
+            return bundle;
+        }
+
+    }
+
     // Default implementation of mime_bundle_repr
     template <class T>
     nl::json mime_bundle_repr(const T& value)
@@ -34,14 +54,14 @@ namespace xcpp
     template <class T>
     nl::json mime_bundle_repr(const std::complex<T>& value)
     {
-        auto bundle = nl::json::object();
+        return detail::mime_bundle_repr_via_sstream(value);
+    }
 
-        // Implement via the default stream operator.
-        std::ostringstream oss;
-        oss << value;
-
-        bundle["text/plain"] = oss.str();
-        return bundle;
+    // Implementation for long double. This is a workaround for
+    // https://github.com/jupyter-xeus/xeus-cling/issues/220
+    inline nl::json mime_bundle_repr(const long double& value)
+    {
+        return detail::mime_bundle_repr_via_sstream(value);
     }
 }
 
