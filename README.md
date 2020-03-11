@@ -36,6 +36,12 @@ cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_p
 make && make install
 ```
 
+If you don't have a frontend already installed (jupyter notebook or jupyter lab for instance), intall one:
+
+```bash
+conda install notebook -c conda-forge
+```
+
 ## Trying it online
 
 To try out xeus-cling interactively in your web browser, just click on the binder
