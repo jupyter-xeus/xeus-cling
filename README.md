@@ -16,7 +16,9 @@ xeus-cling has been packaged for the conda package manager on the **Linux** and 
 To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `ZeroMQ` library which is already installed in the anaconda distribution.
 
 
-The safest usage is to create an environment named `cling` with your miniconda installation
+### Installation from conda
+
+The safest usage is to create an environment named `cling` with your miniconda installation:
 
 ```
 conda create -n cling
@@ -29,10 +31,19 @@ Then you can install in this environment `xeus-cling` and its dependencies
 conda install xeus-cling -c conda-forge
 ```
 
-Or you can install it directly from the sources, if all the dependencies are already installed.
+### Installation from source
+
+You will first need to create a new environment and install the dependencies:
 
 ```bash
-cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_path/lib
+conda create -n xeus-cling -c conda-forge cmake xeus=0.23.3 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq=4.3.0 xtl=0.6.9 pugixml cxxopts=2.1.1
+conda activate xeus-cling
+```
+
+You can then compile the sources:
+
+```bash
+cmake -D CMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX -D CMAKE_INSTALL_LIBDIR=${CONDA_PREFIX}/lib -D DOWNLOAD_GTEST=ON
 make && make install
 ```
 
