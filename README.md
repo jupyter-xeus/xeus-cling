@@ -36,7 +36,7 @@ cmake -DCMAKE_INSTALL_PREFIX=your_conda_path -DCMAKE_INSTALL_LIBDIR=your_conda_p
 make && make install
 ```
 
-If you don't have a frontend already installed (jupyter notebook or jupyter lab for instance), intall one:
+If you don't have a frontend already installed (classic Jupyter Notebook or JupyterLab for instance), install one:
 
 ```bash
 conda install notebook -c conda-forge
