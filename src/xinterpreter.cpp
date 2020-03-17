@@ -292,6 +292,11 @@ namespace xcpp
         result["language_info"]["mimetype"] = "text/x-c++src";
         result["language_info"]["codemirror_mode"] = "text/x-c++src";
         result["language_info"]["file_extension"] = ".cpp";
+        result["help_links"] = nl::json::array();
+        result["help_links"][0] = nl::json::object({
+            {"text", "Xeus-Cling Reference"},
+            {"url", "https://xeus-cling.readthedocs.io"}
+        });
         result["status"] = "ok";
         return result;
     }
