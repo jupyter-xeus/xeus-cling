@@ -55,3 +55,17 @@ On Windows platforms, from the source directory:
     nmake
     nmake install
 
+Installing the Kernel Spec
+==========================
+
+When installing xeus-cling in a given installation prefix, the corresponding Jupyter kernelspecs are installed in the same environment and are automatically picked up by Jupyter if it is installed in the same prefix. 
+
+However, if Jupyter is installed in a different location, it will not pick up the new kernels. The xeus-cling kernels (for C++11, C++14 and C++17 respectively) can be registered with the following commands:
+
+.. code::
+
+   jupyter kernelspec install PREFIX/share/jupyter/xcpp11 --sys-prefix
+   jupyter kernelspec install PREFIX/share/jupyter/xcpp14 --sys-prefix
+   jupyter kernelspec install PREFIX/share/jupyter/xcpp17 --sys-prefix
+
+For more information on the ``jupyter kernelspec`` command, please consult the ``jupyter_client`` documentation.
