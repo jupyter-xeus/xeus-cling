@@ -8,11 +8,14 @@
 ************************************************************************************/
 
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
 #include <memory>
 #include <regex>
 #include <sstream>
 #include <vector>
 
+#include "llvm/Support/DynamicLibrary.h"
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
 #include "xeus-cling/xinterpreter.hpp"
@@ -306,6 +309,60 @@ namespace xcpp
         restore_output();
     }
 
+    static std::string c_format(const char* format, std::va_list args)
+    {
+        // Call vsnprintf once to determine the required buffer length.
+        std::va_list args_bufsz;
+        va_copy(args_bufsz, args);
+        size_t bufsz = vsnprintf(NULL, 0, format, args_bufsz);
+        va_end(args_bufsz);
+
+        // Create an empty string of that size.
+        std::string s(bufsz, 0);
+
+        // Now format the data into this string and return it.
+        std::va_list args_format;
+        va_copy(args_format, args);
+        vsnprintf(&s[0], s.size(), format, args_format);
+        va_end(args_format);
+
+        return s;
+    }
+
+    static int printf_jit(const char* format, ...)
+    {
+        std::va_list args;
+        va_start(args, format);
+
+        std::string buf = c_format(format, args);
+        std::cout << buf;
+
+        va_end(args);
+
+        return buf.size();
+    }
+
+    static int fprintf_jit(std::FILE* stream, const char* format, ...)
+    {
+        std::va_list args;
+        va_start(args, format);
+
+        int ret;
+        if (stream == stderr) {
+            std::string buf = c_format(format, args);
+            std::cerr << buf;
+
+            ret = buf.size();
+        } else {
+            // Just forward to vfprintf.
+            ret = vfprintf(stream, format, args);
+        }
+
+        va_end(args);
+
+        return ret;
+    }
+
     void interpreter::redirect_output()
     {
         p_cout_strbuf = std::cout.rdbuf();
@@ -313,12 +370,20 @@ namespace xcpp
 
         std::cout.rdbuf(&m_cout_buffer);
         std::cerr.rdbuf(&m_cerr_buffer);
+
+        // Inject versions of printf and fprintf that output to std::cout
+        // and std::cerr (see implementation above).
+        llvm::sys::DynamicLibrary::AddSymbol("printf", (void*) &printf_jit);
+        llvm::sys::DynamicLibrary::AddSymbol("fprintf", (void*) &fprintf_jit);
     }
 
     void interpreter::restore_output()
     {
         std::cout.rdbuf(p_cout_strbuf);
         std::cerr.rdbuf(p_cerr_strbuf);
+
+        // No need to remove the injected versions of [f]printf: As they forward
+        // to std::cout and std::cerr, these are handled implicitly.
     }
 
     void interpreter::publish_stdout(const std::string& s)
