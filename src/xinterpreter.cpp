@@ -23,6 +23,7 @@
 
 #include "xinput.hpp"
 #include "xinspect.hpp"
+#include "xmagics/executable.hpp"
 #include "xmagics/execution.hpp"
 #include "xmagics/os.hpp"
 #include "xmime_internal.hpp"
@@ -414,6 +415,7 @@ namespace xcpp
 
     void interpreter::init_magic()
     {
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(m_cling));
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_processor));
     }

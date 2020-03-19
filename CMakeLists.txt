@@ -167,6 +167,8 @@ set(XEUS_CLING_SRC
     src/xpaths.cpp
     src/xpaths.hpp
     src/xholder_cling.cpp
+    src/xmagics/executable.cpp
+    src/xmagics/executable.hpp
     src/xmagics/execution.cpp
     src/xmagics/execution.hpp
     src/xmagics/os.cpp
