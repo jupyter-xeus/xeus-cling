@@ -30,20 +30,20 @@ Enabling the quick-help feature for third-party libraries
 ---------------------------------------------------------
 
 The quick help feature can be enabled for other libraries. To do so, a doxygen
-tag file for your library must be placed under the ``xcpp`` `data` directory of
-the installation prefix, namely
+tag file for your library must be placed under the ``xeus-cling`` "data"
+directory of the installation prefix, namely
 
 .. code::
 
-   PREFIX/share/xcpp/tagfiles
+   PREFIX/share/xeus-cling/tagfiles
 
 For ``xeus-cling`` to be able to make use of that information, a JSON
-configuration file must be placed under the ``xcpp`` `configuration` directory
-of the installation prefix, namely
+configuration file must be placed under the ``xeus-cling`` `configuration`
+directory of the installation prefix, namely
 
 .. code::
 
-   PREFIX/etc/xcpp/tags.d
+   PREFIX/etc/xeus-cling/tags.d
 
 .. note::
 
