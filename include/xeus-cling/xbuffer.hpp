@@ -26,7 +26,7 @@ namespace xcpp
     public:
 
         using base_type = std::streambuf;
-        using callback_type = std::function<void(std::string)>;
+        using callback_type = std::function<void(const std::string&)>;
         using traits_type = base_type::traits_type;
 
         xoutput_buffer(callback_type callback)
