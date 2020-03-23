@@ -12,6 +12,7 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <streambuf>
 #include <string>
 
@@ -26,7 +27,7 @@ namespace xcpp
     public:
 
         using base_type = std::streambuf;
-        using callback_type = std::function<void(std::string)>;
+        using callback_type = std::function<void(const std::string&)>;
         using traits_type = base_type::traits_type;
 
         xoutput_buffer(callback_type callback)
@@ -38,6 +39,7 @@ namespace xcpp
 
         traits_type::int_type overflow(traits_type::int_type c) override
         {
+            std::lock_guard<std::mutex> lock(m_mutex);
             // Called for each output character.
             if (!traits_type::eq_int_type(c, traits_type::eof()))
             {
@@ -46,8 +48,17 @@ namespace xcpp
             return c;
         }
 
+        std::streamsize xsputn(const char* s, std::streamsize count) override
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+            // Called for a string of characters.
+            m_output.append(s, count);
+            return count;
+        }
+
         traits_type::int_type sync() override
         {
+            std::lock_guard<std::mutex> lock(m_mutex);
             // Called in case of flush.
             if (!m_output.empty())
             {
@@ -59,6 +70,7 @@ namespace xcpp
 
         callback_type m_callback;
         std::string m_output;
+        std::mutex m_mutex;
     };
 
     /*******************
