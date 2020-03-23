@@ -24,6 +24,29 @@ magic.
 A few magics are available in xeus-cling. In the future, user-defined magics
 will also be enabled.
 
+%%executable
+------------
+
+Dump the code from all entered cells into an executable binary. The content of
+the cell is used for the body of the `main` function.
+
+.. code::
+
+    %%executable filename [-- linker options]
+
+- Example
+
+.. image:: executable.png
+
+- Optional arguments:
+
+Any additional argument is passed to the linker. In particular this can be used
+with `-l` to link extra libraries that have otherwise been loaded with
+
+.. code::
+
+    #pragma cling load("...")
+
 %%file
 ------
 
