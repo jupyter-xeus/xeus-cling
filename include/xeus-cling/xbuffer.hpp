@@ -46,6 +46,13 @@ namespace xcpp
             return c;
         }
 
+        std::streamsize xsputn(const char* s, std::streamsize count) override
+        {
+            // Called for a string of characters.
+            m_output.append(s, count);
+            return count;
+        }
+
         traits_type::int_type sync() override
         {
             // Called in case of flush.
