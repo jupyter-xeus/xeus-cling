@@ -348,9 +348,13 @@ namespace xcpp
         va_start(args, format);
 
         int ret;
-        if (stream == stderr) {
+        if (stream == stdout || stream == stderr) {
             std::string buf = c_format(format, args);
-            std::cerr << buf;
+            if (stream == stdout) {
+                std::cout << buf;
+            } else if (stream == stderr) {
+                std::cerr << buf;
+            }
 
             ret = buf.size();
         } else {
