@@ -47,6 +47,14 @@ with `-l` to link extra libraries that have otherwise been loaded with
 
     #pragma cling load("...")
 
+Furthermore some options influence code generation:
+
++-------------------+---------------------------------------------+
+| -fsanitize=thread | enable instrumentation with ThreadSanitizer |
++-------------------+---------------------------------------------+
+| -g                | enable debug information in the executable  |
++-------------------+---------------------------------------------+
+
 %%file
 ------
 

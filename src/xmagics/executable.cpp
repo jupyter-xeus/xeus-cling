@@ -7,6 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software.         *
 ************************************************************************************/
 
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <fstream>
@@ -24,6 +25,8 @@
 #include "clang/AST/ASTContext.h"
 #include "clang/AST/DeclGroup.h"
 #include "clang/AST/RecursiveASTVisitor.h"
+#include "clang/Basic/DebugInfoOptions.h"
+#include "clang/Basic/Sanitizers.h"
 #include "clang/Basic/TargetInfo.h"
 #include "clang/CodeGen/BackendUtil.h"
 #include "clang/CodeGen/ModuleBuilder.h"
@@ -104,7 +107,7 @@ namespace xcpp
         clang::ASTConsumer* m_consumer;
     };
 
-    bool executable::generate_obj(std::string& ObjectFile)
+    bool executable::generate_obj(std::string& ObjectFile, bool EnableDebugInfo)
     {
         // Generate LLVM IR for current AST.
         auto* CI = m_interpreter.getCI();
@@ -115,6 +118,13 @@ namespace xcpp
         // Generate relocations suitable for dynamic linking.
         auto CodeGenOpts = CI->getCodeGenOpts();
         CodeGenOpts.RelocationModel = "pic";
+
+        // Enable debug information if requested.
+        if (EnableDebugInfo)
+        {
+            CodeGenOpts.setDebugInfo(
+                clang::codegenoptions::DebugInfoKind::FullDebugInfo);
+        }
 
         std::unique_ptr<clang::CodeGenerator> CG(clang::CreateLLVMCodeGen(
             CI->getDiagnostics(), "object", HeaderSearchOpts,
@@ -272,10 +282,36 @@ namespace xcpp
         }
         unloader(m_interpreter, *t);
 
+        // Enable debug information if user requested -g in the linker options.
+        bool EnableDebugInfo =
+            (std::find(LinkerOptions.begin(), LinkerOptions.end(),
+                       "-g") != LinkerOptions.end());
+        if (EnableDebugInfo)
+        {
+            std::cout << "Enabling debug information" << std::endl;
+        }
+
+        // Enable TSan instrumentation if user requested -fsanitize=thread in
+        // the linker options.
+        bool SanitizeThread =
+            (std::find(LinkerOptions.begin(), LinkerOptions.end(),
+                       "-fsanitize=thread") != LinkerOptions.end());
+        auto& SanitizeOpts = m_interpreter.getCI()->getLangOpts().Sanitize;
+        if (SanitizeThread)
+        {
+            std::cout << "Enabling instrumentation for ThreadSanitizer"
+                      << std::endl;
+            SanitizeOpts.set(clang::SanitizerKind::Thread, true);
+
+            // Imply debug information because it gives the user a clue which
+            // line of the input caused the race.
+            EnableDebugInfo = true;
+        }
+
         std::cout << "Writing executable to " << ExeFile << std::endl;
 
         std::string ObjectFile;
-        if (!generate_obj(ObjectFile))
+        if (!generate_obj(ObjectFile, EnableDebugInfo))
         {
             return;
         }
@@ -283,5 +319,10 @@ namespace xcpp
         llvm::FileRemover ObjectRemover(ObjectFile);
 
         generate_exe(ObjectFile, ExeFile, LinkerOptions);
+
+        if (SanitizeThread)
+        {
+            SanitizeOpts.set(clang::SanitizerKind::Thread, false);
+        }
     }
 }
