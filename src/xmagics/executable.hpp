@@ -32,7 +32,7 @@ namespace xcpp
 
         std::string generate_fns(const std::string& cell, std::string& main,
                                  std::string& unique_fn);
-        bool generate_obj(std::string& ObjectFile);
+        bool generate_obj(std::string& ObjectFile, bool EnableDebugInfo);
         bool generate_exe(const std::string& ObjectFile,
                           const std::string& ExeFile,
                           const std::vector<std::string>& LinkerOptions);
