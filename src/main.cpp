@@ -58,6 +58,16 @@ interpreter_ptr build_interpreter(int argc, char** argv)
 
 int main(int argc, char* argv[])
 {
+    // If we are called from the Jupyter launcher, silence all logging. This
+    // is important for a JupyterHub configured with cleanup_servers = False:
+    // Upon restart, spawned single-user servers keep running but without the
+    // std* streams. When a user then tries to start a new kernel, xeus-cling
+    // will get a SIGPIPE when writing to any of these and exit.
+    if (std::getenv("JPY_PARENT_PID") != NULL)
+    {
+        std::clog.setstate(std::ios_base::failbit);
+    }
+
     std::string file_name = extract_filename(argc, argv);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
