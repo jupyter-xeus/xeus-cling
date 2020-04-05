@@ -230,7 +230,16 @@ target_include_directories(xeus-cling
                            PUBLIC
                            $<BUILD_INTERFACE:${XEUS_CLING_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
-target_link_libraries(xeus-cling PUBLIC clingInterpreter clingMetaProcessor clingUtils xeus pugixml cxxopts::cxxopts)
+target_link_libraries(xeus-cling
+                      PUBLIC
+                      xeus
+
+                      PRIVATE
+                      clingInterpreter
+                      clingMetaProcessor
+                      clingUtils
+                      pugixml
+                      cxxopts::cxxopts)
 
 set_target_properties(xeus-cling PROPERTIES
                       PUBLIC_HEADER "${XEUS_CLING_HEADERS}"

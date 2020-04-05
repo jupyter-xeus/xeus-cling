@@ -16,17 +16,6 @@
 #include <string>
 #include <vector>
 
-#if defined(WIN32)
-#pragma warning(push, 0)
-#endif
-
-#include "cling/Interpreter/Interpreter.h"
-#include "cling/MetaProcessor/MetaProcessor.h"
-
-#if defined(WIN32)
-#pragma warning(pop)
-#endif
-
 #include "nlohmann/json.hpp"
 
 #include "xeus/xinterpreter.hpp"
@@ -34,6 +23,12 @@
 #include "xeus_cling_config.hpp"
 #include "xbuffer.hpp"
 #include "xmanager.hpp"
+
+namespace cling
+{
+class Interpreter;
+class MetaProcessor;
+}
 
 namespace nl = nlohmann;
 
@@ -85,8 +80,8 @@ namespace xcpp
 
         std::string get_stdopt(int argc, const char* const* argv);
 
-        cling::Interpreter m_cling;
-        cling::MetaProcessor m_processor;
+        cling::Interpreter* m_cling;
+        cling::MetaProcessor* m_processor;
         std::string m_version;
 
         xmagics_manager xmagics;

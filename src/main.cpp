@@ -13,9 +13,16 @@
 #include <utility>
 
 #include "xeus/xkernel.hpp"
-#include "xeus/xkernel_configuration.hpp"
+#if defined(max)
+#undef max
+#endif
+#if defined(min)
+#undef min
+#endif
 
 #include "xeus-cling/xinterpreter.hpp"
+
+#include "xeus/xkernel_configuration.hpp"
 
 std::string extract_filename(int& argc, char* argv[])
 {

@@ -19,6 +19,9 @@
 #pragma warning(push, 0)
 #endif
 
+#include "cling/Interpreter/Interpreter.h"
+#include "cling/MetaProcessor/MetaProcessor.h"
+
 #include "llvm/Support/DynamicLibrary.h"
 
 #if defined(WIN32)
@@ -47,21 +50,25 @@ namespace xcpp
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
         cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, nullptr, true);
+        m_processor->process("#include \"xeus/xinterpreter.hpp\"", compilation_result, nullptr, true);
 
         // Expose interpreter instance to cling
         std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
-        m_processor.process(block.c_str(), compilation_result, nullptr, true);
+        m_processor->process(block.c_str(), compilation_result, nullptr, true);
     }
 
     interpreter::interpreter(int argc, const char* const* argv)
-        : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
+        : m_cling(nullptr),
+          m_processor(nullptr),
           m_version(get_stdopt(argc, argv)), // Extract C++ language standard version from command-line option
           xmagics(),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
           m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1)),
           m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
     {
+        m_cling = new cling::Interpreter(argc, argv, LLVM_DIR);
+        m_processor = new cling::MetaProcessor(*m_cling, cling::errs()),
+
         redirect_output();
         init_preamble();
         init_magic();
@@ -70,6 +77,11 @@ namespace xcpp
     interpreter::~interpreter()
     {
         restore_output();
+
+        delete m_cling;
+        m_cling = nullptr;
+        delete m_processor;
+        m_processor = nullptr;
     }
 
     nl::json interpreter::execute_request_impl(int execution_counter,
@@ -122,7 +134,7 @@ namespace xcpp
             // Attempt normal evaluation
             try
             {
-                indent = m_processor.process(block, compilation_result, &output, true);
+                indent = m_processor->process(block, compilation_result, &output, true);
             }
 
             // Catch all errors
@@ -156,7 +168,7 @@ namespace xcpp
             // If an error was encountered, don't attempt further execution
             if (errorlevel)
             {
-                m_processor.cancelContinuation();
+                m_processor->cancelContinuation();
                 break;
             }
         }
@@ -224,7 +236,7 @@ namespace xcpp
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_complete = text.back().c_str();
 
-        compilation_result = m_cling.codeComplete(code.c_str(), _cursor_pos, result);
+        compilation_result = m_cling->codeComplete(code.c_str(), _cursor_pos, result);
 
         // change the print result
         for (auto& r : result)
@@ -260,7 +272,7 @@ namespace xcpp
         std::smatch magic;
         if (std::regex_search(dummy, magic, re_method))
         {
-            inspect(magic[0], kernel_res, m_processor);
+            inspect(magic[0], kernel_res, *m_processor);
         }
         return kernel_res;
     }
@@ -417,16 +429,16 @@ namespace xcpp
 
     void interpreter::init_preamble()
     {
-        preamble_manager.register_preamble("introspection", new xintrospection(m_processor));
+        preamble_manager.register_preamble("introspection", new xintrospection(*m_processor));
         preamble_manager.register_preamble("magics", new xmagics_manager());
         preamble_manager.register_preamble("shell", new xsystem());
     }
 
     void interpreter::init_magic()
     {
-        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(m_cling));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(*m_cling));
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
-        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_processor));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(m_processor));
     }
 
     std::string interpreter::get_stdopt(int argc, const char* const* argv)
