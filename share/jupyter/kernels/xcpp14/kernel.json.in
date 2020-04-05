@@ -4,7 +4,9 @@
       "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xcpp",
       "-f",
       "{connection_file}",
-      "-std=c++14"
+      "-std=c++14",
+      "-I",
+      "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/../Library/include"
   ],
   "language": "C++14"
 }
