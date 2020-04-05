@@ -307,33 +307,35 @@ if(MSVC)
     )
 
     set(cling_exports ${cling_exports}
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEAPEBD@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEAPEBX@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBC@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBD@Z 
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBE@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBF@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBG@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBH@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBI@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBJ@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBK@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBM@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBN@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBO@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBQEBD@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV23@@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_SU?$$char_traits@_S@std@@V?$$allocator@_S@2@@3@@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_UU?$$char_traits@_U@std@@V?$$allocator@_U@2@@3@@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_WU?$$char_traits@_W@std@@V?$$allocator@_W@2@@3@@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBVValue@1@@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBX@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_J@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_K@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_N@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_S@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_U@Z
-        ?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_W@Z
+        ?printValue@cling@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBH@Z
+        ?printValue@cling@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PEBX@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEAPEBD@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEAPEBX@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBC@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBD@Z 
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBE@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBF@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBG@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBH@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBI@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBJ@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBK@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBM@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBN@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBO@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBQEBD@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV23@@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_SU?$$char_traits@_S@std@@V?$$allocator@_S@2@@3@@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_UU?$$char_traits@_U@std@@V?$$allocator@_U@2@@3@@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBV?$$basic_string@_WU?$$char_traits@_W@std@@V?$$allocator@_W@2@@3@@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBVValue@1@@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEBX@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_J@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_K@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_N@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_S@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_U@Z
+        #?printValue@cling@@YA?AV?$$basic_string@DU?$$char_traits@D@std@@V?$$allocator@D@2@@std@@PEB_W@Z
     )
 
     if($<CONFIG:Debug>)
