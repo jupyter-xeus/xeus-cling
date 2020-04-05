@@ -16,6 +16,10 @@
 
 #include "nlohmann/json.hpp"
 
+#if defined(WIN32)
+#pragma warning(push, 0)
+#endif
+
 #include "cling/Interpreter/Exception.h"
 #include "cling/Interpreter/CValuePrinter.h"
 #include "cling/Interpreter/Interpreter.h"
@@ -37,6 +41,10 @@
 #include "llvm/ExecutionEngine/GenericValue.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
+
+#if defined(WIN32)
+#pragma warning(pop)
+#endif
 
 namespace nl = nlohmann;
 

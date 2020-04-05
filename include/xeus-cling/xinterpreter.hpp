@@ -16,8 +16,16 @@
 #include <string>
 #include <vector>
 
+#if defined(WIN32)
+#pragma warning(push, 0)
+#endif
+
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/MetaProcessor/MetaProcessor.h"
+
+#if defined(WIN32)
+#pragma warning(pop)
+#endif
 
 #include "nlohmann/json.hpp"
 

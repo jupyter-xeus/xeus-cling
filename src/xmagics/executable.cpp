@@ -15,6 +15,10 @@
 #include <string>
 #include <vector>
 
+#if defined(WIN32)
+#pragma warning(push, 0)
+#endif
+
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/IR/Module.h"
@@ -33,6 +37,10 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Transaction.h"
+
+#if defined(WIN32)
+#pragma warning(pop)
+#endif
 
 #include "xeus-cling/xoptions.hpp"
 

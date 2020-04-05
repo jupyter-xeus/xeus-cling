@@ -15,7 +15,16 @@
 #include <sstream>
 #include <vector>
 
+#if defined(WIN32)
+#pragma warning(push, 0)
+#endif
+
 #include "llvm/Support/DynamicLibrary.h"
+
+#if defined(WIN32)
+#pragma warning(pop)
+#endif
+
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
 #include "xeus-cling/xinterpreter.hpp"

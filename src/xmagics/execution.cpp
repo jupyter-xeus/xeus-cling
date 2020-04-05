@@ -123,7 +123,7 @@ namespace xcpp
             {
                 for (std::size_t n = 0; n < 10; ++n)
                 {
-                    number = std::pow(10, n);
+                    number = static_cast<size_t>(std::pow(10, n));
                     std::string timeit_code = inner(number, code);
                     indent = m_processor->process(timeit_code.c_str(), compilation_result, &output);
                     if (output.simplisticCastAs<double>() >= 0.2)
