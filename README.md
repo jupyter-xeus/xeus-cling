@@ -32,21 +32,41 @@ conda install xeus-cling -c conda-forge
 ```
 
 ### Installation from source
+You have to clone the repository at first and create the folder to build the sources:
 
-You will first need to create a new environment and install the dependencies:
+```bash
+git clone https://github.com/jupyter-xeus/xeus-cling
+```
 
+#### Specfic Instructions for Unix Based Systems (Linux, Mac OS X...)
+You need to create a new environment and install the dependencies:
 ```bash
 conda create -n xeus-cling -c conda-forge cmake xeus=0.23.3 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq=4.3.0 xtl=0.6.9 pugixml cxxopts=2.1.1
 conda activate xeus-cling
 ```
 
 You can then compile the sources:
-
 ```bash
+mkdir build && cd build
 cmake -D CMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX -D CMAKE_INSTALL_LIBDIR=${CONDA_PREFIX}/lib -D DOWNLOAD_GTEST=ON
-make && make install
+cmake --build . --target INSTALL
 ```
 
+#### Specific Instructions for Visual Studio 2015 (Windows)
+You need to create a new environment and install the dependencies:
+```bash
+conda create -n xeus-cling -c conda-forge cmake xeus=0.23.3 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq=4.3.0 xtl=0.6.9 pugixml cxxopts=2.1.1 dirent
+conda activate xeus-cling
+```
+
+You can then compile the sources:
+```bash
+mkdir build && cd build
+cmake -D CMAKE_INSTALL_PREFIX="%CONDA_PREFIX%" CMAKE_INSTALL_LIBDIR="%CONDA_PREFIX%/lib" -D DOWNLOAD_GTEST=ON -G"Visual Studio 14 Win64" ..
+cmake --build . --target INSTALL --config Release
+```
+
+#### Frontend Installation
 If you don't have a frontend already installed (classic Jupyter Notebook or JupyterLab for instance), install one:
 
 ```bash
