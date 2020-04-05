@@ -64,6 +64,11 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
 
     # Add googletest directly to our build. This defines
     # the gtest and gtest_main targets.
+    
+    if(MSVC)
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    endif()
+    
     add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                      ${CMAKE_CURRENT_BINARY_DIR}/googletest-build EXCLUDE_FROM_ALL)
 
