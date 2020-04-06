@@ -25,7 +25,8 @@ namespace xcpp
         xoptions options{"file", "write file"};
         options.add_options()
             ("a,append", "append")
-            ("f,filename", "filename", cxxopts::value<std::string>());
+            ("f,filename", "filename",
+             cxxopts::value<std::string>()->default_value(""));
         options.parse_positional("filename");
         return options;
     }

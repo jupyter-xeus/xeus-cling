@@ -46,7 +46,8 @@ namespace xcpp
     {
         xoptions options{"executable", "write executable"};
         options.add_options()
-            ("f,filename", "filename", cxxopts::value<std::string>())
+            ("f,filename", "filename",
+             cxxopts::value<std::string>()->default_value(""))
             ("o,options", "options",
              cxxopts::value<std::vector<std::string>>()->default_value(""));
         options.parse_positional({"filename", "options"});
