@@ -72,8 +72,16 @@ namespace xcpp
         unique_fn += "return 0;\n";
         unique_fn += "}";
 
+        // This code is unloaded after the executable has been generated.
         main = "int main() {\n";
         main += "return " + fn_name + "();\n";
+        main += "}\n";
+        // Define the function that is called for checking any pointer used
+        // as a member base or passed to a function call. This avoids pulling
+        // in the full libcling.so which is not needed.
+        main += "void *cling_runtime_internal_throwIfInvalidPointer(\n";
+        main += "    void *, void *, const void *Arg) {\n";
+        main += "  return const_cast<void*>(Arg);\n";
         main += "}";
         return main;
     }
