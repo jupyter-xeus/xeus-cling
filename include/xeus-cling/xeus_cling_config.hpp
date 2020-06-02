@@ -12,8 +12,8 @@
 
 // Project version
 #define XEUS_CLING_VERSION_MAJOR 0
-#define XEUS_CLING_VERSION_MINOR 8
-#define XEUS_CLING_VERSION_PATCH 1
+#define XEUS_CLING_VERSION_MINOR 9
+#define XEUS_CLING_VERSION_PATCH 0
 
 // Composing the version string from major, minor and patch
 #define XEUS_CLING_CONCATENATE(A, B) XEUS_CLING_CONCATENATE_IMPL(A, B)
