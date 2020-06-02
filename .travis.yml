@@ -29,7 +29,7 @@ install:
     - conda update -q conda
     # Install host dependencies
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        conda install xeus=0.23.10 cling=0.6.0 clangdev=5 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts=2.1.1 -c conda-forge;
+        conda install xeus=0.24.0 cling=0.6.0 clangdev=5 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts=2.1.1 -c conda-forge;
       else
         conda install xeus=0.23.10 cling=0.6.0 clangdev=5 llvmdev=5 libcxx nlohmann_json cppzmq xtl pugixml cxxopts=2.1.1 -c conda-forge;
       fi
