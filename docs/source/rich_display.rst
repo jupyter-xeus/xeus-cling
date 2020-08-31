@@ -54,7 +54,7 @@ This can be achieved by simply overloading the function
 
 .. code::
 
-    nlohmann_json mime_bundle_repr(const foo&);
+    nl::json mime_bundle_repr(const foo&);
 
 in the same namespace ``myns`` as ``foo``.
 
@@ -76,6 +76,8 @@ buffer to the frontend.
     #include "xtl/xbase64.hpp"
     #include "nlohmann/json.hpp"
 
+    namespace nl = nlohmann;
+
     namespace im
     {
         struct image
@@ -89,9 +91,9 @@ buffer to the frontend.
             std::stringstream m_buffer;
         };
 
-        nlohmann::json mime_bundle_repr(const image& i)
+        nl::json mime_bundle_repr(const image& i)
         {
-            auto bundle = nlohmann::json::object();
+            auto bundle = nl::json::object();
             bundle["image/png"] = xtl::base64encode(i.m_buffer.str());
             return bundle;
         }
