@@ -26,11 +26,11 @@ install:
   - conda update -q conda
   - conda info -a
   # Install dependencies
-  - conda install cmake dirent xeus=0.25.0 gtest cling=0.7 clangdev=5 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts=2.1.1 -c conda-forge
+  - conda install cmake dirent xeus=0.25.0 cling=0.7 clangdev=5 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts=2.1.1 -c conda-forge
   # Build and install xeus-cling
   - mkdir build
   - cd build
-  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=Release -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter -D BUILD_TESTS=ON ..
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D CMAKE_BUILD_TYPE=Release -D XEXTRA_JUPYTER_DATA_DIR=%MINICONDA%\\share\\jupyter -D DOWNLOAD_GTEST=ON ..
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
