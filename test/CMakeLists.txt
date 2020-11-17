@@ -62,6 +62,8 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
         message(FATAL_ERROR "Build step for googletest failed: ${result}")
     endif()
 
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+ 
     # Add googletest directly to our build. This defines
     # the gtest and gtest_main targets.
     add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
