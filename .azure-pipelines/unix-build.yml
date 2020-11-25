@@ -1,0 +1,42 @@
+parameters:
+  - name: 'platform'
+    type: string
+
+steps:
+  - script: |
+      conda config --set always_yes yes --set changeps1 no
+      conda update -q conda
+      conda env create --file environment-dev.yml
+    displayName: Install dependencies
+
+  - script: |
+      source activate xeus-cling
+      conda install gxx_linux-64 libcxx -c conda-forge
+    condition: eq('${{ parameters.platform }}', 'Linux')
+    displayName: Install conda-forge compilers
+
+  - script: |
+      source activate xeus-cling
+      mkdir build
+      cd build
+      cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DXEUS_DOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX $(Build.SourcesDirectory)
+    displayName: Configure xeus-cling
+    workingDirectory: $(Build.BinariesDirectory)
+
+  - script: |
+      source activate xeus-cling
+      make install -j2
+    displayName: Build xeus-cling
+    workingDirectory: $(Build.BinariesDirectory)/build
+
+  - script: |
+      source activate xeus-cling
+      ./test_xeus_cling
+    displayName: Test xeus-cling (C++)
+    workingDirectory: $(Build.BinariesDirectory)/build/test
+
+  - script: |
+      source activate xeus-cling
+      py.test . -v;
+    displayName: Test xeus-cling (Python)
+    workingDirectory: $(Build.sourcesDirectory)/test

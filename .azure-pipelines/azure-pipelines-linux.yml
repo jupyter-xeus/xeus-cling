@@ -1,0 +1,17 @@
+jobs:
+  - job: 'Linux'
+    strategy:
+      matrix:
+        gcc_7:
+          image_name: 'ubuntu-16.04'
+    pool:
+      vmImage: $(image_name)
+    timeoutInMinutes: 360
+    steps:
+          
+      - bash: echo "##vso[task.prependpath]$CONDA/bin"
+        displayName: Add conda to PATH
+
+      - template: unix-build.yml
+        parameters:
+          platform: 'Linux'
