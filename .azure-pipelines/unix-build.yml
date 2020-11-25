@@ -19,7 +19,7 @@ steps:
       source activate xeus-cling
       mkdir build
       cd build
-      cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DXEUS_DOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX $(Build.SourcesDirectory)
+      cmake -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DDOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX $(Build.SourcesDirectory)
     displayName: Configure xeus-cling
     workingDirectory: $(Build.BinariesDirectory)
 
