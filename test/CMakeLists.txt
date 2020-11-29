@@ -23,18 +23,7 @@ endif ()
 message(STATUS "Forcing tests build type to Release")
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
-include(CheckCXXCompilerFlag)
-
 string(TOUPPER "${CMAKE_BUILD_TYPE}" U_CMAKE_BUILD_TYPE)
-
-if(CMAKE_CXX_COMPILER_ID MATCHES Clang OR CMAKE_CXX_COMPILER_ID MATCHES GNU OR CMAKE_CXX_COMPILER_ID MATCHES Intel)
-    add_compile_options(-Wunused-parameter -Wextra -Wreorder -Wconversion -Wsign-conversion)
-
-    CHECK_CXX_COMPILER_FLAG(-march=native HAS_MARCH_NATIVE)
-    if (HAS_MARCH_NATIVE)
-        add_compile_options(-march=native)
-    endif()
-endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     add_compile_options(/EHsc /MP /bigobj)
@@ -63,7 +52,7 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     endif()
 
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
- 
+
     # Add googletest directly to our build. This defines
     # the gtest and gtest_main targets.
     add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
@@ -103,7 +92,9 @@ set_target_properties(test_xeus_cling PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-target_link_libraries(test_xeus_cling ${GTEST_BOTH_LIBRARIES} Threads::Threads)
+target_link_libraries(test_xeus_cling
+                      PRIVATE ${GTEST_BOTH_LIBRARIES}
+                      PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 target_include_directories(test_xeus_cling PRIVATE ${XEUS_CLING_INCLUDE_DIR})
 
 add_custom_target(xtest COMMAND test_xeus_cling DEPENDS test_xeus_cling)

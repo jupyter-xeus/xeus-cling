@@ -35,7 +35,7 @@ conda install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-conda create -n xeus-cling -c conda-forge cmake xeus=0.23.3 cling=0.6.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq=4.3.0 xtl=0.6.9 pugixml cxxopts=2.1.1
+conda create -n xeus-cling -c conda-forge cmake xeus=0.25.0 cling=0.7.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts
 conda activate xeus-cling
 ```
 
