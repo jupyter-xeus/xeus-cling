@@ -164,8 +164,6 @@ set(XEUS_CLING_SRC
     src/xoptions.cpp
     src/xparser.cpp
     src/xparser.hpp
-    src/xpaths.cpp
-    src/xpaths.hpp
     src/xholder_cling.cpp
     src/xmagics/executable.cpp
     src/xmagics/executable.hpp
@@ -191,8 +189,6 @@ set(XEUS_CLING_HEADERS
 # xcpp sources
 set(XCPP_SRC
     src/main.cpp
-    src/xpaths.hpp
-    src/xpaths.cpp
 )
 
 # xcpp headers (needed at runtime by the C++ kernel)
