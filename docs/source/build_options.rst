@@ -44,6 +44,6 @@ library path, however you need to load the library explicitly. This is done with
 pragma commands that you can use in a code cell in a Jupyter Notebook:
 
 - ``#pragma cling add_include_path("inc_directory")``
-- ``#pragma cling add_library_path("lib_directory")"``
+- ``#pragma cling add_library_path("lib_directory")``
 - ``#pragma cling load("libname")``
 
