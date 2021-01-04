@@ -17,7 +17,6 @@
 
 #include "cling/Interpreter/Interpreter.h"
 #include "cling/Interpreter/Value.h"
-#include "cling/MetaProcessor/MetaProcessor.h"
 #include "cling/Utils/Output.h"
 
 #include "pugixml.hpp"
@@ -84,21 +83,20 @@ namespace xcpp
         }
     };
 
-    std::string find_type(const std::string& expression, cling::MetaProcessor& m_processor)
+    std::string find_type(const std::string& expression, cling::Interpreter& interpreter)
     {
-        cling::Interpreter::CompilationResult compilation_result;
         cling::Value result;
         std::string typeString;
 
         // add typeinfo in include files in order to use typeid
         std::string code = "#include <typeinfo>";
-        m_processor.process(code.c_str(), compilation_result, &result);
+        auto compilation_result = interpreter.process(code.c_str(), &result);
 
         // try to find the typename of the class
         code = "typeid(" + expression + ").name();";
 
-        // Temporarily dismissing all std::cerr and std::cout resulting from `m_processor.process`
-        auto errorlevel = 0;
+        // Temporarily dismissing all std::cerr and std::cout resulting from `interpreter.process`
+        compilation_result = interpreter.process(code.c_str(), &result);
         {
             auto cout_strbuf = std::cout.rdbuf();
             auto cerr_strbuf = std::cerr.rdbuf();
@@ -106,17 +104,13 @@ namespace xcpp
             std::cout.rdbuf(&null);
             std::cerr.rdbuf(&null);
 
-            errorlevel = m_processor.process(code.c_str(), compilation_result, &result);
+            compilation_result = interpreter.process(code.c_str(), &result);
 
             std::cout.rdbuf(cout_strbuf);
             std::cerr.rdbuf(cerr_strbuf);
         }
 
-        if (errorlevel)
-        {
-            m_processor.cancelContinuation();
-        }
-        else if (compilation_result == cling::Interpreter::kSuccess)
+        if (compilation_result == cling::Interpreter::kSuccess)
         {
             // we found the typeid
             std::string valueString;
@@ -175,7 +169,7 @@ namespace xcpp
         return result;
     }
 
-    void inspect(const std::string& code, nl::json& kernel_res, cling::MetaProcessor& m_processor)
+    void inspect(const std::string& code, nl::json& kernel_res, cling::Interpreter& interpreter)
     {
         std::string tagconf_dir = xtl::prefix_path() + XCPP_TAGCONFS_DIR;
         std::string tagfiles_dir = xtl::prefix_path() + XCPP_TAGFILES_DIR;
@@ -198,7 +192,7 @@ namespace xcpp
         // Method or variable of class found (xxxx.yyyy)
         if (std::regex_search(to_inspect, method, std::regex(R"((.*)\.(\w*)$)")))
         {
-            std::string typename_ = find_type(method[1], m_processor);
+            std::string typename_ = find_type(method[1], interpreter);
 
             if (!typename_.empty())
             {
@@ -232,7 +226,7 @@ namespace xcpp
             }
             else
             {
-                std::string typename_ = find_type(to_inspect, m_processor);
+                std::string typename_ = find_type(to_inspect, interpreter);
                 find_string = (typename_.empty()) ? to_inspect : typename_;
             }
 
@@ -323,8 +317,8 @@ namespace xcpp
         using xpreamble::pattern;
         const std::string spattern = R"(^\?)";
 
-        xintrospection(cling::MetaProcessor& p)
-            : m_processor{p}
+        xintrospection(cling::Interpreter& p)
+            : m_interpreter{p}
         {
             pattern = spattern;
         }
@@ -334,7 +328,7 @@ namespace xcpp
             std::regex re(spattern + R"((.*))");
             std::smatch to_inspect;
             std::regex_search(code, to_inspect, re);
-            inspect(to_inspect[1], kernel_res, m_processor);
+            inspect(to_inspect[1], kernel_res, m_interpreter);
         }
 
         virtual xpreamble* clone() const override
@@ -344,7 +338,7 @@ namespace xcpp
 
     private:
 
-        cling::MetaProcessor& m_processor;
+        cling::Interpreter& m_interpreter;
     };
 }
 #endif

@@ -37,16 +37,15 @@ namespace xcpp
     void interpreter::configure_impl()
     {
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
-        cling::Interpreter::CompilationResult compilation_result;
-        m_processor.process("#include \"xeus/xinterpreter.hpp\"", compilation_result, nullptr, true);
-
+        m_interpreter.process("#include \"xeus/xinterpreter.hpp\"", nullptr, nullptr, true);
         // Expose interpreter instance to cling
         std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
-        m_processor.process(block.c_str(), compilation_result, nullptr, true);
+        m_interpreter.process(block.c_str(), nullptr, nullptr, true);
     }
 
     interpreter::interpreter(int argc, const char* const* argv)
-        : m_cling(argc, argv, LLVM_DIR), m_processor(m_cling, cling::errs()),
+        : m_interpreter(argc, argv, LLVM_DIR),
+          m_input_validator(),
           m_version(get_stdopt(argc, argv)), // Extract C++ language standard version from command-line option
           xmagics(),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
@@ -86,14 +85,14 @@ namespace xcpp
         auto blocks = split_from_includes(code.c_str());
 
         auto errorlevel = 0;
-        auto indent = 0;
+
         std::string ename;
         std::string evalue;
         cling::Value output;
         cling::Interpreter::CompilationResult compilation_result;
 
         // If silent is set to true, temporarily dismiss all std::cerr and
-        // std::cout outpus resulting from `m_processor.process`.
+        // std::cout outputs resulting from `m_interpreter.process`.
 
         auto cout_strbuf = std::cout.rdbuf();
         auto cerr_strbuf = std::cerr.rdbuf();
@@ -113,7 +112,7 @@ namespace xcpp
             // Attempt normal evaluation
             try
             {
-                indent = m_processor.process(block, compilation_result, &output, true);
+                compilation_result = m_interpreter.process(block, &output, nullptr, true);
             }
 
             // Catch all errors
@@ -147,7 +146,6 @@ namespace xcpp
             // If an error was encountered, don't attempt further execution
             if (errorlevel)
             {
-                m_processor.cancelContinuation();
                 break;
             }
         }
@@ -215,7 +213,7 @@ namespace xcpp
         auto text = split_line(code, delims, _cursor_pos);
         std::string to_complete = text.back().c_str();
 
-        compilation_result = m_cling.codeComplete(code.c_str(), _cursor_pos, result);
+        compilation_result = m_interpreter.codeComplete(code.c_str(), _cursor_pos, result);
 
         // change the print result
         for (auto& r : result)
@@ -245,23 +243,39 @@ namespace xcpp
         nl::json kernel_res;
 
         auto dummy = code.substr(0, cursor_pos);
-        // FIX: same pattern as in inspect function (keep only one)
+        // TODO: same pattern as in inspect function (keep only one)
         std::string exp = R"(\w*(?:\:{2}|\<.*\>|\(.*\)|\[.*\])?)";
         std::regex re_method{"(" + exp + R"(\.?)*$)"};
         std::smatch magic;
         if (std::regex_search(dummy, magic, re_method))
         {
-            inspect(magic[0], kernel_res, m_processor);
+            inspect(magic[0], kernel_res, m_interpreter);
         }
         return kernel_res;
     }
 
-    nl::json interpreter::is_complete_request_impl(const std::string& /*code*/)
+    nl::json interpreter::is_complete_request_impl(const std::string& code)
     {
-        // TODO: use indentation returned from processing the code to determine
-        // if the code is complete.
         nl::json kernel_res;
-        kernel_res["status"] = "complete";
+
+        m_input_validator.reset();
+        cling::InputValidator::ValidationResult Res = m_input_validator.validate(code);
+        if (Res == cling::InputValidator::kComplete)
+        {
+            kernel_res["status"] = "complete";
+        }
+        else if (Res == cling::InputValidator::kIncomplete)
+        {
+            kernel_res["status"] = "incomplete";
+        }
+        else if (Res == cling::InputValidator::kMismatch)
+        {
+            kernel_res["status"] = "invalid";
+        }
+        else
+        {
+            kernel_res["status"] = "unknown";
+        }
         kernel_res["indent"] = "";
         return kernel_res;
     }
@@ -316,7 +330,7 @@ namespace xcpp
         // return value is the number of characters _excluding_ the null byte.
         std::va_list args_bufsz;
         va_copy(args_bufsz, args);
-        size_t bufsz = vsnprintf(NULL, 0, format, args_bufsz);
+        std::size_t bufsz = vsnprintf(NULL, 0, format, args_bufsz);
         va_end(args_bufsz);
 
         // Create an empty string of that size.
@@ -411,16 +425,16 @@ namespace xcpp
 
     void interpreter::init_preamble()
     {
-        preamble_manager.register_preamble("introspection", new xintrospection(m_processor));
+        preamble_manager.register_preamble("introspection", new xintrospection(m_interpreter));
         preamble_manager.register_preamble("magics", new xmagics_manager());
         preamble_manager.register_preamble("shell", new xsystem());
     }
 
     void interpreter::init_magic()
     {
-        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(m_cling));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(m_interpreter));
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
-        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_processor));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_interpreter));
     }
 
     std::string interpreter::get_stdopt(int argc, const char* const* argv)

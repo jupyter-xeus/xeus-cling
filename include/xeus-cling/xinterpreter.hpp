@@ -10,14 +10,12 @@
 #ifndef XEUS_CLING_INTERPRETER_HPP
 #define XEUS_CLING_INTERPRETER_HPP
 
-#include <iostream>
-#include <sstream>
 #include <streambuf>
 #include <string>
 #include <vector>
 
 #include "cling/Interpreter/Interpreter.h"
-#include "cling/MetaProcessor/MetaProcessor.h"
+#include "cling/MetaProcessor/InputValidator.h"
 
 #include "nlohmann/json.hpp"
 
@@ -77,8 +75,8 @@ namespace xcpp
 
         std::string get_stdopt(int argc, const char* const* argv);
 
-        cling::Interpreter m_cling;
-        cling::MetaProcessor m_processor;
+        cling::Interpreter m_interpreter;
+        cling::InputValidator m_input_validator;
         std::string m_version;
 
         xmagics_manager xmagics;
