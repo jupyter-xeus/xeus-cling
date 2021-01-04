@@ -15,7 +15,7 @@
 
 #include "cling/Interpreter/Value.h"
 #include "cling/Interpreter/Exception.h"
-#include "cling/MetaProcessor/MetaProcessor.h"
+#include "cling/Interpreter/Interpreter.h"
 #include "cling/Utils/Output.h"
 
 #include "execution.hpp"
@@ -23,16 +23,14 @@
 
 namespace xcpp
 {
-    timeit::timeit(cling::MetaProcessor* p)
-        : m_processor(p)
+    timeit::timeit(cling::Interpreter* p)
+        : m_interpreter(p)
     {
         cling::Interpreter::CompilationResult compilation_result;
-
-        m_processor->process("#include <chrono>", compilation_result);
-
+        compilation_result = m_interpreter->process("#include <chrono>");
         std::string init_timeit = "auto _t0 = std::chrono::high_resolution_clock::now();\n";
         init_timeit += "auto _t1 = std::chrono::high_resolution_clock::now();\n";
-        m_processor->process(init_timeit.c_str(), compilation_result);
+        compilation_result = m_interpreter->process(init_timeit.c_str());
     }
 
     xoptions timeit::get_options()
@@ -111,11 +109,10 @@ namespace xcpp
         }
 
         auto errorlevel = 0;
-        auto indent = 0;
         std::string ename;
         std::string evalue;
         cling::Value output;
-        cling::Interpreter::CompilationResult compilation_result;
+        cling::Interpreter::CompilationResult compilation_result = cling::Interpreter::kSuccess;
 
         try
         {
@@ -125,7 +122,7 @@ namespace xcpp
                 {
                     number = std::pow(10, n);
                     std::string timeit_code = inner(number, code);
-                    indent = m_processor->process(timeit_code.c_str(), compilation_result, &output);
+                    compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
                     if (output.simplisticCastAs<double>() >= 0.2)
                     {
                         break;
@@ -139,7 +136,7 @@ namespace xcpp
             for (std::size_t r = 0; r < repeat; ++r)
             {
                 std::string timeit_code = inner(number, code);
-                indent = m_processor->process(timeit_code.c_str(), compilation_result, &output);
+                compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
                 all_runs.push_back(output.simplisticCastAs<double>() / number);
                 mean += all_runs.back();
             }
@@ -180,12 +177,6 @@ namespace xcpp
         {
             errorlevel = 1;
             ename = "Interpreter Error";
-        }
-
-        // If an error was encountered, don't attempt further execution
-        if (errorlevel)
-        {
-            m_processor->cancelContinuation();
         }
     }
 }

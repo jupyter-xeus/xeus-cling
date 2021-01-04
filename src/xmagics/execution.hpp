@@ -13,7 +13,7 @@
 #include <cstddef>
 #include <string>
 
-#include "cling/MetaProcessor/MetaProcessor.h"
+#include "cling/Interpreter/Interpreter.h"
 
 #include "xeus-cling/xmagics.hpp"
 #include "xeus-cling/xoptions.hpp"
@@ -24,7 +24,7 @@ namespace xcpp
     {
     public:
 
-        timeit(cling::MetaProcessor* p);
+        timeit(cling::Interpreter* p);
 
         virtual void operator()(const std::string& line) override
         {
@@ -42,7 +42,7 @@ namespace xcpp
 
     private:
 
-        cling::MetaProcessor* m_processor;
+        cling::Interpreter* m_interpreter;
 
         xoptions get_options();
         std::string inner(std::size_t number, const std::string& code) const;
