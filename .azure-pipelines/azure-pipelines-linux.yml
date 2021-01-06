@@ -6,7 +6,7 @@ jobs:
           image_name: 'ubuntu-16.04'
     pool:
       vmImage: $(image_name)
-    timeoutInMinutes: 360
+    timeoutInMinutes: 30
     steps:
           
       - bash: echo "##vso[task.prependpath]$CONDA/bin"
