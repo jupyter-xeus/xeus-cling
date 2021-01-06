@@ -9,7 +9,7 @@ jobs:
     variables:
         CC: clang
         CXX: clang++
-    timeoutInMinutes: 360
+    timeoutInMinutes: 30
     steps:
       - script: |
           echo "Removing homebrew for Azure to avoid conflicts with conda"
