@@ -13,7 +13,7 @@ dependencies:
   - cppzmq
   - xtl
   - pugixml
-  - cxxopts
+  - cxxopts=2.1.2
   # Test dependencies
   - pytest
   - jupyter_kernel_test
