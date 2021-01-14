@@ -35,7 +35,7 @@ conda install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-conda create -n xeus-cling -c conda-forge cmake xeus=0.25.0 cling=0.7.0 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts
+conda create -n xeus-cling -c conda-forge cmake xeus=0.25.3 cling=0.8 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts
 conda activate xeus-cling
 ```
 
@@ -107,7 +107,7 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 
 | `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`     | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
-|  master      |  >=0.24.0,<0.26 |  >=0.6.23,<0.7  | >=0.6,<0.8    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
+|  master      |  >=0.24.0,<0.26 |  >=0.6.23,<0.7  | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.10.1      |  >=0.24.0,<0.26 |  >=0.6.23,<0.7  | >=0.6,<0.8    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.10.0      |  >=0.24.0,<0.25 |  >=0.6.5,<0.7   | >=0.6,<0.8    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=3.0 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.9.0       |  >=0.24.0,<0.25 |  >=0.6.5,<0.7   | >=0.6,<0.7    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=3.0 | >=3.6.1,<4.0    | >=2.3.2,<3              |

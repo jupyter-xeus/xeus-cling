@@ -5,8 +5,8 @@ dependencies:
   # Build dependencies
   - cmake
   # Host dependencies
-  - xeus=0.25.0
-  - cling=0.7
+  - xeus=0.25.3
+  - cling=0.8
   - clangdev=5
   - llvmdev=5
   - nlohmann_json 
