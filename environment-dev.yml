@@ -5,13 +5,13 @@ dependencies:
   # Build dependencies
   - cmake
   # Host dependencies
-  - xeus=0.25.3
+  - xeus=1.0.0
   - cling=0.8
   - clangdev=5
   - llvmdev=5
   - nlohmann_json 
   - cppzmq
-  - xtl
+  - xtl=0.7.0
   - pugixml
   - cxxopts=2.1.2
   # Test dependencies
