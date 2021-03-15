@@ -96,10 +96,15 @@ namespace xcpp
 
         bool VisitFunctionDecl(clang::FunctionDecl* D)
         {
-            if (!D->getName().startswith("__cling"))
+            // Filter out functions added by Cling.
+            if (auto Identifier = D->getIdentifier())
             {
-                m_consumer->HandleTopLevelDecl(clang::DeclGroupRef(D));
+                if (Identifier->getName().startswith("__cling"))
+                {
+                    return true;
+                }
             }
+            m_consumer->HandleTopLevelDecl(clang::DeclGroupRef(D));
             return true;
         }
 
