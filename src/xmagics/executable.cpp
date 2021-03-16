@@ -246,9 +246,10 @@ namespace xcpp
 
     void executable::operator()(const std::string& line, const std::string& cell)
     {
-        auto options = get_options().parse(line);
+        auto options = get_options();
+        auto parsed = options.parse(line);
 
-        std::string ExeFile = options["filename"].as<std::string>();
+        std::string ExeFile = parsed["filename"].as<std::string>();
         if (ExeFile.empty())
         {
             std::cerr << "UsageError: "
@@ -257,7 +258,7 @@ namespace xcpp
             return;
         }
         std::vector<std::string> LinkerOptions =
-            options["options"].as<std::vector<std::string>>();
+            parsed["options"].as<std::vector<std::string>>();
 
         std::string main, unique_fn;
         generate_fns(cell, main, unique_fn);
