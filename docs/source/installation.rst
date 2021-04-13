@@ -22,14 +22,14 @@ Installation
 
 .. image:: conda.svg
 
-Using the conda package
------------------------
+Using the conda-forge package
+------------------------------
 
-A package for xeus-cling is available on the conda package manager.
+A package for xeus-cling is available for the mamba (or conda) package manager.
 
 .. code::
 
-    conda install -c conda-forge xeus-cling
+    mamba install -c conda-forge xeus-cling
 
 .. image:: cmake.svg
 

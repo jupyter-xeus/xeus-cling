@@ -10,24 +10,23 @@ the native implementation of the Jupyter protocol [xeus](https://github.com/jupy
 
 ## Installation
 
-xeus-cling has been packaged for the conda package manager on the **Linux** and **OS X** platforms. At the moment, we are not providing packages for the **Windows** platform.
+xeus-cling has been packaged for the mamba (or conda) package manager on the **Linux** and **OS X** platforms. At the moment, we are not providing packages for the **Windows** platform.
 
-To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `ZeroMQ` library which is already installed in the anaconda distribution.
+To ensure that the installation works, it is preferable to install `xeus-cling` in a fresh environment. It is also needed to use a [miniforge](https://github.com/conda-forge/miniforge) or [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict with the `ZeroMQ` library which is already installed in the anaconda distribution.
 
+### Installation with mamba or conda
 
-### Installation from conda
-
-The safest usage is to create an environment named `cling` with your miniconda installation:
+The safest usage is to create an environment named `cling`:
 
 ```
-conda create -n cling
-conda activate cling  # Or `source activate cling` for conda < 4.6
+mamba create -n cling
+source activate cling
 ```
 
 Then you can install in this environment `xeus-cling` and its dependencies
 
 ```
-conda install xeus-cling -c conda-forge
+mamba install xeus-cling -c conda-forge
 ```
 
 ### Installation from source
@@ -35,8 +34,8 @@ conda install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-conda create -n xeus-cling -c conda-forge cmake xeus=1.0.0 cling=0.8 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts
-conda activate xeus-cling
+mamba create -n xeus-cling -c conda-forge cmake xeus=1.0.0 cling=0.8 clangdev=5.0 llvmdev=5 nlohmann_json cppzmq xtl pugixml cxxopts
+source activate xeus-cling
 ```
 
 You can then compile the sources:
@@ -49,7 +48,7 @@ make && make install
 If you don't have a frontend already installed (classic Jupyter Notebook or JupyterLab for instance), install one:
 
 ```bash
-conda install notebook -c conda-forge
+mamba install jupyterlab -c conda-forge
 ```
 
 ## Trying it online
