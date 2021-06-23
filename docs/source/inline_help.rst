@@ -88,6 +88,6 @@ produced breathe into doxygen tag files.
 .. image:: xtensor.png
 
 .. _cppreference: https://en.cppreference.com
-.. _`relevant section`: https://www.stack.nl/~dimitri/doxygen/manual/external.html
+.. _`relevant section`: https://www.doxygen.nl/manual/external.html
 .. _breathe: https://breathe.readthedocs.io
 .. _xhale: https://xhale.readthedocs.io
