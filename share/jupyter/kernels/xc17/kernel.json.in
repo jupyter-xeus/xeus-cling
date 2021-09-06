@@ -1,0 +1,10 @@
+{
+  "display_name": "C17",
+  "argv": [
+      "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xcpp",
+      "-f",
+      "{connection_file}",
+      "-std=c17"
+  ],
+  "language": "C17"
+}

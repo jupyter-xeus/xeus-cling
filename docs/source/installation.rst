@@ -64,6 +64,8 @@ However, if Jupyter is installed in a different location, it will not pick up th
 
 .. code::
 
+   jupyter kernelspec install PREFIX/share/jupyter/xc11 --sys-prefix
+   jupyter kernelspec install PREFIX/share/jupyter/xc17 --sys-prefix
    jupyter kernelspec install PREFIX/share/jupyter/xcpp11 --sys-prefix
    jupyter kernelspec install PREFIX/share/jupyter/xcpp14 --sys-prefix
    jupyter kernelspec install PREFIX/share/jupyter/xcpp17 --sys-prefix
