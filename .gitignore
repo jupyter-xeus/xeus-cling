@@ -45,6 +45,8 @@ docs/build/
 build/
 
 # generated kernel specs
+/share/jupyter/kernels/xc11/kernel.json
+/share/jupyter/kernels/xc17/kernel.json
 /share/jupyter/kernels/xcpp11/kernel.json
 /share/jupyter/kernels/xcpp14/kernel.json
 /share/jupyter/kernels/xcpp17/kernel.json
