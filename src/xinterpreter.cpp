@@ -309,15 +309,22 @@ namespace xcpp
               "   >  <  __/ |_| \\__ \\\n"
               "  /_/\\_\\___|\\__,_|___/\n"
               "\n"
-              "  xeus-cling: a Jupyter Kernel C++ - based on cling\n"
-              "  C++";
+              "  xeus-cling: a Jupyter Kernel C/C++ - based on cling\n"
+              "  ";
+        banner.append(m_language);
         banner.append(m_version);
         result["banner"] = banner;
-        result["language_info"]["name"] = "c++";
+        result["language_info"]["name"] = m_language;
         result["language_info"]["version"] = m_version;
-        result["language_info"]["mimetype"] = "text/x-c++src";
-        result["language_info"]["codemirror_mode"] = "text/x-c++src";
-        result["language_info"]["file_extension"] = ".cpp";
+        if (m_language == "c++") {
+            result["language_info"]["mimetype"] = "text/x-c++src";
+            result["language_info"]["codemirror_mode"] = "text/x-c++src";
+            result["language_info"]["file_extension"] = ".cpp";
+        } else {
+            result["language_info"]["mimetype"] = "text/x-csrc";
+            result["language_info"]["codemirror_mode"] = "text/x-csrc";
+            result["language_info"]["file_extension"] = ".c";
+        }
         result["help_links"] = nl::json::array();
         result["help_links"][0] = nl::json::object({
             {"text", "Xeus-Cling Reference"},
