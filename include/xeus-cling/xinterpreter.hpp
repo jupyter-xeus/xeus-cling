@@ -78,6 +78,7 @@ namespace xcpp
         cling::Interpreter m_interpreter;
         cling::InputValidator m_input_validator;
         std::string m_version;
+        std::string m_language;
 
         xmagics_manager xmagics;
         xpreamble_manager preamble_manager;

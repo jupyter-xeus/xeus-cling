@@ -46,12 +46,20 @@ namespace xcpp
     interpreter::interpreter(int argc, const char* const* argv)
         : m_interpreter(argc, argv, LLVM_DIR),
           m_input_validator(),
-          m_version(get_stdopt(argc, argv)), // Extract C++ language standard version from command-line option
           xmagics(),
           p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
           m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1)),
           m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
     {
+        std::string lang = get_stdopt(argc, argv); // Extract C++ language standard version from command-line option
+        if (lang.find("c++") != std::string::npos) {
+            m_language = "c++";
+            m_version = lang.substr(3);
+        } else {
+            m_language = "c";
+            m_version = lang.substr(1);
+        }
+
         redirect_output();
         init_preamble();
         init_magic();
@@ -439,14 +447,14 @@ namespace xcpp
 
     std::string interpreter::get_stdopt(int argc, const char* const* argv)
     {
-        std::string res = "11";
+        std::string res = "c++11";
         for (int i = 0; i < argc; ++i)
         {
             std::string tmp(argv[i]);
-            auto pos = tmp.find("-std=c++");
+            auto pos = tmp.find("-std=");
             if (pos != std::string::npos)
             {
-                res = tmp.substr(pos + 8);
+                res = tmp.substr(pos + 5);
                 break;
             }
         }
