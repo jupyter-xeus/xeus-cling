@@ -34,7 +34,7 @@ install:
   - nmake
   - nmake install
   # Install jupyter_kernel_test and pytest
-  - conda install pytest jupyter_kernel_test -c conda-forge
+  - conda install pytest jupyter_kernel_test "jupyter_client<=6.2" -c conda-forge
 
 build_script:
   - cd test
