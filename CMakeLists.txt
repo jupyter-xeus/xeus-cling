@@ -153,8 +153,6 @@ endif()
 # Target and link #
 ###################
 
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-
 # xeus-cling sources
 set(XEUS_CLING_SRC
     src/xinput.hpp
@@ -206,21 +204,6 @@ set_target_properties(xcpp PROPERTIES ENABLE_EXPORTS 1)
 target_link_libraries(xcpp PRIVATE xeus-cling)
 
 set(LLVM_NO_DEAD_STRIP 1)
-
-if (APPLE)
-    set_target_properties(xcpp xeus-cling PROPERTIES
-        MACOSX_RPATH ON
-    )
-else()
-    set_target_properties(xcpp xeus-cling PROPERTIES
-        BUILD_WITH_INSTALL_RPATH 1
-        SKIP_BUILD_RPATH FALSE
-    )
-endif()
-
-set_target_properties(xcpp xeus-cling PROPERTIES
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
 
 target_include_directories(xeus-cling
                            PUBLIC
