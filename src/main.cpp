@@ -14,6 +14,7 @@
 
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
+#include "xeus/xserver_zmq.hpp"
 
 #include "xeus-cling/xinterpreter.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
@@ -91,11 +92,17 @@ int main(int argc, char* argv[])
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
 
+    auto context = xeus::make_context<zmq::context_t>();
+
     if (!file_name.empty())
     {
         xeus::xconfiguration config = xeus::load_configuration(file_name);
 
-        xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));
+        xeus::xkernel kernel(config,
+                             xeus::get_user_name(),
+                             std::move(context),
+                             std::move(interpreter),
+                             xeus::make_xserver_zmq);
 
         std::clog <<
             "Starting xeus-cling kernel...\n\n"
@@ -107,7 +114,10 @@ int main(int argc, char* argv[])
     }
     else
     {
-        xeus::xkernel kernel(xeus::get_user_name(), std::move(interpreter));
+        xeus::xkernel kernel(xeus::get_user_name(),
+                             std::move(context),
+                             std::move(interpreter),
+                             xeus::make_xserver_zmq);
 
         const auto& config = kernel.get_config();
         std::clog <<
