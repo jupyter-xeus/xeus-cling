@@ -63,6 +63,28 @@ namespace xcpp
     {
         return detail::mime_bundle_repr_via_sstream(value);
     }
+
+    // concept check wheather T has a mime_bundle_repr overload
+    // default case: mime_bundle_repr overload does fail
+    template<class T, class = void>
+    struct has_mime_bundle_repr
+        : public std::false_type
+    {};
+
+    // specialized case (SFINAE): mime_bundle_repr overload does not fail
+    template<class T>
+    struct has_mime_bundle_repr<T,std::void_t<decltype(mime_bundle_repr(std::declval<T>()))>>
+        : std::true_type
+    {};
+
+    template<class T>
+    nl::json dispatch_mime_bundle_repr(T&& t) {
+        if constexpr (has_mime_bundle_repr<T>{})
+            return mime_bundle_repr(std::forward<T>(t));
+        else
+            return fallback_mime_bundle_repr(std::forward<T>(t));
+    }
+
 }
 
 #endif

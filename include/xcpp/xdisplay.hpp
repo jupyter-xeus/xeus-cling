@@ -18,32 +18,11 @@ namespace nl = nlohmann;
 
 namespace xcpp
 {
-    // concept check wheather T has a mime_bundle_repr overload
-    // defalut case: mime_bundle_repr overload does fail
-    template<class T, class = void>
-    struct has_mime_bundle_repr
-        : public std::false_type
-    {};
-
-    // specialized case (SFINAE): mime_bundle_repr overload does not fail
-    template<class T>
-    struct has_mime_bundle_repr<T,std::void_t<decltype(mime_bundle_repr(std::declval<T>()))>>
-        : std::true_type
-    {};
-
-    template<class T>
-    nl::json dispatch_bundle_repr(T&& t) {
-        if constexpr (has_mime_bundle_repr<T>{})
-            return mime_bundle_repr(std::forward<T>(t));
-        else
-            return fallback_mime_bundle_repr(std::forward<T>(t));
-    }
-    
     template <class T>
     void display(T&& t)
     {
         xeus::get_interpreter().display_data(
-            dispatch_bundle_repr(std::forward<T>(t)),
+            dispatch_mime_bundle_repr(std::forward<T>(t)),
             nl::json::object(),
             nl::json::object()
         );
@@ -57,7 +36,7 @@ namespace xcpp
         if (update)
         {
             xeus::get_interpreter().update_display_data(
-                dispatch_bundle_repr(std::forward<T>(t)),
+                dispatch_mime_bundle_repr(std::forward<T>(t)),
                 nl::json::object(),
                 std::move(transient)
             );
@@ -65,7 +44,7 @@ namespace xcpp
         else
         {
             xeus::get_interpreter().display_data(
-                dispatch_bundle_repr(std::forward<T>(t)),
+                dispatch_mime_bundle_repr(std::forward<T>(t)),
                 nl::json::object(),
                 std::move(transient)
             );

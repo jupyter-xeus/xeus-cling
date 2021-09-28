@@ -191,8 +191,7 @@ namespace xcpp
         {
             // Use an llvm::raw_ostream to prepend '0x' in front of the pointer value.
             cling::ostrstream code;
-            code << "using xcpp::mime_bundle_repr;";
-            code << "mime_bundle_repr(";
+            code << "xcpp::dispatch_mime_bundle_repr(";
             code << "*(" << xcpp::cling_detail::getTypeString(V);
             code << &value;
             code << "));";
