@@ -12,6 +12,7 @@
 
 #include <complex>
 #include <sstream>
+#include <type_traits>
 
 #include "nlohmann/json.hpp"
 
@@ -39,6 +40,9 @@ namespace xcpp
             return bundle;
         }
 
+        // Helper struct for SFINAE concept check - obsolete with C++17
+        template<class...>
+        using void_t = void;
     }
 
     // Default implementation of mime_bundle_repr
@@ -64,27 +68,29 @@ namespace xcpp
         return detail::mime_bundle_repr_via_sstream(value);
     }
 
-    // concept check wheather T has a mime_bundle_repr overload
-    // default case: mime_bundle_repr overload does fail
-    template<class T, class = void>
-    struct has_mime_bundle_repr
-        : public std::false_type
-    {};
+    template<typename T, typename = void>
+    struct MimeBundleReprDispatcher
+    {
+        template<typename U>
+        static nl::json dispatch(U&& u) {
+            return fallback_mime_bundle_repr(std::forward<U>(u));
+        }
+    };
 
-    // specialized case (SFINAE): mime_bundle_repr overload does not fail
-    template<class T>
-    struct has_mime_bundle_repr<T,std::void_t<decltype(mime_bundle_repr(std::declval<T>()))>>
-        : std::true_type
-    {};
+    template<typename T>
+    struct MimeBundleReprDispatcher<T, detail::void_t<decltype(mime_bundle_repr(std::declval<T>()))>>
+    {
+        template<typename U>
+        static nl::json dispatch(U&& u) {
+            return mime_bundle_repr(std::forward<U>(u));
+        }
+    };
 
-    template<class T>
-    nl::json dispatch_mime_bundle_repr(T&& t) {
-        if constexpr (has_mime_bundle_repr<T>{})
-            return mime_bundle_repr(std::forward<T>(t));
-        else
-            return fallback_mime_bundle_repr(std::forward<T>(t));
+    template<typename T>
+    nl::json dispatch_mime_bundle_repr(T&& t)
+    {
+        return MimeBundleReprDispatcher<T>::dispatch(std::forward<T>(t));
     }
-
 }
 
 #endif
