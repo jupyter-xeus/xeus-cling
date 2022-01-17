@@ -11,6 +11,14 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <signal.h>
+
+#ifdef __GNUC__
+#include <stdio.h>
+#include <execinfo.h>
+#include <stdlib.h>
+#include <unistd.h>
+#endif
 
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
@@ -18,6 +26,26 @@
 
 #include "xeus-cling/xinterpreter.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
+
+#ifdef __GNUC__
+void handler(int sig)
+{
+    void* array[10];
+
+    // get void*'s for all entries on the stack
+    size_t size = backtrace(array, 10);
+
+    // print out all the frames to stderr
+    fprintf(stderr, "Error: signal %d:\n", sig);
+    backtrace_symbols_fd(array, size, STDERR_FILENO);
+    exit(1);
+}
+#endif
+
+void stop_handler(int /*sig*/)
+{
+    exit(0);
+}
 
 bool should_print_version(int argc, char* argv[])
 {
@@ -87,6 +115,16 @@ int main(int argc, char* argv[])
     {
         std::clog.setstate(std::ios_base::failbit);
     }
+
+    // Registering SIGSEGV handler
+#ifdef __GNUC__
+    std::clog << "registering handler for SIGSEGV" << std::endl;
+    signal(SIGSEGV, handler);
+
+    // Registering SIGINT and SIGKILL handlers
+    signal(SIGKILL, stop_handler);
+#endif
+    signal(SIGINT, stop_handler);
 
     std::string file_name = extract_filename(argc, argv);
 
