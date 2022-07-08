@@ -6,7 +6,7 @@
 *                                                                                  *
 * The full license is in the file LICENSE, distributed with this software.         *
 ************************************************************************************/
-
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
