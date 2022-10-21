@@ -11,8 +11,8 @@ steps:
 
   - script: |
       source activate xeus-cling
-      echo "#include <iostream>\nint main(){std::cout << \"hello\" << std::endl; return 0; }" > test.cpp
-      clang++ -v test.cpp -o test
+      echo "#include <cctype>" > test.cpp
+      clang++ -v -c test.cpp
       ./test
     displayName: Testing compilation with clangdev
 
