@@ -10,6 +10,13 @@ steps:
     displayName: Install dependencies
 
   - script: |
+      source activate xeus-cling
+      echo "#include <iostream>\nint main(){std::cout << \"hello\" << std::endl; return 0; }" > test.cpp
+      clang++ -v test.cpp -o test
+      ./test
+    displayName: Testing compilation with clangdev
+
+  - script: |
       conda env create --file environment-build.yml
     displayName: Install conda-forge compilers
 
