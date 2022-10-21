@@ -46,6 +46,7 @@ steps:
   - script: |
       source activate xeus-cling
       mv /Applications/Xcode_14.0.1.app /Applications/_Cxode_14.0.1.app
+      mv /Applications/Xcode.app /Applications/_Xcode.app
       #OSX_SDK_DIR="$(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs"
       #MACOSX_SDK_VERSION=10.9
       #export CONDA_BUILD_SYSROOT="${OSX_SDK_DIR}/MacOSX${MACOSX_SDK_VERSION}.sdk"
