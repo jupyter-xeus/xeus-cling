@@ -19,9 +19,9 @@ jobs:
           echo "Checking existence of /Applications/Xcode_14.0.1.app"
           ls /Applications/Xcode_14.0.1.app
           echo "Searching for stdlib.h files in Library"
-          find /Library -name stdlib.h
+          sudo find /Library -name stdlib.h
           echo "Searching for stdlib.h files in Applications"
-          find /Applications -name stdlib.h
+          sudo find /Applications -name stdlib.h
 
         displayName: checking SDKs paths
 
