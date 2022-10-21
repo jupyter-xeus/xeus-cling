@@ -46,9 +46,10 @@ steps:
   - script: |
       source activate xeus-cling
       #mv /Applications/Xcode_14.0.1.app /Applications/_Cxode_14.0.1.app
-      #mv /Applications/Xcode.app /Applications/_Xcode.app
-      mv /Library/Developer/CommandLineTools/ /Library/Developer/__CommandLineTools/SDKs/
-      ls /Library/Developer
+      mv /Applications/Xcode.app /Applications/__Xcode.app
+      mv /Library/Developer/CommandLineTools/ /Library/Developer/__CommandLineTools
+      echo "Checking existence of /Applications/Xcode_14.0.1.app"
+      ls /Applications/Xcode_14.0.1.app
       echo "Staring tests"
       #OSX_SDK_DIR="$(xcode-select -p)/Platforms/MacOSX.platform/Developer/SDKs"
       #MACOSX_SDK_VERSION=10.9
