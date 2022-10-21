@@ -12,6 +12,15 @@ jobs:
     timeoutInMinutes: 30
     steps:
       - script: |
+          echo "Checking existence of /Library/Developer/CommandLineTools/SDKs/"
+          ls /Library/Developer/CommandLineTools/SDKs/
+          echo "Checking existence of /Applications/Xcode.app/Contents/Developer"
+          ls /Applications/Xcode.app/Contents/Developer/
+          echo "Checking existence of /Applications/Xcode_14.0.1.app"
+          ls /Applications/Xcode_14.0.1.app
+        displayName: checking SDKs paths
+
+      - script: |
           echo "Removing homebrew for Azure to avoid conflicts with conda"
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
         displayName: Remove homebrew
