@@ -45,6 +45,7 @@ steps:
 
   - script: |
       source activate xeus-cling
+      conda remove libcxx --force
       export SDKROOT=`xcrun --sdk macosx --show-sdk-path`
       echo "SDKROOT = $SDKROOT"
       py.test . -v;
