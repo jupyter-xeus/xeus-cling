@@ -6,25 +6,26 @@ steps:
   - script: |
       conda config --set always_yes yes --set changeps1 no
       conda update -q conda
-      conda env create --file environment-dev.yml
+      conda env create --file environment-host.yml
     displayName: Install dependencies
 
   - script: |
-      source activate xeus-cling
-      conda install gxx_linux-64 libcxx -c conda-forge
-    condition: eq('${{ parameters.platform }}', 'Linux')
+      conda env create --file environment-build.yml
     displayName: Install conda-forge compilers
 
   - script: |
       source activate xeus-cling
+      export PREFIX=$CONDA_PREFIX
+      source deactivate
+      source activate build-xeus-cling
       mkdir build
       cd build
-      cmake -DCMAKE_PREFIX_PATH=$CONDA_PREFIX -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DDOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX $(Build.SourcesDirectory)
+      cmake -DCMAKE_PREFIX_PATH=$PREFIX -DCMAKE_INSTALL_PREFIX=$PREFIX -DDOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib $(Build.SourcesDirectory)
     displayName: Configure xeus-cling
     workingDirectory: $(Build.BinariesDirectory)
 
   - script: |
-      source activate xeus-cling
+      source activate build-xeus-cling 
       make install -j2
     displayName: Build xeus-cling
     workingDirectory: $(Build.BinariesDirectory)/build
@@ -38,5 +39,16 @@ steps:
   - script: |
       source activate xeus-cling
       py.test . -v;
+    condition: eq('${{ parameters.platform }}', 'Linux')
+    displayName: Test xeus-cling (Python)
+    workingDirectory: $(Build.sourcesDirectory)/test
+
+  - script: |
+      source activate xeus-cling
+      conda remove libcxx --force
+      export SDKROOT=`xcrun --sdk macosx --show-sdk-path`
+      echo "SDKROOT = $SDKROOT"
+      py.test . -v;
+    condition: eq('${{ parameters.platform }}', 'OSX')
     displayName: Test xeus-cling (Python)
     workingDirectory: $(Build.sourcesDirectory)/test

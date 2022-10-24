@@ -1,0 +1,8 @@
+name: build-xeus-cling
+channels:
+  - conda-forge
+dependencies:
+  # Build dependencies
+  - cmake
+  - cxx-compiler
+
