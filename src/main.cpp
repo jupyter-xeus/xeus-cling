@@ -20,6 +20,8 @@
 #include <unistd.h>
 #endif
 
+#include "xtl/xsystem.hpp"
+
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 #include "xeus-zmq/xserver_zmq.hpp"
@@ -82,7 +84,7 @@ std::string extract_filename(int argc, char* argv[])
 using interpreter_ptr = std::unique_ptr<xcpp::interpreter>;
 interpreter_ptr build_interpreter(int argc, char** argv)
 {
-    int interpreter_argc = argc + 1;
+    int interpreter_argc = argc + 3;
     const char** interpreter_argv = new const char*[interpreter_argc];
     interpreter_argv[0] = "xeus-cling";
     // Copy all arguments in the new array excepting the process name.
@@ -91,7 +93,13 @@ interpreter_ptr build_interpreter(int argc, char** argv)
         interpreter_argv[i] = argv[i];
     }
     std::string include_dir = std::string(LLVM_DIR) + std::string("/include");
-    interpreter_argv[interpreter_argc - 1] = include_dir.c_str();
+    interpreter_argv[interpreter_argc - 3] = include_dir.c_str();
+
+    std::string no_libcxx_include = std::string("-nostdinc++");
+    interpreter_argv[interpreter_argc - 2] = no_libcxx_include.c_str();
+
+    std::string prefix_libcxx_include = std::string("-I") + xtl::prefix_path() + std::string("/include/c++/v1");
+    interpreter_argv[interpreter_argc - 1] = prefix_libcxx_include.c_str();
 
     interpreter_ptr interp_ptr = interpreter_ptr(new xcpp::interpreter(interpreter_argc, interpreter_argv));
     delete[] interpreter_argv;
