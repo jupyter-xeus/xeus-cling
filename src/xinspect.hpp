@@ -21,8 +21,6 @@
 
 #include "pugixml.hpp"
 
-#include "xtl/xsystem.hpp"
-
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xpreamble.hpp"
 
@@ -171,8 +169,8 @@ namespace xcpp
 
     void inspect(const std::string& code, nl::json& kernel_res, cling::Interpreter& interpreter)
     {
-        std::string tagconf_dir = xtl::prefix_path() + XCPP_TAGCONFS_DIR;
-        std::string tagfiles_dir = xtl::prefix_path() + XCPP_TAGFILES_DIR;
+        std::string tagconf_dir = XCPP_TAGCONFS_DIR;
+        std::string tagfiles_dir = XCPP_TAGFILES_DIR;
 
         nl::json tagconfs = read_tagconfs(tagconf_dir.c_str());
 

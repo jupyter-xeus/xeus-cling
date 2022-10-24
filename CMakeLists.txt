@@ -391,8 +391,13 @@ install(DIRECTORY ${XCPP_TAGCONFS_DIR}
         DESTINATION ${XEUS_CLING_CONF_DIR})
 
 # Add definitions for the kernel to find tagfiles.
-add_definitions(-DXCPP_TAGFILES_DIR="${XEUS_CLING_DATA_DIR}/tagfiles")
-add_definitions(-DXCPP_TAGCONFS_DIR="${XEUS_CLING_CONF_DIR}/tags.d")
+add_definitions(-DXCPP_TAGFILES_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_DATA_DIR}/tagfiles")
+if(CMAKE_INSTALL_PREFIX STREQUAL "/usr")
+    # install into /etc instead of /usr/etc
+    add_definitions(-DXCPP_TAGCONFS_DIR="/${XEUS_CLING_CONF_DIR}/tags.d")
+else()
+    add_definitions(-DXCPP_TAGCONFS_DIR="${CMAKE_INSTALL_PREFIX}/${XEUS_CLING_CONF_DIR}/tags.d")
+endif()
 
 # Makes the project importable from the build directory
 export(EXPORT ${PROJECT_NAME}-targets
