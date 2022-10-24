@@ -22,7 +22,7 @@
 
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
-#include "xeus/xserver_zmq.hpp"
+#include "xeus-zmq/xserver_zmq.hpp"
 
 #include "xeus-cling/xinterpreter.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
