@@ -45,7 +45,7 @@ steps:
 
   - script: |
       source activate xeus-cling
-      conda remove libcxx --force
+      conda remove libcxx --force  # Workaround for https://github.com/conda-forge/clangdev-feedstock/issues/188 impacting conda package for clangdev 5
       export SDKROOT=`xcrun --sdk macosx --show-sdk-path`
       echo "SDKROOT = $SDKROOT"
       py.test . -v;
