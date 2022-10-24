@@ -330,14 +330,9 @@ endif(MSVC)
 # Tests #
 #########
 
-OPTION(BUILD_TESTS "xeus-cling test suite" OFF)
-OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
+OPTION(XEUS_CLING_BUILD_TESTS "xeus-cling test suite" OFF)
 
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    set(BUILD_TESTS ON)
-endif()
-
-if(BUILD_TESTS)
+if(XEUS_CLING_BUILD_TESTS)
     add_subdirectory(test)
 endif()
 

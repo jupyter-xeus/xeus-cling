@@ -20,7 +20,7 @@ steps:
       source activate build-xeus-cling
       mkdir build
       cd build
-      cmake -DCMAKE_PREFIX_PATH=$PREFIX -DCMAKE_INSTALL_PREFIX=$PREFIX -DDOWNLOAD_GTEST=ON -DCMAKE_INSTALL_LIBDIR=lib $(Build.SourcesDirectory)
+      cmake -DCMAKE_PREFIX_PATH=$PREFIX -DCMAKE_INSTALL_PREFIX=$PREFIX -DXEUS_CLING_BUILD_TESTS=ON -DCMAKE_INSTALL_LIBDIR=lib $(Build.SourcesDirectory)
     displayName: Configure xeus-cling
     workingDirectory: $(Build.BinariesDirectory)
 
