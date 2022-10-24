@@ -30,52 +30,17 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     set(CMAKE_EXE_LINKER_FLAGS /MANIFEST:NO)
 endif()
 
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    if(DOWNLOAD_GTEST)
-        # Download and unpack googletest at configure time
-        configure_file(downloadGTest.cmake.in googletest-download/CMakeLists.txt)
-    else()
-        # Copy local source of googletest at configure time
-        configure_file(copyGTest.cmake.in googletest-download/CMakeLists.txt)
-    endif()
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-                    RESULT_VARIABLE result
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-    if(result)
-        message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-    endif()
-    execute_process(COMMAND ${CMAKE_COMMAND} --build .
-                    RESULT_VARIABLE result
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-    if(result)
-        message(FATAL_ERROR "Build step for googletest failed: ${result}")
-    endif()
-
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    # Add googletest directly to our build. This defines
-    # the gtest and gtest_main targets.
-    add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                     ${CMAKE_CURRENT_BINARY_DIR}/googletest-build EXCLUDE_FROM_ALL)
-
-    set(GTEST_INCLUDE_DIRS "${gtest_SOURCE_DIR}/include")
-    set(GTEST_BOTH_LIBRARIES  gtest_main gtest)
-else()
-    find_package(GTest REQUIRED)
-endif()
-
+find_package(doctest)
 find_package(Threads)
 
 include_directories(${GTEST_INCLUDE_DIRS} SYSTEM)
 
 set(XEUS_CLING_TESTS
+    main.cpp
     test_stream.cpp
 )
 
 add_executable(test_xeus_cling ${XEUS_CLING_TESTS})
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    add_dependencies(test_xeus_cling gtest_main)
-endif()
 
 if (APPLE)
     set_target_properties(test_xeus_cling PROPERTIES
@@ -93,7 +58,7 @@ set_target_properties(test_xeus_cling PROPERTIES
 )
 
 target_link_libraries(test_xeus_cling
-                      PRIVATE ${GTEST_BOTH_LIBRARIES}
+                      PRIVATE doctest::doctest
                       PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 target_include_directories(test_xeus_cling PRIVATE ${XEUS_CLING_INCLUDE_DIR})
 
