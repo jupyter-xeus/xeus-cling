@@ -6,9 +6,7 @@ dependencies:
   - cmake
   # Host dependencies
   - xeus-zmq=1.0.0
-  - cling=0.8
-  - clangdev=5
-  - llvmdev=5
+  - cling=0.9
   - nlohmann_json
   - cppzmq
   - xtl=0.7
