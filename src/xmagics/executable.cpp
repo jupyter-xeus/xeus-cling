@@ -131,7 +131,7 @@ namespace xcpp
 
         // Generate relocations suitable for dynamic linking.
         auto CodeGenOpts = CI->getCodeGenOpts();
-        CodeGenOpts.RelocationModel = "pic";
+        CodeGenOpts.RelocationModel = llvm::Reloc::Model::PIC_;
 
         // Enable debug information if requested.
         if (EnableDebugInfo)
@@ -187,7 +187,7 @@ namespace xcpp
         llvm::sys::path::append(Compiler, "bin", "clang++");
 
         // Construct arguments to linker command.
-        llvm::SmallVector<const char*, 16> Args;
+        llvm::SmallVector<llvm::StringRef, 16> Args;
         Args.push_back(Compiler.c_str());
         Args.push_back(ObjectFile.c_str());
         for (auto& O : LinkerOptions)
@@ -196,7 +196,6 @@ namespace xcpp
         }
         Args.push_back("-o");
         Args.push_back(ExeFile.c_str());
-        Args.push_back(NULL);
 
         // Redirect output and error streams from linker.
         llvm::SmallString<64> OutputFile, ErrorFile;
@@ -207,11 +206,10 @@ namespace xcpp
 
         llvm::StringRef OutputFileStr(OutputFile);
         llvm::StringRef ErrorFileStr(ErrorFile);
-        const llvm::StringRef* Redirects[] = {nullptr, &OutputFileStr,
-                                              &ErrorFileStr};
+        llvm::SmallVector<llvm::Optional<llvm::StringRef>, 16> Redirects = {llvm::NoneType::None, OutputFileStr, ErrorFileStr};
 
         // Finally run the linker.
-        int ret = llvm::sys::ExecuteAndWait(Compiler, Args.data(), nullptr,
+        int ret = llvm::sys::ExecuteAndWait(Compiler, Args, llvm::NoneType::None,
                                             Redirects);
 
         // Read back output and error streams.
