@@ -270,7 +270,6 @@ if(MSVC)
         ??1raw_string_ostream@llvm@@UEAA@XZ
         ?flush_nonempty@raw_ostream@llvm@@AEAAXXZ
         ?getASTContext@Decl@clang@@QEBAAEAVASTContext@2@XZ
-        ?handle@raw_ostream@llvm@@EEAAXXZ
         ?preferred_buffer_size@raw_ostream@llvm@@MEBA_KXZ
         ?write_impl@raw_string_ostream@llvm@@EEAAXPEBD_K@Z
         ?castToDeclContext@Decl@clang@@SAPEAVDeclContext@2@PEBV12@@Z
