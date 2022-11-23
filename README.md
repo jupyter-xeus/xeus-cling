@@ -34,7 +34,7 @@ mamba install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-mamba create -n xeus-cling -c conda-forge cmake "xeus-zmq>=1.0,<2.0" cling=0.8 clangdev=5.0.0 llvmdev=5 "nlohmann_json>=3.9.1,<3.10" "cppzmq>=4.6.0,<5" "xtl>=0.7,<0.8" pugixml "doctest>=2.4.6" "cxxopts>=2.1.1,<2.2"
+mamba create -n xeus-cling -c conda-forge cmake "xeus-zmq>=1.0,<2.0" cling "nlohmann_json>=3.9.1,<3.10" "cppzmq>=4.6.0,<5" "xtl>=0.7,<0.8" pugixml "doctest>=2.4.6" "cxxopts>=2.1.2,<2.2"
 source activate xeus-cling
 ```
 
