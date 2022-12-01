@@ -20,36 +20,33 @@
 
 namespace xcpp
 {
-    xoptions writefile::get_options()
+    argparser writefile::get_options()
     {
-        xoptions options{"file", "write file"};
-        options.add_options()
-            ("a,append", "append")
-            ("f,filename", "filename",
-             cxxopts::value<std::string>()->default_value(""));
-        options.parse_positional("filename");
-        return options;
+        argparser argpars("file");
+        argpars.add_description("write file");
+        argpars.add_argument("-a", "--append")
+            .help("append")
+            .default_value(false)
+            .implicit_value(true);
+        argpars.add_argument("filename")
+            .help("filename")
+            .required();
+        return argpars;
     }
 
     void writefile::operator()(const std::string& line, const std::string& cell)
     {
-        auto options = get_options();
-        auto result = options.parse(line);
+        auto argpars = get_options();
+        argpars.parse(line);
 
-        auto append = result.count("a");
-        auto filename = result["filename"].as<std::string>();
-        if (filename.empty())
-        {
-            std::cerr << "UsageError: the following arguments are required: filename\n";
-            return;
-        }
+        auto filename = argpars.get<std::string>("filename");
 
         std::ofstream file;
 
         // TODO: check permission rights
         if (is_file_exist(filename.c_str()))
         {
-            if (append)
+            if (argpars["-a"] == true)
             {
                 file.open(filename, std::ios::app);
                 std::cout << "Appending to " << filename << "\n";

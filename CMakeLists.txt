@@ -110,7 +110,7 @@ find_package(pugixml REQUIRED)
 
 find_package(Clang REQUIRED)
 find_package(Cling REQUIRED)
-find_package(cxxopts REQUIRED)
+find_package(argparse REQUIRED)
 
 #########
 # flags #
@@ -131,12 +131,12 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter -Wextra -Wreorder")
 
-    CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
+    CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP17_FLAG)
 
-    if (HAS_CPP14_FLAG)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if (HAS_CPP17_FLAG)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
     else()
-        message(FATAL_ERROR "Unsupported compiler -- xeus requires C++14 support!")
+        message(FATAL_ERROR "Unsupported compiler -- xeus requires C++17 support!")
     endif()
 endif()
 
@@ -217,7 +217,7 @@ target_include_directories(xeus-cling
                            PUBLIC
                            $<BUILD_INTERFACE:${XEUS_CLING_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
-target_link_libraries(xeus-cling PUBLIC clingInterpreter clingMetaProcessor clingUtils xeus-zmq pugixml cxxopts::cxxopts)
+target_link_libraries(xeus-cling PUBLIC clingInterpreter clingMetaProcessor clingUtils xeus-zmq pugixml argparse::argparse)
 
 set_target_properties(xeus-cling PROPERTIES
                       PUBLIC_HEADER "${XEUS_CLING_HEADERS}"

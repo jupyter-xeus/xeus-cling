@@ -42,16 +42,17 @@
 
 namespace xcpp
 {
-    xoptions executable::get_options()
+    argparser executable::get_options()
     {
-        xoptions options{"executable", "write executable"};
-        options.add_options()
-            ("f,filename", "filename",
-             cxxopts::value<std::string>()->default_value(""))
-            ("o,options", "options",
-             cxxopts::value<std::vector<std::string>>()->default_value(""));
-        options.parse_positional({"filename", "options"});
-        return options;
+        argparser argpars("executable");
+        argpars.add_description("write executable");
+        argpars.add_argument("filename")
+            .help("filename")
+            .required();
+        argpars.add_argument("options")
+            .help("options")
+            .default_value<std::vector<std::string>>({ "" });
+        return argpars;
     }
 
     std::string executable::generate_fns(const std::string& cell,
@@ -249,19 +250,12 @@ namespace xcpp
 
     void executable::operator()(const std::string& line, const std::string& cell)
     {
-        auto options = get_options();
-        auto parsed = options.parse(line);
+        auto argpars = get_options();
+        argpars.parse(line);
 
-        std::string ExeFile = parsed["filename"].as<std::string>();
-        if (ExeFile.empty())
-        {
-            std::cerr << "UsageError: "
-                      << "the following arguments are required: filename"
-                      << std::endl;
-            return;
-        }
+        std::string ExeFile = argpars.get<std::string>("filename");
         std::vector<std::string> LinkerOptions =
-            parsed["options"].as<std::vector<std::string>>();
+            argpars.get<std::vector<std::string>>("options");
 
         std::string main, unique_fn;
         generate_fns(cell, main, unique_fn);

@@ -16,21 +16,21 @@ file (usually ``share/jupyter/kernels/xcppSTD/kernel.json``, where ``STD`` is th
 version of the cpp standard) and add the build flags in the ``argv`` array.
 
 For instance, if you want to pass the ``-pthread -lpthread`` flags to ``xeus-cling``
-and compile C++14 code, the C++14 kernelpec file becomes:
+and compile C++17 code, the C++17 kernelpec file becomes:
 
 .. code::
     
     {
-        "display_name": "C++14",
+        "display_name": "C++17",
         "argv": [
             "/home/yoyo/miniconda3/envs/xwidgets/bin/xcpp",
             "-f",
             "{connection_file}",
-            "-std=c++14",
+            "-std=c++17",
             "-pthread",
             "lpthread"
         ],
-        "language": "C++14"
+        "language": "C++17"
     }
 
 Using third-party libraries

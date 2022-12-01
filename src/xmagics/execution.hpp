@@ -44,7 +44,7 @@ namespace xcpp
 
         cling::Interpreter* m_interpreter;
 
-        xoptions get_options();
+        argparser get_options();
         std::string inner(std::size_t number, const std::string& code) const;
         std::string _format_time(double timespan, std::size_t precision) const;
         void execute(std::string& line, std::string& cell);

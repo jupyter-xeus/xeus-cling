@@ -21,7 +21,7 @@ namespace xcpp
     {
     public:
 
-        xoptions get_options();
+        argparser get_options();
         virtual void operator()(const std::string& line, const std::string& cell) override;
 
     private:

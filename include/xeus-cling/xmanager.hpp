@@ -107,9 +107,9 @@ namespace xcpp
             {
                 (*m_magic_cell[magic_name])(line, cell);
             }
-            catch (const cxxopts::OptionException& e)
+            catch (const std::exception& e)
             {
-                std::cerr << "UsageError: " << e.what() << "\n";
+                std::cerr << e.what() << std::endl;
             }
             catch (...)
             {
@@ -123,9 +123,11 @@ namespace xcpp
             {
                 (*m_magic_line[magic_name])(line);
             }
-            catch (const cxxopts::OptionException& e)
-            {
-                std::cerr << "UsageError: " << e.what() << "\n";
+            catch (const std::runtime_error& e) {
+                std::cerr << e.what() << std::endl;
+            }
+            catch (const std::logic_error& e) {
+                std::cerr << e.what() << std::endl;
             }
             catch (...)
             {

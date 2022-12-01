@@ -34,14 +34,15 @@ mamba install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-mamba create -n xeus-cling -c conda-forge cmake "xeus-zmq>=1.0,<2.0" cling "nlohmann_json>=3.9.1,<3.10" "cppzmq>=4.6.0,<5" "xtl>=0.7,<0.8" pugixml "doctest>=2.4.6" "cxxopts>=2.1.2,<2.2"
+mamba create -n xeus-cling -c conda-forge cmake xeus-zmq cling nlohmann_json cppzmq xtl pugixml doctest cpp-argparse
 source activate xeus-cling
 ```
+Please refer to [environment-host.yml](https://github.com/jupyter-xeus/xeus-cling/blob/main/environment-host.yml) for packages specific versions to install if applicable.
 
-You can then compile the sources:
+You can then compile the sources. From the build directory, run:
 
 ```bash
-cmake -D CMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX -D CMAKE_INSTALL_LIBDIR=${CONDA_PREFIX}/lib -D DOWNLOAD_GTEST=ON
+cmake -D CMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX -D CMAKE_INSTALL_LIBDIR=${CONDA_PREFIX}/lib ..
 make && make install
 ```
 
@@ -66,7 +67,7 @@ http://xeus-cling.readthedocs.io/
 
 ## Usage
 
-Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **C++14** kernel in the *new* dropdown.
+Launch the jupyter notebook with `jupyter notebook` and launch a new C++ notebook by selecting the **C++17** kernel in the *new* dropdown.
 
 ### A C++ notebook
 
@@ -100,15 +101,21 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
  - [xtl](https://github.com/xtensor-stack/xtl)
  - [cling](https://github.com/root-project/cling)
  - [pugixml](https://github.com/zeux/pugixml)
- - [cxxopts](https://github.com/jarro2783/cxxopts)
+ - [cpp-argparse](https://github.com/p-ranav/argparse)
  - [nlohmann_json](https://github.com/nlohmann/json)
+
+In the main branch, `xeus-cling` depends on `cpp-argparse` while it was depending on `cxxopts` in all versions prior to and including 0.14:
+
+| `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cpp-argparse`| `nlohmann_json` | `dirent` (windows only) |
+|--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
+|  main        |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
+
 
 | `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`     | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
-|  master      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.14.0      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 
-Prior to version 0.14, `xeus-cling` was depending on `xeus` instead of `xeus-zmq:
+Prior to version 0.14, `xeus-cling` was depending on `xeus` instead of `xeus-zmq`:
 
 | `xeus-cling` |   `xeus`        |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`     | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|

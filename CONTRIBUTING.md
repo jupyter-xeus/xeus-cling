@@ -16,7 +16,7 @@ First, you need to fork the project. Then setup your environment:
 
 ```bash
 # create a new conda environment
-conda create -n xeus-cling -c conda-forge -c defaults xtl nlohmann_json cppzmq cxxopts pugixml xeus cling
+conda create -n xeus-cling -c conda-forge -c defaults xtl nlohmann_json cppzmq cpp-argparse pugixml xeus cling
 conda activate xeus-cling
 
 # download xeus-cling from your GitHub fork

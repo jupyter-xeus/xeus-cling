@@ -33,18 +33,26 @@ namespace xcpp
         compilation_result = m_interpreter->process(init_timeit.c_str());
     }
 
-    xoptions timeit::get_options()
+    argparser timeit::get_options()
     {
-        xoptions options{"timeit", "Time execution of a C++ statement or expression"};
-        options.add_options()
-            ("n,number", "execute the given statement n times in a loop. If this value is not given, a fitting value is chosen", cxxopts::value<std::size_t>())
-            ("r,repeat", "repeat the loop iteration r times and take the best result", cxxopts::value<std::size_t>()->default_value("7"))
-            ("p,precision", "use a precision of p digits to display the timing result.", cxxopts::value<std::size_t>()->default_value("3"))
-            ("positional",
-             "Positional arguments: these are the arguments that are entered "
-             "without an option", cxxopts::value<std::vector<std::string>>());
-        options.parse_positional("positional");
-        return options;
+        argparser argpars("timeit");
+        argpars.add_description("Time execution of a C++ statement or expression");
+        argpars.add_argument("-n", "--number")
+            .help("execute the given statement n times in a loop. If this value is not given, a fitting value is chosen")
+            .default_value(0)
+            .scan<'i', int>();
+        argpars.add_argument("-r", "--repeat")
+            .help("repeat the loop iteration r times and take the best result")
+            .default_value(7)
+            .scan<'i', int>();
+        argpars.add_argument("-p", "--precision")
+            .help("use a precision of p digits to display the timing result")
+            .default_value(3)
+            .scan<'i', int>();
+        argpars.add_argument("expression")
+            .help("expression to be evaluated")
+            .remaining();
+        return argpars;
     }
 
     std::string timeit::inner(std::size_t number, const std::string& code) const
@@ -85,20 +93,28 @@ namespace xcpp
         // std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
         //                          std::istream_iterator<std::string>());
 
-        auto options = get_options();
-        auto result = options.parse(line);
+        auto argpars = get_options();
+        argpars.parse(line);
 
-        std::size_t number = (result.count("n")) ? result["n"].as<std::size_t>() : 0ul;
-        std::size_t repeat = result["r"].as<std::size_t>();
-        std::size_t precision = result["p"].as<std::size_t>();
+        // TODO find a way to use std::size_t
+        int number = argpars.get<int>("-n");
+        int repeat = argpars.get<int>("-r");
+        int precision = argpars.get<int>("-p");
 
         std::string code;
-        if (result.count("positional"))
+        try
         {
-            auto& v = result["positional"].as<std::vector<std::string>>();
+            const auto& v = argpars.get<std::vector<std::string>>("expression");
             for (const auto& s : v)
             {
                 code += " " + s;
+            }
+        }
+        catch (std::logic_error& e)
+        {
+            if (trim(cell).empty())
+            {
+                std::cerr << "No expression given to evaluate" << std::endl;
             }
         }
 
@@ -116,7 +132,7 @@ namespace xcpp
 
         try
         {
-            if (number == 0ul)
+            if (number == 0)
             {
                 for (std::size_t n = 0; n < 10; ++n)
                 {
@@ -133,7 +149,7 @@ namespace xcpp
             std::vector<double> all_runs;
             double mean = 0;
             double stdev = 0;
-            for (std::size_t r = 0; r < repeat; ++r)
+            for (std::size_t r = 0; r < (std::size_t)repeat; ++r)
             {
                 std::string timeit_code = inner(number, code);
                 compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
@@ -141,7 +157,7 @@ namespace xcpp
                 mean += all_runs.back();
             }
             mean /= repeat;
-            for (std::size_t r = 0; r < repeat; ++r)
+            for (std::size_t r = 0; r < (std::size_t)repeat; ++r)
             {
                 stdev += (all_runs[r] - mean) * (all_runs[r] - mean);
             }
