@@ -102,15 +102,20 @@ namespace xcpp
         int precision = argpars.get<int>("-p");
 
         std::string code;
-        try {
+        try
+        {
             const auto& v = argpars.get<std::vector<std::string>>("expression");
             for (const auto& s : v)
             {
                 code += " " + s;
             }
-        } catch (std::logic_error& e) {
+        }
+        catch (std::logic_error& e)
+        {
             if (trim(cell).empty())
+            {
                 std::cerr << "No expression given to evaluate" << std::endl;
+            }
         }
 
         code += cell;

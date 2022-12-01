@@ -18,8 +18,8 @@ namespace xcpp
 {
     struct argparser : public argparse::ArgumentParser
     {
-        using parent = argparse::ArgumentParser;
-        using parent::ArgumentParser;
+        using base_type = argparse::ArgumentParser;
+        using base_type::ArgumentParser;
 
         void parse(const std::string& line);
     };

@@ -107,10 +107,8 @@ namespace xcpp
             {
                 (*m_magic_cell[magic_name])(line, cell);
             }
-            catch (const std::runtime_error& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            catch (const std::logic_error& e) {
+            catch (const std::exception& e)
+            {
                 std::cerr << e.what() << std::endl;
             }
             catch (...)

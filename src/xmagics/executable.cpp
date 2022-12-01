@@ -254,13 +254,6 @@ namespace xcpp
         argpars.parse(line);
 
         std::string ExeFile = argpars.get<std::string>("filename");
-//         if (ExeFile.empty())
-//         {
-//             std::cerr << "UsageError: "
-//                       << "the following arguments are required: filename"
-//                       << std::endl;
-//             return;
-//         }
         std::vector<std::string> LinkerOptions =
             argpars.get<std::vector<std::string>>("options");
 

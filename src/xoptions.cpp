@@ -32,10 +32,12 @@ namespace xcpp
         int argc = copt_strings.size();
         auto argv = &copt_strings[0];
 
-        try {
-            parent::parse_args(argc, argv);
+        try
+        {
+            base_type::parse_args(argc, argv);
         }
-        catch (const std::runtime_error& err) {
+        catch (const std::runtime_error& err)
+        {
             std::cerr << err.what() << std::endl;
         }
     }
