@@ -30,7 +30,7 @@ namespace xcpp
         }
 
         int argc = copt_strings.size();
-        auto argv = const_cast<char**>(&copt_strings[0]);
+        auto argv = &copt_strings[0];
 
         try {
             parent::parse_args(argc, argv);
