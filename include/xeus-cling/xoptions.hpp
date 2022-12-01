@@ -12,15 +12,16 @@
 
 #include <string>
 
-#include "cxxopts.hpp"
+#include <argparse/argparse.hpp>
 
 namespace xcpp
 {
-    struct xoptions : public cxxopts::Options
+    struct argparser : public argparse::ArgumentParser
     {
-        using parent = cxxopts::Options;
-        using parent::Options;
-        cxxopts::ParseResult parse(const std::string& line);
+        using parent = argparse::ArgumentParser;
+        using parent::ArgumentParser;
+
+        void parse(const std::string& line);
     };
 }
 #endif
