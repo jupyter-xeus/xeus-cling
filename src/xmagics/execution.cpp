@@ -35,7 +35,7 @@ namespace xcpp
 
     argparser timeit::get_options()
     {
-        argparser argpars("timeit");
+        argparser argpars("timeit", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("Time execution of a C++ statement or expression");
         argpars.add_argument("-n", "--number")
             .help("execute the given statement n times in a loop. If this value is not given, a fitting value is chosen")
@@ -52,6 +52,16 @@ namespace xcpp
         argpars.add_argument("expression")
             .help("expression to be evaluated")
             .remaining();
+        // Add custom help (does not call `exit` avoiding to restart the kernel)
+        argpars.add_argument("-h", "--help")
+            .action([&](const std::string & /*unused*/)
+            {
+                std::cout << argpars.help().str();
+            })
+            .default_value(false)
+            .help("shows help message")
+            .implicit_value(true)
+            .nargs(0);
         return argpars;
     }
 
@@ -112,7 +122,7 @@ namespace xcpp
         }
         catch (std::logic_error& e)
         {
-            if (trim(cell).empty())
+            if (trim(cell).empty() && (argpars["-h"] == false))
             {
                 std::cerr << "No expression given to evaluate" << std::endl;
             }

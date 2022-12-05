@@ -14,6 +14,8 @@
 
 #include <argparse/argparse.hpp>
 
+#include "xeus-cling/xeus_cling_config.hpp"
+
 namespace xcpp
 {
     struct argparser : public argparse::ArgumentParser

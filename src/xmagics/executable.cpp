@@ -44,7 +44,7 @@ namespace xcpp
 {
     argparser executable::get_options()
     {
-        argparser argpars("executable");
+        argparser argpars("executable", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("write executable");
         argpars.add_argument("filename")
             .help("filename")
@@ -52,6 +52,16 @@ namespace xcpp
         argpars.add_argument("options")
             .help("options")
             .default_value<std::vector<std::string>>({ "" });
+        // Add custom help (does not call `exit` avoiding to restart the kernel)
+        argpars.add_argument("-h", "--help")
+            .action([&](const std::string & /*unused*/)
+            {
+                std::cout << argpars.help().str();
+            })
+            .default_value(false)
+            .help("shows help message")
+            .implicit_value(true)
+            .nargs(0);
         return argpars;
     }
 

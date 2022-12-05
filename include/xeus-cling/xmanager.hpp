@@ -95,7 +95,8 @@ namespace xcpp
         {
             if (cell.empty())
             {
-                std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty.";
+                std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty." << std::endl;
+                std::cerr << "If you only intend to display %%" << magic_name << " help, please use a double line break to fill in the cell body.";
                 if (contains(magic_name, xmagic_type::line))
                 {
                     std::cerr << " Did you mean the line magic %" << magic_name << " (single %)?";

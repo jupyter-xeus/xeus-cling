@@ -22,7 +22,7 @@ namespace xcpp
 {
     argparser writefile::get_options()
     {
-        argparser argpars("file");
+        argparser argpars("file", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("write file");
         argpars.add_argument("-a", "--append")
             .help("append")
@@ -31,6 +31,16 @@ namespace xcpp
         argpars.add_argument("filename")
             .help("filename")
             .required();
+        // Add custom help (does not call `exit` avoiding to restart the kernel)
+        argpars.add_argument("-h", "--help")
+            .action([&](const std::string & /*unused*/)
+            {
+                std::cout << argpars.help().str();
+            })
+            .default_value(false)
+            .help("shows help message")
+            .implicit_value(true)
+            .nargs(0);
         return argpars;
     }
 
