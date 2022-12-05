@@ -49,9 +49,14 @@ namespace xcpp
         argpars.add_argument("filename")
             .help("filename")
             .required();
-        argpars.add_argument("options")
-            .help("options")
-            .default_value<std::vector<std::string>>({ "" });
+        argpars.add_argument("-g")
+            .help("linker options: enable debug information in the executable")
+            .default_value(false)
+            .implicit_value(true);
+        argpars.add_argument("-fsanitize")
+            .help("linker options: enable instrumentation with ThreadSanitizer using \'-fsanitize=thread\'")
+            .default_value(false)
+            .implicit_value(true);
         // Add custom help (does not call `exit` avoiding to restart the kernel)
         argpars.add_argument("-h", "--help")
             .action([&](const std::string & /*unused*/)
@@ -264,8 +269,6 @@ namespace xcpp
         argpars.parse(line);
 
         std::string ExeFile = argpars.get<std::string>("filename");
-        std::vector<std::string> LinkerOptions =
-            argpars.get<std::vector<std::string>>("options");
 
         std::string main, unique_fn;
         generate_fns(cell, main, unique_fn);
@@ -299,20 +302,18 @@ namespace xcpp
         }
         unloader(m_interpreter, *t);
 
+        std::vector<std::string> LinkerOptions;
         // Enable debug information if user requested -g in the linker options.
-        bool EnableDebugInfo =
-            (std::find(LinkerOptions.begin(), LinkerOptions.end(),
-                       "-g") != LinkerOptions.end());
+        bool EnableDebugInfo = argpars.is_used("-g");
         if (EnableDebugInfo)
         {
             std::cout << "Enabling debug information" << std::endl;
+            LinkerOptions.push_back("-g");
         }
 
-        // Enable TSan instrumentation if user requested -fsanitize=thread in
+        // Enable TSan instrumentation if user requested -fsanitize in
         // the linker options.
-        bool SanitizeThread =
-            (std::find(LinkerOptions.begin(), LinkerOptions.end(),
-                       "-fsanitize=thread") != LinkerOptions.end());
+        bool SanitizeThread = argpars.is_used("-fsanitize");
         auto& SanitizeOpts = m_interpreter.getCI()->getLangOpts().Sanitize;
         if (SanitizeThread)
         {
@@ -323,6 +324,7 @@ namespace xcpp
             // Imply debug information because it gives the user a clue which
             // line of the input caused the race.
             EnableDebugInfo = true;
+            LinkerOptions.push_back("-fsanitize=thread");
         }
 
         std::cout << "Writing executable to " << ExeFile << std::endl;
