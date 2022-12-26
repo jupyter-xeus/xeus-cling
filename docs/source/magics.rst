@@ -40,17 +40,10 @@ the cell is used for the body of the `main` function.
 
 - Optional arguments:
 
-Any additional argument is passed to the linker. In particular this can be used
-with `-l` to link extra libraries that have otherwise been loaded with
-
-.. code::
-
-    #pragma cling load("...")
-
-Furthermore some options influence code generation:
+You can use the following options which will be passed to the linker and will influence code generation:
 
 +-------------------+---------------------------------------------+
-| -fsanitize=thread | enable instrumentation with ThreadSanitizer |
+| -fsanitize        | enable instrumentation with ThreadSanitizer |
 +-------------------+---------------------------------------------+
 | -g                | enable debug information in the executable  |
 +-------------------+---------------------------------------------+
