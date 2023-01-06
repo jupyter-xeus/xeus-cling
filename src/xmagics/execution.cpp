@@ -159,7 +159,7 @@ namespace xcpp
             std::vector<double> all_runs;
             double mean = 0;
             double stdev = 0;
-            for (std::size_t r = 0; r < (std::size_t)repeat; ++r)
+            for (std::size_t r = 0; r < static_cast<std::size_t>(repeat); ++r)
             {
                 std::string timeit_code = inner(number, code);
                 compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
@@ -167,7 +167,7 @@ namespace xcpp
                 mean += all_runs.back();
             }
             mean /= repeat;
-            for (std::size_t r = 0; r < (std::size_t)repeat; ++r)
+            for (std::size_t r = 0; r < static_cast<std::size_t>(repeat); ++r)
             {
                 stdev += (all_runs[r] - mean) * (all_runs[r] - mean);
             }
