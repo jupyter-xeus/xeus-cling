@@ -17,7 +17,7 @@
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
 
-@XEUS_CONFIG_CODE@
+@XEUS_CLING_CONFIG_CODE@
 
 include(CMakeFindDependencyMacro)
 find_dependency(xeus @xeus_REQUIRED_VERSION@)
