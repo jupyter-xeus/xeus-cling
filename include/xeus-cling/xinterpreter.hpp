@@ -70,6 +70,7 @@ namespace xcpp
         void redirect_output();
         void restore_output();
 
+        void init_extra_includes();
         void init_preamble();
         void init_magic();
 
