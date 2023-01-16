@@ -53,6 +53,7 @@ namespace xcpp
           m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
     {
         redirect_output();
+        init_extra_includes();
         init_preamble();
         init_magic();
     }
@@ -421,6 +422,11 @@ namespace xcpp
     void interpreter::publish_stderr(const std::string& s)
     {
         publish_stream("stderr", s);
+    }
+
+    void interpreter::init_extra_includes()
+    {
+        m_interpreter.AddIncludePaths(XEUS_SEARCH_PATH);
     }
 
     void interpreter::init_preamble()
