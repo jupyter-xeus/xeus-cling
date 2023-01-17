@@ -31,6 +31,10 @@ message(STATUS "Building xeus-cling v${${PROJECT_NAME}_VERSION}")
 
 include(GNUInstallDirs)
 
+if (NOT DEFINED XEUS_CLING_KERNELSPEC_PATH)
+    set(XEUS_CLING_KERNELSPEC_PATH "${CMAKE_INSTALL_FULL_BINDIR}/")
+endif ()
+
 configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json.in"
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcpp11/kernel.json"
