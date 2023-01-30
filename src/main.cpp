@@ -140,7 +140,10 @@ int main(int argc, char* argv[])
                              xeus::get_user_name(),
                              std::move(context),
                              std::move(interpreter),
-                             xeus::make_xserver_zmq);
+                             xeus::make_xserver_zmq,
+                             xeus::make_in_memory_history_manager(),
+                             xeus::make_console_logger(xeus::xlogger::msg_type,
+                                                       xeus::make_file_logger(xeus::xlogger::content, "xeus.log")));
 
         std::clog <<
             "Starting xeus-cling kernel...\n\n"
@@ -155,7 +158,10 @@ int main(int argc, char* argv[])
         xeus::xkernel kernel(xeus::get_user_name(),
                              std::move(context),
                              std::move(interpreter),
-                             xeus::make_xserver_zmq);
+                             xeus::make_xserver_zmq,
+                             xeus::make_in_memory_history_manager(),
+                             xeus::make_console_logger(xeus::xlogger::msg_type,
+                                                       xeus::make_file_logger(xeus::xlogger::content, "xeus.log")));
 
         const auto& config = kernel.get_config();
         std::clog <<
