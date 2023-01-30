@@ -104,11 +104,12 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
  - [cpp-argparse](https://github.com/p-ranav/argparse)
  - [nlohmann_json](https://github.com/nlohmann/json)
 
-In the main branch, `xeus-cling` depends on `cpp-argparse` while it was depending on `cxxopts` in all versions prior to and including 0.14:
+Starting from version 0.15.0, `xeus-cling` depends on `cpp-argparse` while it was depending on `cxxopts` in all versions prior to and including 0.14:
 
 | `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cpp-argparse`| `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
 |  main        |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
+|  0.15.0      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
 
 
 | `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`     | `nlohmann_json` | `dirent` (windows only) |
