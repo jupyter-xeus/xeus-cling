@@ -113,6 +113,7 @@ In the main branch, `xeus-cling` depends on `cpp-argparse` while it was dependin
 
 | `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cxxopts`     | `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
+|  0.14.1      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.14.0      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.6,<0.9    | ~1.8.1        | ~4.3.0   | >=2.1.1,<=2.2 | >=3.6.1,<4.0    | >=2.3.2,<3              |
 
 Prior to version 0.14, `xeus-cling` was depending on `xeus` instead of `xeus-zmq`:
