@@ -2,7 +2,7 @@ name: xeus-cling
 channels:
   - conda-forge
 dependencies:
-  - xeus-cling=0.14.0
-  - xtensor=0.24.3
+  - xeus-cling=0.15.0
+  - xtensor=0.24.4
   - xtensor-blas=0.20.0
   - libstdcxx-devel_linux-64=*=*19
