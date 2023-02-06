@@ -19,26 +19,24 @@ namespace nl = nlohmann;
 namespace xcpp
 {
     template <class T>
-    void display(const T& t)
+    void display(T&& t)
     {
-        using ::xcpp::mime_bundle_repr;
         xeus::get_interpreter().display_data(
-            mime_bundle_repr(t),
+            dispatch_mime_bundle_repr(std::forward<T>(t)),
             nl::json::object(),
             nl::json::object()
         );
     }
 
     template <class T>
-    void display(const T& t, xeus::xguid id, bool update=false)
+    void display(T&& t, xeus::xguid id, bool update=false)
     {
         nl::json transient;
         transient["display_id"] = id;
-        using ::xcpp::mime_bundle_repr;
         if (update)
         {
             xeus::get_interpreter().update_display_data(
-                mime_bundle_repr(t),
+                dispatch_mime_bundle_repr(std::forward<T>(t)),
                 nl::json::object(),
                 std::move(transient)
             );
@@ -46,7 +44,7 @@ namespace xcpp
         else
         {
             xeus::get_interpreter().display_data(
-                mime_bundle_repr(t),
+                dispatch_mime_bundle_repr(std::forward<T>(t)),
                 nl::json::object(),
                 std::move(transient)
             );
