@@ -89,7 +89,7 @@ Content for the quick help is available for the standard library, and can be mad
 
 ### Jupyter interactive widgets
 
-A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets`](https://github.com/QuantStack/xwidgets/) package.
+A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets`](https://github.com/jupyter-xeus/xwidgets/) package.
 
 ![Widgets](widgets.gif)
 

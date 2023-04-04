@@ -1,11 +1,11 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
 
 #ifndef XCPP_INSPECT_HPP
 #define XCPP_INSPECT_HPP
@@ -15,11 +15,11 @@
 
 #include <dirent.h>
 
-#include "cling/Interpreter/Interpreter.h"
-#include "cling/Interpreter/Value.h"
-#include "cling/Utils/Output.h"
+#include <cling/Interpreter/Interpreter.h>
+#include <cling/Interpreter/Value.h>
+#include <cling/Utils/Output.h>
 
-#include "pugixml.hpp"
+#include <pugixml.hpp>
 
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xpreamble.hpp"
@@ -36,7 +36,8 @@ namespace xcpp
 
         bool operator()(pugi::xml_node node) const
         {
-            return static_cast<std::string>(node.attribute("kind").value()) == kind && static_cast<std::string>(node.child("name").child_value()) == child_value;
+            return static_cast<std::string>(node.attribute("kind").value()) == kind
+                   && static_cast<std::string>(node.child("name").child_value()) == child_value;
         }
     };
 
@@ -50,8 +51,8 @@ namespace xcpp
         {
             for (pugi::xml_node child : node.children())
             {
-                if (static_cast<std::string>(child.attribute("kind").value()) == kind &&
-                    static_cast<std::string>(child.child("name").child_value()) == child_value)
+                if (static_cast<std::string>(child.attribute("kind").value()) == kind
+                    && static_cast<std::string>(child.child("name").child_value()) == child_value)
                 {
                     return child.child("anchorfile").child_value();
                 }
@@ -61,16 +62,16 @@ namespace xcpp
 
         bool operator()(pugi::xml_node node)
         {
-            auto parent = (static_cast<std::string>(node.attribute("kind").value()) == "class" ||
-                           static_cast<std::string>(node.attribute("kind").value()) == "struct") &&
-                static_cast<std::string>(node.child("name").child_value()) == class_name;
+            auto parent = (static_cast<std::string>(node.attribute("kind").value()) == "class"
+                           || static_cast<std::string>(node.attribute("kind").value()) == "struct")
+                          && static_cast<std::string>(node.child("name").child_value()) == class_name;
             auto found = false;
             if (parent)
             {
                 for (pugi::xml_node child : node.children())
                 {
-                    if (static_cast<std::string>(child.attribute("kind").value()) == kind &&
-                        static_cast<std::string>(child.child("name").child_value()) == child_value)
+                    if (static_cast<std::string>(child.attribute("kind").value()) == kind
+                        && static_cast<std::string>(child.child("name").child_value()) == child_value)
                     {
                         found = true;
                         break;
@@ -285,21 +286,18 @@ namespace xcpp
                 border: none;
             }
             </style>
-            <iframe class="xcpp-iframe-pager" src=")" +
-                inspect_result + R"(?action=purge"></iframe>)";
+            <iframe class="xcpp-iframe-pager" src=")"
+                                       + inspect_result + R"(?action=purge"></iframe>)";
 
             // Note: Adding "?action=purge" suffix to force cppreference's
             // Mediawiki to purge the HTTP cache.
 
             kernel_res["payload"] = nl::json::array();
-            kernel_res["payload"][0] = nl::json::object({
-                {"data", {
-                    {"text/plain", inspect_result},
-                    {"text/html", html_content}}
-                },
-                {"source", "page"},
-                {"start", 0}
-            });
+            kernel_res["payload"][0] = nl::json::object(
+                {{"data", {{"text/plain", inspect_result}, {"text/html", html_content}}},
+                 {"source", "page"},
+                 {"start", 0}}
+            );
             kernel_res["user_expressions"] = nl::json::object();
 
             std::cout << std::flush;

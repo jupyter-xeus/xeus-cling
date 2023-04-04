@@ -1,11 +1,11 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
 
 #ifndef XCPP_MANAGER_HPP
 #define XCPP_MANAGER_HPP
@@ -16,11 +16,11 @@
 #include <string>
 #include <type_traits>
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
-#include "xeus-cling/xholder_cling.hpp"
-#include "xeus-cling/xmagics.hpp"
-#include "xeus-cling/xpreamble.hpp"
+#include "xholder_cling.hpp"
+#include "xmagics.hpp"
+#include "xpreamble.hpp"
 
 namespace nl = nlohmann;
 
@@ -95,8 +95,10 @@ namespace xcpp
         {
             if (cell.empty())
             {
-                std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty." << std::endl;
-                std::cerr << "If you only intend to display %%" << magic_name << " help, please use a double line break to fill in the cell body.";
+                std::cerr << "UsageError: %%" << magic_name << " is a cell magic, but the cell body is empty."
+                          << std::endl;
+                std::cerr << "If you only intend to display %%" << magic_name
+                          << " help, please use a double line break to fill in the cell body.";
                 if (contains(magic_name, xmagic_type::line))
                 {
                     std::cerr << " Did you mean the line magic %" << magic_name << " (single %)?";
@@ -124,10 +126,12 @@ namespace xcpp
             {
                 (*m_magic_line[magic_name])(line);
             }
-            catch (const std::runtime_error& e) {
+            catch (const std::runtime_error& e)
+            {
                 std::cerr << e.what() << std::endl;
             }
-            catch (const std::logic_error& e) {
+            catch (const std::logic_error& e)
+            {
                 std::cerr << e.what() << std::endl;
             }
             catch (...)

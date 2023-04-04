@@ -28,8 +28,6 @@ project = 'xeus-cling'
 copyright = '2017, Johan Mabille, Loic Gouarin and Sylvain Corlay'
 author = 'Johan Mabille, Loic Gouarin and Sylvain Corlay'
 
-html_logo = 'quantstack-white.svg'
-
 exclude_patterns = []
 highlight_language = 'c++'
 pygments_style = 'sphinx'

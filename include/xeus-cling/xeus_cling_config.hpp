@@ -1,11 +1,11 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
 
 #ifndef XEUS_CLING_CONFIG_HPP
 #define XEUS_CLING_CONFIG_HPP
@@ -21,18 +21,23 @@
 #define XEUS_CLING_STRINGIFY(a) XEUS_CLING_STRINGIFY_IMPL(a)
 #define XEUS_CLING_STRINGIFY_IMPL(a) #a
 
-#define XEUS_CLING_VERSION XEUS_CLING_STRINGIFY(XEUS_CLING_CONCATENATE(XEUS_CLING_VERSION_MAJOR,   \
-                       XEUS_CLING_CONCATENATE(.,XEUS_CLING_CONCATENATE(XEUS_CLING_VERSION_MINOR,   \
-                                              XEUS_CLING_CONCATENATE(.,XEUS_CLING_VERSION_PATCH)))))
+#define XEUS_CLING_VERSION                                                                                            \
+    XEUS_CLING_STRINGIFY(XEUS_CLING_CONCATENATE(                                                                      \
+        XEUS_CLING_VERSION_MAJOR,                                                                                     \
+        XEUS_CLING_CONCATENATE(                                                                                       \
+                .,                                                                                                    \
+                XEUS_CLING_CONCATENATE(XEUS_CLING_VERSION_MINOR, XEUS_CLING_CONCATENATE(., XEUS_CLING_VERSION_PATCH)) \
+        )                                                                                                             \
+    ))
 
 #ifdef _WIN32
-    #ifdef XEUS_CLING_EXPORTS
-        #define XEUS_CLING_API __declspec(dllexport)
-    #else
-        #define XEUS_CLING_API __declspec(dllimport)
-    #endif
+#ifdef XEUS_CLING_EXPORTS
+#define XEUS_CLING_API __declspec(dllexport)
 #else
-    #define XEUS_CLING_API
+#define XEUS_CLING_API __declspec(dllimport)
+#endif
+#else
+#define XEUS_CLING_API
 #endif
 
 #endif
