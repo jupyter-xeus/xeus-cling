@@ -1,11 +1,13 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
+
+#include "xparser.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -14,11 +16,10 @@
 #include <string>
 #include <vector>
 
-#include "xparser.hpp"
-
 namespace xcpp
 {
-    std::vector<std::string> split_line(const std::string& input, const std::string& delims, std::size_t cursor_pos)
+    std::vector<std::string>
+    split_line(const std::string& input, const std::string& delims, std::size_t cursor_pos)
     {
         // passing -1 as the submatch index parameter performs splitting
         std::vector<std::string> result;
@@ -33,9 +34,11 @@ namespace xcpp
 
         std::regex re(ss.str());
 
-        std::copy(std::sregex_token_iterator(input.begin(), input.begin() + cursor_pos + 1, re, -1),
-                  std::sregex_token_iterator(),
-                  std::back_inserter(result));
+        std::copy(
+            std::sregex_token_iterator(input.begin(), input.begin() + cursor_pos + 1, re, -1),
+            std::sregex_token_iterator(),
+            std::back_inserter(result)
+        );
 
         return result;
     }
@@ -45,9 +48,11 @@ namespace xcpp
         std::vector<std::string> lines;
         std::regex re("\\n");
 
-        std::copy(std::sregex_token_iterator(input.begin(), input.end(), re, -1),
-                  std::sregex_token_iterator(),
-                  std::back_inserter(lines));
+        std::copy(
+            std::sregex_token_iterator(input.begin(), input.end(), re, -1),
+            std::sregex_token_iterator(),
+            std::back_inserter(lines)
+        );
         return lines;
     }
 
@@ -63,8 +68,8 @@ namespace xcpp
         std::regex magic_re("^\\%\\w+");
         std::vector<std::string> result;
         result.push_back("");
-        std::size_t current = 0;  //0 include, 1 other
-        std::size_t rindex = 0;  // current index of result vector
+        std::size_t current = 0;  // 0 include, 1 other
+        std::size_t rindex = 0;   // current index of result vector
         for (std::size_t i = 0; i < lines.size(); ++i)
         {
             if (!lines[i].empty())
@@ -155,7 +160,7 @@ namespace xcpp
         return map_opts;
     }
 
-    std::string trim(std::string const& str)
+    std::string trim(const std::string& str)
     {
         if (str.empty())
         {

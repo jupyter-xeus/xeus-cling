@@ -1,11 +1,11 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
 
 #include <algorithm>
 #include <cstdarg>
@@ -15,7 +15,8 @@
 #include <sstream>
 #include <vector>
 
-#include "llvm/Support/DynamicLibrary.h"
+#include <llvm/Support/DynamicLibrary.h>
+
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
 #include "xeus-cling/xinterpreter.hpp"
@@ -39,18 +40,21 @@ namespace xcpp
         // Process #include "xeus/xinterpreter.hpp" in a separate block.
         m_interpreter.process("#include \"xeus/xinterpreter.hpp\"", nullptr, nullptr, true);
         // Expose interpreter instance to cling
-        std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)" + std::to_string(intptr_t(this)) + "));";
+        std::string block = "xeus::register_interpreter(static_cast<xeus::xinterpreter*>((void*)"
+                            + std::to_string(intptr_t(this)) + "));";
         m_interpreter.process(block.c_str(), nullptr, nullptr, true);
     }
 
     interpreter::interpreter(int argc, const char* const* argv)
-        : m_interpreter(argc, argv, LLVM_DIR),
-          m_input_validator(),
-          m_version(get_stdopt(argc, argv)), // Extract C++ language standard version from command-line option
-          xmagics(),
-          p_cout_strbuf(nullptr), p_cerr_strbuf(nullptr),
-          m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1)),
-          m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
+        : m_interpreter(argc, argv, LLVM_DIR)
+        , m_input_validator()
+        , m_version(get_stdopt(argc, argv))
+        ,  // Extract C++ language standard version from command-line option
+        xmagics()
+        , p_cout_strbuf(nullptr)
+        , p_cerr_strbuf(nullptr)
+        , m_cout_buffer(std::bind(&interpreter::publish_stdout, this, _1))
+        , m_cerr_buffer(std::bind(&interpreter::publish_stderr, this, _1))
     {
         redirect_output();
         init_extra_includes();
@@ -63,12 +67,14 @@ namespace xcpp
         restore_output();
     }
 
-    nl::json interpreter::execute_request_impl(int execution_counter,
-                                               const std::string& code,
-                                               bool silent,
-                                               bool /*store_history*/,
-                                               nl::json /*user_expressions*/,
-                                               bool allow_stdin)
+    nl::json interpreter::execute_request_impl(
+        int execution_counter,
+        const std::string& code,
+        bool silent,
+        bool /*store_history*/,
+        nl::json /*user_expressions*/,
+        bool allow_stdin
+    )
     {
         nl::json kernel_res;
 
@@ -201,8 +207,7 @@ namespace xcpp
         return kernel_res;
     }
 
-    nl::json interpreter::complete_request_impl(const std::string& code,
-                                                int cursor_pos)
+    nl::json interpreter::complete_request_impl(const std::string& code, int cursor_pos)
     {
         std::vector<std::string> result;
         cling::Interpreter::CompilationResult compilation_result;
@@ -237,9 +242,7 @@ namespace xcpp
         return kernel_res;
     }
 
-    nl::json interpreter::inspect_request_impl(const std::string& code,
-                                               int cursor_pos,
-                                               int /*detail_level*/)
+    nl::json interpreter::inspect_request_impl(const std::string& code, int cursor_pos, int /*detail_level*/)
     {
         nl::json kernel_res;
 
@@ -288,7 +291,7 @@ namespace xcpp
         result["implementation_version"] = XEUS_CLING_VERSION;
 
         /* The jupyter-console banner for xeus-cling is the following:
-          __  _____ _   _ ___ 
+          __  _____ _   _ ___
           \ \/ / _ \ | | / __|
            >  <  __/ |_| \__ \
           /_/\_\___|\__,_|___/
@@ -297,13 +300,13 @@ namespace xcpp
         */
 
         std::string banner = ""
-              "  __  _____ _   _ ___\n"
-              "  \\ \\/ / _ \\ | | / __|\n"
-              "   >  <  __/ |_| \\__ \\\n"
-              "  /_/\\_\\___|\\__,_|___/\n"
-              "\n"
-              "  xeus-cling: a Jupyter Kernel C++ - based on cling\n"
-              "  C++";
+                             "  __  _____ _   _ ___\n"
+                             "  \\ \\/ / _ \\ | | / __|\n"
+                             "   >  <  __/ |_| \\__ \\\n"
+                             "  /_/\\_\\___|\\__,_|___/\n"
+                             "\n"
+                             "  xeus-cling: a Jupyter Kernel C++ - based on cling\n"
+                             "  C++";
         banner.append(m_version);
         result["banner"] = banner;
         result["language_info"]["name"] = "c++";
@@ -312,10 +315,9 @@ namespace xcpp
         result["language_info"]["codemirror_mode"] = "text/x-c++src";
         result["language_info"]["file_extension"] = ".cpp";
         result["help_links"] = nl::json::array();
-        result["help_links"][0] = nl::json::object({
-            {"text", "Xeus-Cling Reference"},
-            {"url", "https://xeus-cling.readthedocs.io"}
-        });
+        result["help_links"][0] = nl::json::object(
+            {{"text", "Xeus-Cling Reference"}, {"url", "https://xeus-cling.readthedocs.io"}}
+        );
         result["status"] = "ok";
         return result;
     }
@@ -438,7 +440,10 @@ namespace xcpp
 
     void interpreter::init_magic()
     {
-        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("executable", executable(m_interpreter));
+        preamble_manager["magics"].get_cast<xmagics_manager>().register_magic(
+            "executable",
+            executable(m_interpreter)
+        );
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("file", writefile());
         preamble_manager["magics"].get_cast<xmagics_manager>().register_magic("timeit", timeit(&m_interpreter));
     }

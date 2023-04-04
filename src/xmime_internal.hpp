@@ -1,11 +1,11 @@
-/***********************************************************************************
-* Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
-* Copyright (c) 2016, QuantStack                                                   *
-*                                                                                  *
-* Distributed under the terms of the BSD 3-Clause License.                         *
-*                                                                                  *
-* The full license is in the file LICENSE, distributed with this software.         *
-************************************************************************************/
+/************************************************************************************
+ * Copyright (c) 2016, Johan Mabille, Loic Gouarin, Sylvain Corlay, Wolf Vollprecht *
+ * Copyright (c) 2016, QuantStack                                                   *
+ *                                                                                  *
+ * Distributed under the terms of the BSD 3-Clause License.                         *
+ *                                                                                  *
+ * The full license is in the file LICENSE, distributed with this software.         *
+ ************************************************************************************/
 
 #ifndef XCPP_MIME_INTERNAL_HPP
 #define XCPP_MIME_INTERNAL_HPP
@@ -14,29 +14,29 @@
 #include <locale>
 #include <string>
 
-#include "nlohmann/json.hpp"
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/Decl.h>
+#include <clang/AST/DeclCXX.h>
+#include <clang/AST/Expr.h>
+#include <clang/AST/Type.h>
+#include <clang/Frontend/CompilerInstance.h>
 
-#include "cling/Interpreter/Exception.h"
-#include "cling/Interpreter/CValuePrinter.h"
-#include "cling/Interpreter/Interpreter.h"
-#include "cling/Interpreter/InterpreterCallbacks.h"
-#include "cling/Interpreter/LookupHelper.h"
-#include "cling/Interpreter/Transaction.h"
-#include "cling/Interpreter/Value.h"
-#include "cling/Utils/AST.h"
-#include "cling/Utils/Output.h"
-#include "cling/Utils/Validation.h"
+#include <cling/Interpreter/CValuePrinter.h>
+#include <cling/Interpreter/Exception.h>
+#include <cling/Interpreter/Interpreter.h>
+#include <cling/Interpreter/InterpreterCallbacks.h>
+#include <cling/Interpreter/LookupHelper.h>
+#include <cling/Interpreter/Transaction.h>
+#include <cling/Interpreter/Value.h>
+#include <cling/Utils/AST.h>
+#include <cling/Utils/Output.h>
+#include <cling/Utils/Validation.h>
 
-#include "clang/AST/ASTContext.h"
-#include "clang/AST/Decl.h"
-#include "clang/AST/DeclCXX.h"
-#include "clang/AST/Expr.h"
-#include "clang/AST/Type.h"
-#include "clang/Frontend/CompilerInstance.h"
+#include <llvm/ExecutionEngine/GenericValue.h>
+#include <llvm/Support/Format.h>
+#include <llvm/Support/raw_ostream.h>
 
-#include "llvm/ExecutionEngine/GenericValue.h"
-#include "llvm/Support/Format.h"
-#include "llvm/Support/raw_ostream.h"
+#include <nlohmann/json.hpp>
 
 namespace nl = nlohmann;
 
@@ -44,9 +44,9 @@ namespace xcpp
 {
 
     /**************************************************************************
-    * The content of the cling_detail namespace is derived from cling which   *
-    * licensed under the UI/NCSAOSL license.                                  *
-    ***************************************************************************/
+     * The content of the cling_detail namespace is derived from cling which   *
+     * licensed under the UI/NCSAOSL license.                                  *
+     ***************************************************************************/
 
     namespace cling_detail
     {
@@ -86,8 +86,8 @@ namespace xcpp
             bool savedAccessControl;
             clang::LangOptions& LangOpts;
 
-            AccessCtrlRAII_t(cling::Interpreter &Interp)
-              : LangOpts(const_cast<clang::LangOptions &>(Interp.getCI()->getLangOpts()))
+            AccessCtrlRAII_t(cling::Interpreter& Interp)
+                : LangOpts(const_cast<clang::LangOptions&>(Interp.getCI()->getLangOpts()))
             {
                 savedAccessControl = LangOpts.AccessControl;
                 LangOpts.AccessControl = false;
@@ -107,17 +107,22 @@ namespace xcpp
             return Mid;
         }
 
-        static std::string enclose(const clang::QualType &Ty, clang::ASTContext &C,
-                                   const char* Begin = "(", const char* End = "*)",
-                                   std::size_t Hint = 3)
+        static std::string enclose(
+            const clang::QualType& Ty,
+            clang::ASTContext& C,
+            const char* Begin = "(",
+            const char* End = "*)",
+            std::size_t Hint = 3
+        )
         {
             return enclose(cling::utils::TypeName::GetFullyQualifiedName(Ty, C), Begin, End, Hint);
         }
 
-        static clang::QualType getElementTypeAndExtent(const clang::ConstantArrayType* CArrTy, std::string& extent)
+        static clang::QualType
+        getElementTypeAndExtent(const clang::ConstantArrayType* CArrTy, std::string& extent)
         {
             clang::QualType ElementTy = CArrTy->getElementType();
-            const llvm::APInt &APSize = CArrTy->getSize();
+            const llvm::APInt& APSize = CArrTy->getSize();
             extent += '[' + std::to_string(APSize.getZExtValue()) + ']';
             if (auto CArrElTy = llvm::dyn_cast<clang::ConstantArrayType>(ElementTy.getTypePtr()))
             {
@@ -146,7 +151,7 @@ namespace xcpp
 
                 // Fallback to void pointer for other pointers and print the address.
                 return "(const void**)";
-             }
+            }
 
             if (Ty->isArrayType())
             {
@@ -174,7 +179,7 @@ namespace xcpp
     {
         // Return a JSON mime bundle representing the specified value.
 
-        cling::Interpreter *interpreter = V.getInterpreter();
+        cling::Interpreter* interpreter = V.getInterpreter();
         const void* value = V.getPtr();
 
         // Include "xmime.hpp" only on the first time a variable is displayed.
@@ -204,7 +209,7 @@ namespace xcpp
 
         if (mimeReprV.isValid() && mimeReprV.getPtr())
         {
-            return *(nl::json*)mimeReprV.getPtr();
+            return *(nl::json*) mimeReprV.getPtr();
         }
         else
         {
