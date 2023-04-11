@@ -17,6 +17,8 @@
 
 #include <llvm/Support/DynamicLibrary.h>
 
+#include <xtl/xsystem.hpp>
+
 #include "xeus-cling/xbuffer.hpp"
 #include "xeus-cling/xeus_cling_config.hpp"
 #include "xeus-cling/xinterpreter.hpp"
@@ -428,7 +430,7 @@ namespace xcpp
 
     void interpreter::init_extra_includes()
     {
-        m_interpreter.AddIncludePaths(XEUS_SEARCH_PATH);
+        m_interpreter.AddIncludePaths(xtl::prefix_path() + "/include/");
     }
 
     void interpreter::init_preamble()
