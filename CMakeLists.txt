@@ -329,10 +329,6 @@ if(MSVC)
     set_property(TARGET xeus-cling APPEND_STRING PROPERTY LINK_FLAGS ${cling_link_str})
 endif(MSVC)
 
-set(XEUS_SEARCH_PATH $<JOIN:$<TARGET_PROPERTY:xeus-cling,INCLUDE_DIRECTORIES>,:>)
-target_compile_definitions(xeus-cling PRIVATE "XEUS_SEARCH_PATH=\"${XEUS_SEARCH_PATH}\"")
-
-
 #########
 # Tests #
 #########
