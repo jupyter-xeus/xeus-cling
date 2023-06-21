@@ -107,7 +107,7 @@ add_definitions(-DLLVM_DIR="${LLVM_BINARY_DIR}")
 # Dependencies #
 ################
 
-set(xeus-zmq_REQUIRED_VERSION 1.0.0)
+set(xeus-zmq_REQUIRED_VERSION 1.1.0)
 
 find_package(xeus-zmq ${xeus-zmq_REQUIRED_VERSION} REQUIRED)
 find_package(pugixml REQUIRED)
