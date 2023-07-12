@@ -431,6 +431,7 @@ namespace xcpp
     void interpreter::init_extra_includes()
     {
         m_interpreter.AddIncludePaths(xtl::prefix_path() + "/include/");
+        m_interpreter.AddIncludePaths(XEUS_SEARCH_PATH);
     }
 
     void interpreter::init_preamble()
