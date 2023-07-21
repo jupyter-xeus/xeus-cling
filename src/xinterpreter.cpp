@@ -60,6 +60,7 @@ namespace xcpp
     {
         redirect_output();
         init_extra_includes();
+        init_libs();
         init_preamble();
         init_magic();
     }
@@ -432,6 +433,15 @@ namespace xcpp
     {
         m_interpreter.AddIncludePaths(xtl::prefix_path() + "/include/");
         m_interpreter.AddIncludePaths(XEUS_SEARCH_PATH);
+    }
+
+    void interpreter::init_libs()
+    {
+        const cling::InvocationOptions& Opts = m_interpreter.getOptions();
+        for (const std::string& Lib : Opts.LibsToLoad)
+        {
+            m_interpreter.loadFile(Lib);
+        }
     }
 
     void interpreter::init_preamble()
