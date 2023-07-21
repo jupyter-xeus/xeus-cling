@@ -72,6 +72,7 @@ namespace xcpp
         void restore_output();
 
         void init_extra_includes();
+        void init_libs();
         void init_preamble();
         void init_magic();
 
