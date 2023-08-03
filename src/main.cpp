@@ -61,19 +61,19 @@ bool should_print_version(int argc, char* argv[])
     return false;
 }
 
-std::string extract_filename(int argc, char* argv[])
+std::string extract_filename(int *argc, char* argv[])
 {
     std::string res = "";
-    for (int i = 0; i < argc; ++i)
+    for (int i = 0; i < *argc; ++i)
     {
-        if ((std::string(argv[i]) == "-f") && (i + 1 < argc))
+        if ((std::string(argv[i]) == "-f") && (i + 1 < *argc))
         {
             res = argv[i + 1];
-            for (int j = i; j < argc - 2; ++j)
+            for (int j = i; j < *argc - 2; ++j)
             {
                 argv[j] = argv[j + 2];
             }
-            argc -= 2;
+            *argc -= 2;
             break;
         }
     }
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
 #endif
     signal(SIGINT, stop_handler);
 
-    std::string file_name = extract_filename(argc, argv);
+    std::string file_name = extract_filename(&argc, argv);
 
     interpreter_ptr interpreter = build_interpreter(argc, argv);
 
