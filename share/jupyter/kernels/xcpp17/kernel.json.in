@@ -4,7 +4,7 @@
       "@XEUS_CLING_KERNELSPEC_PATH@/xcpp",
       "-f",
       "{connection_file}",
-      "-I", "@LLVM_DIR@/include",
+      "-I", "@LLVM_MAIN_INCLUDE_DIR@",
       "-std=c++17"
   ],
   "language": "C++17"
