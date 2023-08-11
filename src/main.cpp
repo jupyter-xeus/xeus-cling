@@ -84,7 +84,7 @@ using interpreter_ptr = std::unique_ptr<xcpp::interpreter>;
 
 interpreter_ptr build_interpreter(int argc, char** argv)
 {
-    int interpreter_argc = argc + 1;
+    int interpreter_argc = argc;
     const char** interpreter_argv = new const char*[interpreter_argc];
     interpreter_argv[0] = "xeus-cling";
     // Copy all arguments in the new array excepting the process name.
@@ -92,8 +92,6 @@ interpreter_ptr build_interpreter(int argc, char** argv)
     {
         interpreter_argv[i] = argv[i];
     }
-    std::string include_dir = std::string(LLVM_DIR) + std::string("/include");
-    interpreter_argv[interpreter_argc - 1] = include_dir.c_str();
 
     interpreter_ptr interp_ptr = interpreter_ptr(new xcpp::interpreter(interpreter_argc, interpreter_argv));
     delete[] interpreter_argv;
