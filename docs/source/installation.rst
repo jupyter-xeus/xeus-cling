@@ -4,26 +4,16 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-.. raw:: html
+.. |conda| image:: conda.svg
 
-   <style>
-   .rst-content .section>img {
-       width: 30px;
-       margin-bottom: 0;
-       margin-top: 0;
-       margin-right: 15px;
-       margin-left: 15px;
-       float: left;
-   }
-   </style>
+.. |cmake| image:: cmake.svg
+
 
 Installation
 ============
 
-.. image:: conda.svg
-
-Using the conda-forge package
-------------------------------
+|conda| Using the conda-forge package
+-------------------------------------
 
 A package for xeus-cling is available for the mamba (or conda) package manager.
 
@@ -31,10 +21,8 @@ A package for xeus-cling is available for the mamba (or conda) package manager.
 
     mamba install -c conda-forge xeus-cling
 
-.. image:: cmake.svg
-
-From source with cmake
-----------------------
+|cmake| From source with cmake
+------------------------------
 
 You can also install ``xeus-cling`` from source with cmake. This requires that you have all the dependencies installed in the same prefix.
 

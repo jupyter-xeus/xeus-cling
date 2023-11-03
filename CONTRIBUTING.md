@@ -25,3 +25,15 @@ git clone https://github.com/<your-github-username>/xeus-cling.git
 
 You may also want to install a C++ compiler, and cmake from conda if they are not available on your system.
 
+### Contributing to the documentation
+
+You don't need to build and install the package to build the documentation.
+[Sphinx](https://www.sphinx-doc.org) is used to generate it and should be installed in your
+development environment or system.
+
+The documentation sources are in `docs/sources/` and uses [ReStructured Text](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html).
+When done with your modifications you can render them with
+```bash
+cd docs
+make html
+```
