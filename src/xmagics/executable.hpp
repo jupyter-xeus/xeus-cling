@@ -10,6 +10,7 @@
 #ifndef XMAGICS_EXECUTABLE_HPP
 #define XMAGICS_EXECUTABLE_HPP
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -25,7 +26,7 @@ namespace xcpp
     public:
 
         executable(cling::Interpreter& i) : m_interpreter(i) {}
-        argparser get_options();
+	std::unique_ptr<argparser> get_options();
         virtual void operator()(const std::string& line, const std::string& cell) override;
 
     private:

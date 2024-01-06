@@ -42,26 +42,27 @@
 
 namespace xcpp
 {
-    argparser executable::get_options()
+    std::unique_ptr<argparser> executable::get_options()
     {
-        argparser argpars("executable", XEUS_CLING_VERSION, argparse::default_arguments::none);
-        argpars.add_description("write executable");
-        argpars.add_argument("filename")
+        auto argpars = std::make_unique<argparser>("executable", XEUS_CLING_VERSION,
+                                                   argparse::default_arguments::none);
+        argpars->add_description("write executable");
+        argpars->add_argument("filename")
             .help("filename")
             .required();
-        argpars.add_argument("-g")
+        argpars->add_argument("-g")
             .help("linker options: enable debug information in the executable")
             .default_value(false)
             .implicit_value(true);
-        argpars.add_argument("-fsanitize")
+        argpars->add_argument("-fsanitize")
             .help("linker options: enable instrumentation with ThreadSanitizer using \'-fsanitize=thread\'")
             .default_value(false)
             .implicit_value(true);
         // Add custom help (does not call `exit` avoiding to restart the kernel)
-        argpars.add_argument("-h", "--help")
+        argpars->add_argument("-h", "--help")
             .action([&](const std::string & /*unused*/)
             {
-                std::cout << argpars.help().str();
+                std::cout << argpars->help().str();
             })
             .default_value(false)
             .help("shows help message")
@@ -266,9 +267,9 @@ namespace xcpp
     void executable::operator()(const std::string& line, const std::string& cell)
     {
         auto argpars = get_options();
-        argpars.parse(line);
+        argpars->parse(line);
 
-        std::string ExeFile = argpars.get<std::string>("filename");
+        std::string ExeFile = argpars->get<std::string>("filename");
 
         std::string main, unique_fn;
         generate_fns(cell, main, unique_fn);
@@ -304,7 +305,7 @@ namespace xcpp
 
         std::vector<std::string> LinkerOptions;
         // Enable debug information if user requested -g in the linker options.
-        bool EnableDebugInfo = argpars.is_used("-g");
+        bool EnableDebugInfo = argpars->is_used("-g");
         if (EnableDebugInfo)
         {
             std::cout << "Enabling debug information" << std::endl;
@@ -313,7 +314,7 @@ namespace xcpp
 
         // Enable TSan instrumentation if user requested -fsanitize in
         // the linker options.
-        bool SanitizeThread = argpars.is_used("-fsanitize");
+        bool SanitizeThread = argpars->is_used("-fsanitize");
         auto& SanitizeOpts = m_interpreter.getCI()->getLangOpts().Sanitize;
         if (SanitizeThread)
         {

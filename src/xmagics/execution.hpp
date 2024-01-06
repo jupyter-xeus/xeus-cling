@@ -11,6 +11,7 @@
 #define XMAGICS_EXECUTION_HPP
 
 #include <cstddef>
+#include <memory>
 #include <string>
 
 #include "cling/Interpreter/Interpreter.h"
@@ -44,7 +45,7 @@ namespace xcpp
 
         cling::Interpreter* m_interpreter;
 
-        argparser get_options();
+        std::unique_ptr<argparser> get_options();
         std::string inner(std::size_t number, const std::string& code) const;
         std::string _format_time(double timespan, std::size_t precision) const;
         void execute(std::string& line, std::string& cell);

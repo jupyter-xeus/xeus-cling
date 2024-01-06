@@ -33,30 +33,31 @@ namespace xcpp
         compilation_result = m_interpreter->process(init_timeit.c_str());
     }
 
-    argparser timeit::get_options()
+    std::unique_ptr<argparser> timeit::get_options()
     {
-        argparser argpars("timeit", XEUS_CLING_VERSION, argparse::default_arguments::none);
-        argpars.add_description("Time execution of a C++ statement or expression");
-        argpars.add_argument("-n", "--number")
+        auto argpars = std::make_unique<argparser>("timeit", XEUS_CLING_VERSION,
+                                                   argparse::default_arguments::none);
+        argpars->add_description("Time execution of a C++ statement or expression");
+        argpars->add_argument("-n", "--number")
             .help("execute the given statement n times in a loop. If this value is not given, a fitting value is chosen")
             .default_value(0)
             .scan<'i', int>();
-        argpars.add_argument("-r", "--repeat")
+        argpars->add_argument("-r", "--repeat")
             .help("repeat the loop iteration r times and take the best result")
             .default_value(7)
             .scan<'i', int>();
-        argpars.add_argument("-p", "--precision")
+        argpars->add_argument("-p", "--precision")
             .help("use a precision of p digits to display the timing result")
             .default_value(3)
             .scan<'i', int>();
-        argpars.add_argument("expression")
+        argpars->add_argument("expression")
             .help("expression to be evaluated")
             .remaining();
         // Add custom help (does not call `exit` avoiding to restart the kernel)
-        argpars.add_argument("-h", "--help")
+        argpars->add_argument("-h", "--help")
             .action([&](const std::string & /*unused*/)
             {
-                std::cout << argpars.help().str();
+                std::cout << argpars->help().str();
             })
             .default_value(false)
             .help("shows help message")
@@ -104,17 +105,17 @@ namespace xcpp
         //                          std::istream_iterator<std::string>());
 
         auto argpars = get_options();
-        argpars.parse(line);
+        argpars->parse(line);
 
         // TODO find a way to use std::size_t
-        int number = argpars.get<int>("-n");
-        int repeat = argpars.get<int>("-r");
-        int precision = argpars.get<int>("-p");
+        int number = argpars->get<int>("-n");
+        int repeat = argpars->get<int>("-r");
+        int precision = argpars->get<int>("-p");
 
         std::string code;
         try
         {
-            const auto& v = argpars.get<std::vector<std::string>>("expression");
+            const auto& v = argpars->get<std::vector<std::string>>("expression");
             for (const auto& s : v)
             {
                 code += " " + s;
@@ -122,7 +123,7 @@ namespace xcpp
         }
         catch (std::logic_error& e)
         {
-            if (trim(cell).empty() && (argpars["-h"] == false))
+            if (trim(cell).empty() && ((*argpars)["-h"] == false))
             {
                 std::cerr << "No expression given to evaluate" << std::endl;
             }
