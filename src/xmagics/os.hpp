@@ -10,6 +10,7 @@
 #ifndef XMAGICS_OS_HPP
 #define XMAGICS_OS_HPP
 
+#include <memory>
 #include <string>
 
 #include "xeus-cling/xmagics.hpp"
@@ -21,7 +22,7 @@ namespace xcpp
     {
     public:
 
-        argparser get_options();
+        std::unique_ptr<argparser> get_options();
         virtual void operator()(const std::string& line, const std::string& cell) override;
 
     private:
