@@ -11,7 +11,7 @@ dependencies:
   - cppzmq
   - xtl=0.7
   - pugixml
-  - cpp-argparse <3.1
+  - cpp-argparse
   # Test dependencies
   - pytest
   - jupyter_kernel_test
