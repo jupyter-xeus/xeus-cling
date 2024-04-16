@@ -7,11 +7,11 @@ dependencies:
   # Host dependencies
   - xeus-zmq=1.1.0
   - cling=0.9
-  - nlohmann_json
+  - nlohmann_json=3.11.2
   - cppzmq
   - xtl=0.7
   - pugixml
-  - cpp-argparse
+  - cpp-argparse <3.1
   # Test dependencies
   - pytest
   - jupyter_kernel_test

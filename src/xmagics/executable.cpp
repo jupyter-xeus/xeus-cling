@@ -42,9 +42,8 @@
 
 namespace xcpp
 {
-    argparser executable::get_options()
+    static void get_options(argparser &argpars)
     {
-        argparser argpars("executable", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("write executable");
         argpars.add_argument("filename")
             .help("filename")
@@ -67,7 +66,6 @@ namespace xcpp
             .help("shows help message")
             .implicit_value(true)
             .nargs(0);
-        return argpars;
     }
 
     std::string executable::generate_fns(const std::string& cell,
@@ -265,7 +263,8 @@ namespace xcpp
 
     void executable::operator()(const std::string& line, const std::string& cell)
     {
-        auto argpars = get_options();
+        argparser argpars("executable", XEUS_CLING_VERSION, argparse::default_arguments::none);
+        get_options(argpars);
         argpars.parse(line);
 
         std::string ExeFile = argpars.get<std::string>("filename");
