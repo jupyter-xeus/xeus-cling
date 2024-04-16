@@ -34,7 +34,7 @@ mamba install xeus-cling -c conda-forge
 You will first need to create a new environment and install the dependencies:
 
 ```bash
-mamba create -n xeus-cling -c conda-forge cmake xeus-zmq cling nlohmann_json cppzmq xtl pugixml doctest cpp-argparse
+mamba create -n xeus-cling -c conda-forge cmake xeus-zmq cling nlohmann_json=3.11.2 cppzmq xtl pugixml doctest cpp-argparse
 source activate xeus-cling
 ```
 Please refer to [environment-host.yml](https://github.com/jupyter-xeus/xeus-cling/blob/main/environment-host.yml) for packages specific versions to install if applicable.
@@ -107,7 +107,7 @@ A C++ backend for the Jupyter interactive widgets is available in the [`xwidgets
 
 | `xeus-cling` |   `xeus-zmq`    |      `xtl`      |     `cling`   |   `pugixml`   | `cppzmq` | `cpp-argparse`| `nlohmann_json` | `dirent` (windows only) |
 |--------------|-----------------|-----------------|---------------|---------------|----------|---------------|-----------------|-------------------------|
-|  main        |  >=1.1.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.9,<0.10   | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
+|  main        |  >=1.1.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.9,<0.10   | ~1.8.1        | ~4.3.0   |     ~3.0      | ~3.11.2         | >=2.3.2,<3              |
 |  0.15.3      |  >=1.1.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.9,<0.10   | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.15.2      |  >=1.1.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.9,<0.10   | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |
 |  0.15.1      |  >=1.0.0,<2.0.0 |  >=0.7.0,<0.8.0 | >=0.9,<0.10   | ~1.8.1        | ~4.3.0   |     ~2.9      | >=3.6.1,<4.0    | >=2.3.2,<3              |

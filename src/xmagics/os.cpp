@@ -20,9 +20,8 @@
 
 namespace xcpp
 {
-    argparser writefile::get_options()
+    static void get_options(argparser &argpars)
     {
-        argparser argpars("file", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("write file");
         argpars.add_argument("-a", "--append")
             .help("append")
@@ -41,12 +40,12 @@ namespace xcpp
             .help("shows help message")
             .implicit_value(true)
             .nargs(0);
-        return argpars;
     }
 
     void writefile::operator()(const std::string& line, const std::string& cell)
     {
-        auto argpars = get_options();
+        argparser argpars("file", XEUS_CLING_VERSION, argparse::default_arguments::none);
+        get_options(argpars);
         argpars.parse(line);
 
         auto filename = argpars.get<std::string>("filename");

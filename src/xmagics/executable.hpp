@@ -25,7 +25,6 @@ namespace xcpp
     public:
 
         executable(cling::Interpreter& i) : m_interpreter(i) {}
-        argparser get_options();
         virtual void operator()(const std::string& line, const std::string& cell) override;
 
     private:

@@ -33,9 +33,8 @@ namespace xcpp
         compilation_result = m_interpreter->process(init_timeit.c_str());
     }
 
-    argparser timeit::get_options()
+    void timeit::get_options(argparser &argpars)
     {
-        argparser argpars("timeit", XEUS_CLING_VERSION, argparse::default_arguments::none);
         argpars.add_description("Time execution of a C++ statement or expression");
         argpars.add_argument("-n", "--number")
             .help("execute the given statement n times in a loop. If this value is not given, a fitting value is chosen")
@@ -62,7 +61,6 @@ namespace xcpp
             .help("shows help message")
             .implicit_value(true)
             .nargs(0);
-        return argpars;
     }
 
     std::string timeit::inner(std::size_t number, const std::string& code) const
@@ -103,7 +101,8 @@ namespace xcpp
         // std::vector<std::string> results((std::istream_iterator<std::string>(iss)),
         //                          std::istream_iterator<std::string>());
 
-        auto argpars = get_options();
+        argparser argpars("timeit", XEUS_CLING_VERSION, argparse::default_arguments::none);
+        get_options(argpars);
         argpars.parse(line);
 
         // TODO find a way to use std::size_t
