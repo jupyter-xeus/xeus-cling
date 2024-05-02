@@ -155,8 +155,8 @@ namespace xcpp
         }
 
         std::unique_ptr<clang::CodeGenerator> CG(clang::CreateLLVMCodeGen(
-            CI->getDiagnostics(), "object", HeaderSearchOpts,
-            CI->getPreprocessorOpts(), CodeGenOpts, *Context));
+            CI->getDiagnostics(), "object", &CI->getVirtualFileSystem(), HeaderSearchOpts,
+            CI->getPreprocessorOpts(), CodeGenOpts, *m_interpreter.getLLVMContext()));
         CG->Initialize(AST);
 
         FindTopLevelDecls Visitor(CG.get());
@@ -180,7 +180,7 @@ namespace xcpp
         std::unique_ptr<llvm::raw_pwrite_stream> OS(
             new llvm::raw_fd_ostream(ObjectFD, true));
 
-        auto DataLayout = AST.getTargetInfo().getDataLayout();
+        auto DataLayout = AST.getTargetInfo().getDataLayoutString();
         EmitBackendOutput(CI->getDiagnostics(), HeaderSearchOpts,
                           CodeGenOpts, CI->getTargetOpts(),
                           CI->getLangOpts(), DataLayout, CG->GetModule(),
@@ -220,10 +220,10 @@ namespace xcpp
 
         llvm::StringRef OutputFileStr(OutputFile);
         llvm::StringRef ErrorFileStr(ErrorFile);
-        llvm::SmallVector<llvm::Optional<llvm::StringRef>, 16> Redirects = {llvm::NoneType::None, OutputFileStr, ErrorFileStr};
+        llvm::SmallVector<llvm::Optional<llvm::StringRef>, 16> Redirects = {std::nullopt, OutputFileStr, ErrorFileStr};
 
         // Finally run the linker.
-        int ret = llvm::sys::ExecuteAndWait(Compiler, Args, llvm::NoneType::None,
+        int ret = llvm::sys::ExecuteAndWait(Compiler, Args, std::nullopt,
                                             Redirects);
 
         // Read back output and error streams.
