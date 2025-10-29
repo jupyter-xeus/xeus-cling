@@ -6,7 +6,11 @@
 [![Zulip](https://img.shields.io/badge/social_chat-zulip-blue.svg)](https://jupyter.zulipchat.com/#narrow/channel/539737-Jupyter-Kernels)
 
 `xeus-cling` is a Jupyter kernel for C++ based on the C++ interpreter [cling](https://github.com/root-project/cling) and
-the native implementation of the Jupyter protocol [xeus](https://github.com/jupyter-xeus/xeus).
+the native implementation of the Jupyter protocol [xeus](https://github.com/jupyter-xeus/xeus).  
+
+## Comparisons to other alternatives
+### [cling](https://github.com/root-project/cling)
+clings already comes with a [Jupyter](https://jupyter.org/) support. Cling uses the wrapper kernel approach, which means it depends on [ipykernel](https://github.com/ipython/ipykernel) and thus on the Python runtime. The kernel of `xeus-cling` is based on [xeus](https://github.com/jupyter-xeus/xeus), a native implementation of the Jupyter Kernel protocol. So, No dependency on ipykernel nor any Python part of the Jupyter ecosystem. The xeus based approch has proven to be more stable on the long run.
 
 ## Installation
 
