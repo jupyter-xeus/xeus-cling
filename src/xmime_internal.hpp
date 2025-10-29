@@ -204,7 +204,7 @@ namespace xcpp
 
             cling_detail::AccessCtrlRAII_t AccessCtrlRAII(*interpreter);
             cling_detail::LockCompilationDuringUserCodeExecutionRAII LCDUCER(*interpreter);
-            interpreter->process(code.str(), &mimeReprV);
+            interpreter->process(std::string(code.str()), &mimeReprV);
         }
 
         if (mimeReprV.isValid() && mimeReprV.getPtr())

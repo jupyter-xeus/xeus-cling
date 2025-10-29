@@ -63,8 +63,7 @@ if(LLVM_CONFIG)
         "--bindir"
         "--libdir"
         "--includedir"
-        "--prefix"
-        "--src-root")
+        "--prefix")
     execute_process(COMMAND ${CONFIG_COMMAND}
                     RESULT_VARIABLE HAD_ERROR
                     OUTPUT_VARIABLE CONFIG_OUTPUT)

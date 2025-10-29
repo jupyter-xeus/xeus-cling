@@ -12,6 +12,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "cling/Interpreter/Value.h"
 #include "cling/Interpreter/Exception.h"
@@ -148,7 +149,7 @@ namespace xcpp
                     number = std::pow(10, n);
                     std::string timeit_code = inner(number, code);
                     compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
-                    if (output.simplisticCastAs<double>() >= 0.2)
+                    if (output.castAs<double>() >= 0.2)
                     {
                         break;
                     }
@@ -162,7 +163,7 @@ namespace xcpp
             {
                 std::string timeit_code = inner(number, code);
                 compilation_result = m_interpreter->process(timeit_code.c_str(), &output);
-                all_runs.push_back(output.simplisticCastAs<double>() / number);
+                all_runs.push_back(output.castAs<double>() / number);
                 mean += all_runs.back();
             }
             mean /= repeat;
