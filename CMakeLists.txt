@@ -362,9 +362,10 @@ install(TARGETS xcpp
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Configuration and data directories for jupyter and xeus-cling
-set(XJUPYTER_DATA_DIR   "share/jupyter"    CACHE STRING "Jupyter data directory")
-set(XEUS_CLING_DATA_DIR "share/xeus-cling" CACHE STRING "xeus-cling data directory")
-set(XEUS_CLING_CONF_DIR "etc/xeus-cling"   CACHE STRING "xeus-cling configuration directory")
+set(XJUPYTER_DATA_DIR     "share/jupyter"    CACHE STRING "Jupyter data directory")
+set(XEUS_CLING_DATA_DIR   "share/xeus-cling" CACHE STRING "xeus-cling data directory")
+set(XEUS_CLING_CONF_DIR   "etc/xeus-cling"   CACHE STRING "xeus-cling configuration directory")
+set(LLVM_MAIN_INCLUDE_DIR ${INCLUDE_DIR}     CACHE STRING "Path to llvm/include")
 
 # Install xcpp headers
 install(FILES ${XCPP_HEADERS}

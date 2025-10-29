@@ -4,6 +4,7 @@
       "@XEUS_CLING_KERNELSPEC_PATH@/xcpp",
       "-f",
       "{connection_file}",
+      "-I", "@LLVM_MAIN_INCLUDE_DIR@",
       "-std=c++11"
   ],
   "language": "C++11"
